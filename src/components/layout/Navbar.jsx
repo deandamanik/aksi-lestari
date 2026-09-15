@@ -78,12 +78,12 @@ function Navbar() {
   }, [location.pathname, hasInitialized])
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 w-full pt-5 sm:pt-6 pb-2 px-4 sm:px-6 lg:px-10 pointer-events-none">
+    <header className="fixed top-0 left-0 right-0 z-40 w-full pt-4 sm:pt-4.5 pb-2 px-4 sm:px-6 lg:px-10 pointer-events-none">
       <div className="max-w-[1400px] mx-auto pointer-events-auto">
         <nav
           className={`w-full flex items-center justify-between px-6 sm:px-10 py-2.5 sm:py-3 rounded-xl transition-all duration-300 ${
             isScrolled
-              ? 'bg-white/60 backdrop-blur-xl border border-border-warm/50 shadow-[0_8px_30px_rgba(0,0,0,0.04)]'
+              ? 'bg-white/40 backdrop-blur-xl border border-border-warm/50 shadow-[0_8px_30px_rgba(0,0,0,0.04)]'
               : 'bg-transparent border border-transparent shadow-none'
           }`}
           aria-label="Navigasi Utama"
@@ -142,8 +142,8 @@ function Navbar() {
                   }}
                   className={`group relative z-10 inline-flex items-center justify-center h-9 px-3.5 sm:px-4 rounded-full text-sm transition-colors duration-200 select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary ${
                     isActive
-                      ? 'text-white font-semibold'
-                      : 'text-primary hover:text-primary font-[550]'
+                      ? 'text-white font-bold'
+                      : 'text-primary hover:text-primary font-semibold'
                   }`}
                 >
                   <span className="relative inline-block py-0.5">
@@ -167,13 +167,13 @@ function Navbar() {
             <div className="hidden md:flex items-center gap-2.5">
               <Link
                 to="/login"
-                className="inline-flex items-center justify-center h-9 px-5 rounded-full text-sm font-[550] border-[1.5px] border-primary text-primary hover:bg-primary/5 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+                className="inline-flex items-center justify-center h-9 px-5 rounded-full text-sm font-semibold border-2 border-primary text-primary hover:bg-primary/5 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
               >
                 Login
               </Link>
               <Link
                 to="/register"
-                className="inline-flex items-center justify-center h-9 px-5 rounded-full text-sm font-[550] bg-accent text-white hover:opacity-95 shadow-xs transition-opacity focus:outline-hidden focus-visible:ring-2 focus-visible:ring-accent"
+                className="inline-flex items-center justify-center h-9 px-5 rounded-full text-sm font-semibold bg-accent text-white hover:opacity-95 shadow-xs transition-opacity focus:outline-hidden focus-visible:ring-2 focus-visible:ring-accent"
               >
                 Register
               </Link>
@@ -223,9 +223,9 @@ function Navbar() {
                 end={item.path === '/'}
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center h-10 px-4 rounded-xl text-sm font-[550] transition-colors ${
+                  `flex items-center h-10 px-4 rounded-xl text-sm font-semibold transition-colors ${
                     isActive
-                      ? 'bg-primary text-white font-semibold'
+                      ? 'bg-primary text-white font-bold'
                       : 'text-primary hover:bg-black/[0.03]'
                   }`
                 }
@@ -237,14 +237,14 @@ function Navbar() {
               <Link
                 to="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex-1 flex items-center justify-center h-10 rounded-full text-sm font-[550] border-[1.5px] border-primary text-primary hover:bg-primary/5 transition-colors"
+                className="flex-1 flex items-center justify-center h-10 rounded-full text-sm font-semibold border-2 border-primary text-primary hover:bg-primary/5 transition-colors"
               >
                 Login
               </Link>
               <Link
                 to="/register"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex-1 flex items-center justify-center h-10 rounded-full text-sm font-[550] bg-accent text-white hover:opacity-95 shadow-xs transition-opacity"
+                className="flex-1 flex items-center justify-center h-10 rounded-full text-sm font-semibold bg-accent text-white hover:opacity-95 shadow-xs transition-opacity"
               >
                 Register
               </Link>
