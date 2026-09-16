@@ -164,114 +164,152 @@ function HeroSection() {
           will-change: transform, opacity;
         }
 
-        /* --- Ambient Floating Animations (Clearly Visible, Organic & Elegant) --- */
+        /* --- Ambient Floating Animations: Distinct Natural Personalities --- */
+
+        /* 1. Sun: Slow, relaxed, distant with tiny horizontal drift & subtle tilt */
         @keyframes hero-float-sun {
           0%, 100% {
-            transform: translateY(0) rotate(-1.5deg);
+            transform: translate3d(0, 0, 0) rotate(-1deg);
           }
-          50% {
-            transform: translateY(-11px) rotate(1.5deg);
+          35% {
+            transform: translate3d(2.5px, -9px, 0) rotate(0.8deg);
+          }
+          70% {
+            transform: translate3d(-2px, -4px, 0) rotate(1.2deg);
           }
         }
 
+        /* 2. Left Recycle: Gentle vertical drifting, tiny tilt, no continuous spin */
         @keyframes hero-float-recycle-left {
           0%, 100% {
-            transform: translateY(0) rotate(1deg);
+            transform: translate3d(0, 0, 0) rotate(1.2deg);
           }
-          50% {
-            transform: translateY(-10px) rotate(-1.5deg);
+          40% {
+            transform: translate3d(-2px, -10px, 0) rotate(-1.5deg);
+          }
+          75% {
+            transform: translate3d(1.5px, -5px, 0) rotate(0.5deg);
           }
         }
 
+        /* 3. Right Recycle: Subtle complementary drifting & timing */
         @keyframes hero-float-recycle-right {
           0%, 100% {
-            transform: translateY(0) rotate(-1deg);
+            transform: translate3d(0, 0, 0) rotate(-1.2deg);
           }
-          50% {
-            transform: translateY(-9px) rotate(1.5deg);
+          45% {
+            transform: translate3d(2px, -9px, 0) rotate(1.8deg);
+          }
+          80% {
+            transform: translate3d(-1.5px, -4px, 0) rotate(-0.5deg);
           }
         }
 
+        /* 4. Trash Bin: Weighted, grounded, stable object with minimal rotation */
         @keyframes hero-float-bin {
           0%, 100% {
-            transform: translateY(0) rotate(-0.5deg);
+            transform: translate3d(0, 0, 0) rotate(-0.3deg);
           }
           50% {
-            transform: translateY(-8px) rotate(0.8deg);
+            transform: translate3d(0, -8px, 0) rotate(0.3deg);
           }
         }
 
+        /* 5. Earth: Living presence, gentle vertical floating & breathing scale, NO rotation */
         @keyframes hero-float-earth {
           0%, 100% {
-            transform: translateY(0);
+            transform: translate3d(0, 0, 0) scale(1);
           }
-          50% {
-            transform: translateY(-9px);
+          35% {
+            transform: translate3d(-2.5px, -10px, 0) scale(1.012);
+          }
+          70% {
+            transform: translate3d(2px, -3px, 0) scale(1.004);
           }
         }
 
+        /* 6. Monstera: Slow, broad leaf drift with subtle tilt */
         @keyframes hero-float-monstera {
           0%, 100% {
-            transform: translateY(0) rotate(1.5deg);
+            transform: translate3d(0, 0, 0) rotate(1.5deg);
           }
-          50% {
-            transform: translateY(-9px) rotate(-2.5deg);
+          45% {
+            transform: translate3d(-2px, -10px, 0) rotate(-2deg);
+          }
+          75% {
+            transform: translate3d(1.5px, -4px, 0) rotate(0.8deg);
           }
         }
 
+        /* 7. Leaves Type A: Organic diagonal drifting & swaying */
         @keyframes hero-float-leaf-a {
           0%, 100% {
-            transform: translateY(0) rotate(-2deg);
+            transform: translate3d(0, 0, 0) rotate(-2deg);
           }
-          50% {
-            transform: translateY(-8px) rotate(3deg);
+          30% {
+            transform: translate3d(3px, -8px, 0) rotate(2deg);
+          }
+          65% {
+            transform: translate3d(1.5px, -3px, 0) rotate(-1deg);
+          }
+          85% {
+            transform: translate3d(-2px, -2px, 0) rotate(1.5deg);
           }
         }
 
+        /* 8. Leaves Type B: Counter-diagonal natural leaf drift */
         @keyframes hero-float-leaf-b {
           0%, 100% {
-            transform: translateY(0) rotate(2.5deg);
+            transform: translate3d(0, 0, 0) rotate(2.5deg);
           }
-          50% {
-            transform: translateY(-7px) rotate(-2.5deg);
+          35% {
+            transform: translate3d(-3px, -9px, 0) rotate(-2deg);
+          }
+          70% {
+            transform: translate3d(-1px, -4px, 0) rotate(1.5deg);
+          }
+          85% {
+            transform: translate3d(2px, -2px, 0) rotate(-1deg);
           }
         }
 
+        /* 9. Sprouts Type A: Subtle vertical breathing motion */
         @keyframes hero-float-sprout-a {
           0%, 100% {
-            transform: translateY(0) rotate(-1deg);
+            transform: translate3d(0, 0, 0) rotate(-1deg) scale(1);
           }
           50% {
-            transform: translateY(-7px) rotate(1.5deg);
+            transform: translate3d(1.5px, -9px, 0) rotate(1.5deg) scale(1.015);
           }
         }
 
+        /* 10. Sprouts Type B: Gentle counter-sway breathing */
         @keyframes hero-float-sprout-b {
           0%, 100% {
-            transform: translateY(0) rotate(1deg);
+            transform: translate3d(0, 0, 0) rotate(1.2deg) scale(1);
           }
           50% {
-            transform: translateY(-8px) rotate(-1.5deg);
+            transform: translate3d(-1.5px, -8px, 0) rotate(-1.5deg) scale(1.015);
           }
         }
 
         .hero-ambient-sun {
-          animation: hero-float-sun 5.4s ease-in-out infinite;
+          animation: hero-float-sun 6.4s ease-in-out infinite;
           will-change: transform;
         }
 
         .hero-ambient-recycle-left {
-          animation: hero-float-recycle-left 6.0s ease-in-out infinite;
+          animation: hero-float-recycle-left 6.2s ease-in-out infinite;
           will-change: transform;
         }
 
         .hero-ambient-recycle-right {
-          animation: hero-float-recycle-right 5.2s ease-in-out infinite;
+          animation: hero-float-recycle-right 5.4s ease-in-out infinite;
           will-change: transform;
         }
 
         .hero-ambient-bin {
-          animation: hero-float-bin 5.8s ease-in-out infinite;
+          animation: hero-float-bin 6.0s ease-in-out infinite;
           will-change: transform;
         }
 
@@ -281,12 +319,12 @@ function HeroSection() {
         }
 
         .hero-ambient-monstera {
-          animation: hero-float-monstera 5.5s ease-in-out infinite;
+          animation: hero-float-monstera 5.6s ease-in-out infinite;
           will-change: transform;
         }
 
         .hero-ambient-leaf-a {
-          animation: hero-float-leaf-a 4.6s ease-in-out infinite;
+          animation: hero-float-leaf-a 4.8s ease-in-out infinite;
           will-change: transform;
         }
 
@@ -296,12 +334,12 @@ function HeroSection() {
         }
 
         .hero-ambient-sprout-a {
-          animation: hero-float-sprout-a 4.9s ease-in-out infinite;
+          animation: hero-float-sprout-a 5.0s ease-in-out infinite;
           will-change: transform;
         }
 
         .hero-ambient-sprout-b {
-          animation: hero-float-sprout-b 6.0s ease-in-out infinite;
+          animation: hero-float-sprout-b 5.8s ease-in-out infinite;
           will-change: transform;
         }
 
@@ -351,10 +389,11 @@ function HeroSection() {
         ))}
       </div>
 
-      {/* Mobile: minimal decorative set to avoid clutter */}
+      {/* Mobile: Rich, balanced environmental composition (4 main anchors + 1 recycle + 3 subtle leaf accents) */}
       <div className="block md:hidden" aria-hidden="true">
+        {/* Upper Anchor: Sun (top-left) */}
         <div
-          className="absolute top-8 left-3 w-20 pointer-events-none select-none hero-enter-object"
+          className="absolute top-[8%] left-[4%] w-20 sm:w-24 pointer-events-none select-none hero-enter-object"
           style={{ animationDelay: '80ms' }}
         >
           <img
@@ -365,8 +404,24 @@ function HeroSection() {
             draggable={false}
           />
         </div>
+
+        {/* Upper Accent: Small Leaf (upper-left/center negative space) */}
         <div
-          className="absolute top-6 right-3 w-16 pointer-events-none select-none hero-enter-object"
+          className="absolute top-[15%] left-[26%] w-6 -rotate-12 opacity-80 pointer-events-none select-none hero-enter-object"
+          style={{ animationDelay: '100ms' }}
+        >
+          <img
+            src="/images/3d/icon-leaf.webp"
+            alt=""
+            className="w-full h-auto drop-shadow-sm pointer-events-none select-none hero-ambient-leaf-a"
+            style={{ animationDelay: '850ms' }}
+            draggable={false}
+          />
+        </div>
+
+        {/* Upper Anchor: Monstera / Large Leaf (top-right) */}
+        <div
+          className="absolute top-[8%] right-[4%] w-16 sm:w-20 pointer-events-none select-none hero-enter-object"
           style={{ animationDelay: '120ms' }}
         >
           <img
@@ -377,51 +432,97 @@ function HeroSection() {
             draggable={false}
           />
         </div>
+
+        {/* Side Accent: Small Leaf (mid-right side negative space) */}
         <div
-          className="absolute bottom-10 left-5 w-16 pointer-events-none select-none hero-enter-object"
-          style={{ animationDelay: '160ms' }}
+          className="absolute top-[44%] right-[4%] sm:right-[6%] w-5 sm:w-6 rotate-12 opacity-75 pointer-events-none select-none hero-enter-object"
+          style={{ animationDelay: '140ms' }}
+        >
+          <img
+            src="/images/3d/icon-leaf.webp"
+            alt=""
+            className="w-full h-auto drop-shadow-sm pointer-events-none select-none hero-ambient-leaf-a"
+            style={{ animationDelay: '890ms' }}
+            draggable={false}
+          />
+        </div>
+
+        {/* Mid-Lower Accent: Single Recycle Icon (transition zone below CTA, left) */}
+        <div
+          className="absolute bottom-[18.5%] left-[10%] sm:left-[14%] w-11 sm:w-13 pointer-events-none select-none hero-enter-object"
+          style={{ animationDelay: '170ms' }}
+        >
+          <img
+            src="/images/3d/icon-recycle.webp"
+            alt=""
+            className="w-full h-auto drop-shadow-sm pointer-events-none select-none hero-ambient-recycle-left"
+            style={{ animationDelay: '920ms' }}
+            draggable={false}
+          />
+        </div>
+
+        {/* Mid-Lower Accent: Small Leaf (transition zone below CTA, right) */}
+        <div
+          className="absolute bottom-[19.5%] right-[11%] sm:right-[15%] w-6 sm:w-7 rotate-45 opacity-85 pointer-events-none select-none hero-enter-object"
+          style={{ animationDelay: '190ms' }}
+        >
+          <img
+            src="/images/3d/icon-leaf.webp"
+            alt=""
+            className="w-full h-auto drop-shadow-sm pointer-events-none select-none hero-ambient-leaf-b"
+            style={{ animationDelay: '940ms' }}
+            draggable={false}
+          />
+        </div>
+
+        {/* Bottom Anchor: Trash Bin (grounded lower anchor, brought slightly upward) */}
+        <div
+          className="absolute bottom-[7.5%] left-[8%] sm:bottom-[7%] sm:left-[11%] w-22 sm:w-26 pointer-events-none select-none hero-enter-object"
+          style={{ animationDelay: '180ms' }}
         >
           <img
             src="/images/3d/icon-trash-bin.webp"
             alt=""
             className="w-full h-auto drop-shadow-sm pointer-events-none select-none hero-ambient-bin"
-            style={{ animationDelay: '910ms' }}
+            style={{ animationDelay: '930ms' }}
             draggable={false}
           />
         </div>
+
+        {/* Bottom Anchor: Earth (grounded lower anchor, brought slightly upward) */}
         <div
-          className="absolute bottom-8 right-4 w-22 pointer-events-none select-none hero-enter-object"
-          style={{ animationDelay: '140ms' }}
+          className="absolute bottom-[5.5%] right-[7%] sm:bottom-[5.5%] sm:right-[11%] w-28 sm:w-32 pointer-events-none select-none hero-enter-object"
+          style={{ animationDelay: '160ms' }}
         >
           <img
             src="/images/3d/icon-earth.webp"
             alt=""
             className="w-full h-auto drop-shadow-sm pointer-events-none select-none hero-ambient-earth"
-            style={{ animationDelay: '890ms' }}
+            style={{ animationDelay: '910ms' }}
             draggable={false}
           />
         </div>
       </div>
 
       {/* Central content */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-full px-4 pt-10 pb-28 md:pt-12 md:pb-32 text-center -translate-y-2 md:-translate-y-4">
-        {/* Headline — balanced desktop scale (reduced ~10% from previous, dominant & on one line) */}
-        <h1 className="hero-reveal-headline font-display text-primary text-3xl sm:text-4xl md:text-[3.125rem] lg:text-[3.75rem] xl:text-[4.25rem] leading-[1.14] tracking-tight whitespace-nowrap mb-3 md:mb-3.5">
+      <div className="relative z-10 flex flex-col items-center justify-center h-full px-4 pt-10 pb-12 md:pt-12 md:pb-32 text-center -translate-y-2 md:-translate-y-4">
+        {/* Headline — stronger, more confident presence, wraps naturally on small mobile, one line on desktop */}
+        <h1 className="hero-reveal-headline font-display font-medium md:font-normal text-primary text-3xl sm:text-4xl md:text-[3.125rem] lg:text-[3.75rem] xl:text-[4.25rem] leading-[1.18] md:leading-[1.14] tracking-tight whitespace-normal md:whitespace-nowrap mb-3 md:mb-3.5">
           Temukan. Peduli. Bergerak.
         </h1>
 
-        {/* Sub-headline: exactly 2 lines on desktop */}
-        <p className="hero-reveal-paragraph font-body text-primary/70 text-sm sm:text-base lg:text-[1.0625rem] leading-relaxed max-w-[20rem] sm:max-w-md md:max-w-[36rem] lg:max-w-[39rem] mb-5 md:mb-6">
+        {/* Sub-headline: slightly stronger readability on mobile, exactly 2 lines on desktop */}
+        <p className="hero-reveal-paragraph font-body font-medium md:font-normal text-primary/80 md:text-primary/70 text-sm sm:text-base lg:text-[1.0625rem] leading-relaxed max-w-[20rem] sm:max-w-md md:max-w-[36rem] lg:max-w-[39rem] mb-4 sm:mb-5 md:mb-6">
           Temukan masalah sampah di sekitarmu, pahami kondisinya, dan ambil
           langkah yang bisa kamu lakukan bersama ekosistem lingkungan lokal.
         </p>
 
-        {/* CTA Buttons */}
-        <div className="hero-reveal-cta flex items-center gap-3.5 sm:gap-4 flex-wrap justify-center">
+        {/* CTA Buttons — stacked vertically & noticeably wider on mobile, side-by-side on desktop */}
+        <div className="hero-reveal-cta flex flex-col sm:flex-row items-center gap-2.5 sm:gap-4 justify-center w-full">
           {/* Primary: Laporkan Sampah */}
           <Link
             to="/lapor"
-            className="inline-flex items-center gap-2 h-11 px-6 sm:px-7 rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+            className="inline-flex items-center justify-center gap-2 h-11 w-[88%] max-w-[320px] sm:w-auto sm:max-w-none px-6 sm:px-7 rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary shadow-xs"
           >
             {/* Camera icon (inline SVG — no extra dependency) */}
             <svg
@@ -444,7 +545,7 @@ function HeroSection() {
           {/* Secondary: Jelajahi Peta */}
           <Link
             to="/peta-sampah"
-            className="inline-flex items-center h-11 px-6 sm:px-7 rounded-full bg-white/70 text-primary text-sm font-semibold border border-primary hover:bg-primary/5 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+            className="inline-flex items-center justify-center h-11 w-[88%] max-w-[320px] sm:w-auto sm:max-w-none px-6 sm:px-7 rounded-full bg-white/70 text-primary text-sm font-semibold border border-primary hover:bg-primary/5 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
           >
             Jelajahi Peta
           </Link>
