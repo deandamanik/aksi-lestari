@@ -1,9 +1,17 @@
+import HeroSection from './components/HeroSection'
+import ProblemStorySection from './components/ProblemStorySection'
+import ActionJourneySection from './components/ActionJourneySection'
+import CommunityActionSection from './components/CommunityActionSection'
+import ImpactClosingSection from './components/ImpactClosingSection'
+
 function BerandaPage() {
   return (
-    <main className="min-h-[120vh] bg-border-warm flex items-center justify-center">
-      <h1 className="font-display text-primary text-4xl sm:text-5xl font-bold">
-        AksiLestari Beranda
-      </h1>
+    <main>
+      <HeroSection />
+      <ProblemStorySection />
+      <ActionJourneySection />
+      <CommunityActionSection />
+      <ImpactClosingSection />
     </main>
   )
 }
