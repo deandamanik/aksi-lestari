@@ -12,36 +12,50 @@ function ActionJourneySection() {
   return (
     <section
       id="langkah-partisipasi"
-      className="relative w-full bg-[#FAF8F3] text-primary pt-20 sm:pt-24 lg:pt-28 pb-16 sm:pb-20 lg:pb-0 border-t border-border-warm/50 overflow-visible"
+      className="relative w-full bg-[#FAF8F3] text-primary pt-16 sm:pt-20 lg:pt-0 pb-16 sm:pb-20 lg:pb-0 border-t border-border-warm/50 overflow-visible"
       aria-labelledby="action-journey-heading"
     >
-      <div className="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-6">
-        {/* Section Editorial Intro (Normal document flow) */}
-        <div className="text-center max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto mb-12 sm:mb-16 lg:mb-20">
-          <span className="inline-block text-xs uppercase tracking-widest font-body font-bold text-secondary mb-2.5">
-            LANGKAH PARTISIPASI
-          </span>
-          <h2
-            id="action-journey-heading"
-            className="font-display text-primary text-3xl sm:text-4xl lg:text-[2.35rem] xl:text-[2.625rem] leading-[1.2] tracking-tight whitespace-normal lg:whitespace-nowrap mb-3 sm:mb-4"
-          >
-            Empat Langkah Nyata Bergerak
-          </h2>
-          <p className="font-body text-primary/75 text-sm sm:text-base lg:text-lg leading-relaxed max-w-xl mx-auto">
-            Alur terstruktur dari pengamatan mata hingga aksi berdampak yang diakui.
-          </p>
-        </div>
+      {/* Mobile & Tablet Editorial Intro (Normal document flow) */}
+      <div className="block lg:hidden max-w-[1180px] mx-auto px-4 sm:px-6 pt-16 sm:pt-20 mb-10 text-center">
+        <span className="inline-block text-xs uppercase tracking-widest font-body font-bold text-secondary mb-2.5">
+          LANGKAH PARTISIPASI
+        </span>
+        <h2
+          id="action-journey-heading-mobile"
+          className="font-display text-primary text-3xl sm:text-4xl leading-[1.2] tracking-tight mb-3"
+        >
+          Empat Langkah Nyata Bergerak
+        </h2>
+        <p className="font-body text-primary/75 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
+          Alur terstruktur dari pengamatan mata hingga aksi berdampak yang diakui.
+        </p>
       </div>
 
-      {/* Desktop Composition: Dedicated Finite Sticky Runway (220vh) */}
+      {/* Desktop Composition: Dedicated Finite Sticky Runway (210vh) */}
       <div
         ref={journeyTrackRef}
         className="hidden lg:block relative"
-        style={{ height: '220vh' }}
+        style={{ height: '210vh' }}
       >
-        {/* Sticky Storytelling Stage: Anchored vertically in viewport */}
-        <div className="sticky top-[max(4.5rem,calc(50vh-230px))] w-full overflow-visible">
-          <div className="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-6">
+        {/* Sticky Storytelling Stage: Full-viewport sticky wrapper with unified centered composition */}
+        <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-visible">
+          <div className="w-full max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-6 flex flex-col -mt-4 xl:-mt-6">
+            {/* Desktop Editorial Intro: Controlled vertical relationship above journey track */}
+            <div className="text-center max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto mb-8 xl:mb-10">
+              <span className="inline-block text-xs uppercase tracking-widest font-body font-bold text-secondary mb-2.5">
+                LANGKAH PARTISIPASI
+              </span>
+              <h2
+                id="action-journey-heading"
+                className="font-display text-primary text-3xl sm:text-4xl lg:text-[2.35rem] xl:text-[2.625rem] leading-[1.2] tracking-tight whitespace-normal lg:whitespace-nowrap mb-3 sm:mb-4"
+              >
+                Empat Langkah Nyata Bergerak
+              </h2>
+              <p className="font-body text-primary/75 text-sm sm:text-base lg:text-lg leading-relaxed max-w-xl mx-auto">
+                Alur terstruktur dari pengamatan mata hingga aksi berdampak yang diakui.
+              </p>
+            </div>
+
             {/* Journey Track: Organic Wave Line + 4 Milestone Nodes */}
             <div className="relative w-full h-[140px] mb-8 select-none">
               {/* SVG Organic Wave Line */}

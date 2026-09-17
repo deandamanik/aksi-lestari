@@ -54,17 +54,14 @@ export function useActionJourneyScroll() {
         if (!track) return
 
         const trackRect = track.getBoundingClientRect()
-        // The sticky stage height is approximately 460px
-        const stageHeight = 460
-        const stickyTop = Math.max(
-          64,
-          Math.round(window.innerHeight / 2 - stageHeight / 2)
-        )
+        // The sticky stage occupies the full viewport (100vh) anchored at top: 0
+        const stageHeight = window.innerHeight
+        const stickyTop = 0
         const maxScroll = trackRect.height - stageHeight
 
         if (maxScroll <= 0) return
 
-        // Normalized progress p in [0, 1]
+        // Normalized progress p in [0, 1] through the runway
         let p = (stickyTop - trackRect.top) / maxScroll
         p = Math.max(0, Math.min(1, p))
 
@@ -79,13 +76,13 @@ export function useActionJourneyScroll() {
           }
         }
 
-        // Calibrated step boundaries with comfortable dwell time
+        // Calibrated step boundaries with comfortable reading dwell time
         let nextIndex
-        if (p >= 0.85) {
+        if (p >= 0.77) {
           nextIndex = 3
-        } else if (p >= 0.55) {
+        } else if (p >= 0.52) {
           nextIndex = 2
-        } else if (p >= 0.25) {
+        } else if (p >= 0.26) {
           nextIndex = 1
         } else {
           nextIndex = 0
