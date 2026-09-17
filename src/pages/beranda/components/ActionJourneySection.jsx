@@ -1,0 +1,321 @@
+import { ACTION_JOURNEY_STEPS } from '../../../data/beranda/actionJourneySteps'
+import { useActionJourneyScroll } from '../../../hooks/useActionJourneyScroll'
+
+function ActionJourneySection() {
+  const {
+    journeyTrackRef,
+    progressPathRef,
+    mobileStepRefs,
+    activeStepIndex,
+  } = useActionJourneyScroll()
+
+  return (
+    <section
+      id="langkah-partisipasi"
+      className="relative w-full bg-[#FAF8F3] text-primary pt-20 sm:pt-24 lg:pt-28 pb-16 sm:pb-20 lg:pb-0 border-t border-border-warm/50 overflow-visible"
+      aria-labelledby="action-journey-heading"
+    >
+      <div className="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-6">
+        {/* Section Editorial Intro (Normal document flow) */}
+        <div className="text-center max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto mb-12 sm:mb-16 lg:mb-20">
+          <span className="inline-block text-xs uppercase tracking-widest font-body font-bold text-secondary mb-2.5">
+            LANGKAH PARTISIPASI
+          </span>
+          <h2
+            id="action-journey-heading"
+            className="font-display text-primary text-3xl sm:text-4xl lg:text-[2.35rem] xl:text-[2.625rem] leading-[1.2] tracking-tight whitespace-normal lg:whitespace-nowrap mb-3 sm:mb-4"
+          >
+            Empat Langkah Nyata Bergerak
+          </h2>
+          <p className="font-body text-primary/75 text-sm sm:text-base lg:text-lg leading-relaxed max-w-xl mx-auto">
+            Alur terstruktur dari pengamatan mata hingga aksi berdampak yang diakui.
+          </p>
+        </div>
+      </div>
+
+      {/* Desktop Composition: Dedicated Finite Sticky Runway (220vh) */}
+      <div
+        ref={journeyTrackRef}
+        className="hidden lg:block relative"
+        style={{ height: '220vh' }}
+      >
+        {/* Sticky Storytelling Stage: Anchored vertically in viewport */}
+        <div className="sticky top-[max(4.5rem,calc(50vh-230px))] w-full overflow-visible">
+          <div className="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-6">
+            {/* Journey Track: Organic Wave Line + 4 Milestone Nodes */}
+            <div className="relative w-full h-[140px] mb-8 select-none">
+              {/* SVG Organic Wave Line */}
+              <svg
+                viewBox="0 0 1000 140"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-full h-full overflow-visible"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                {/* Muted base path (always visible underneath) */}
+                <path
+                  d="M 40 38 L 125 38 C 245 38, 255 78, 375 78 C 495 78, 505 52, 625 52 C 745 52, 755 92, 875 92 L 960 92"
+                  stroke="#22603B"
+                  strokeOpacity="0.15"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+                {/* Active progress stroke (fills continuously via direct DOM strokeDashoffset) */}
+                <path
+                  ref={progressPathRef}
+                  d="M 40 38 L 125 38 C 245 38, 255 78, 375 78 C 495 78, 505 52, 625 52 C 745 52, 755 92, 875 92 L 960 92"
+                  stroke="#22603B"
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                  style={{ willChange: 'stroke-dashoffset' }}
+                />
+              </svg>
+
+              {/* 4 Journey Milestone Nodes positioned along the curved wave */}
+              {ACTION_JOURNEY_STEPS.map((step, index) => {
+                const coords = [
+                  { left: '12.5%', top: '27.14%' }, // y = 38px
+                  { left: '37.5%', top: '55.71%' }, // y = 78px
+                  { left: '62.5%', top: '37.14%' }, // y = 52px
+                  { left: '87.5%', top: '65.71%' }, // y = 92px
+                ][index]
+
+                const Icon = step.icon
+                const isActive = activeStepIndex === index
+                const isCompleted = activeStepIndex > index
+
+                return (
+                  <div
+                    key={step.id}
+                    className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center pointer-events-none select-none z-10"
+                    style={{ left: coords.left, top: coords.top }}
+                  >
+                    {/* Step Number Tag */}
+                    <div
+                      className={`mb-1.5 px-2.5 py-0.5 rounded-full transition-all duration-300 ease-out ${
+                        isActive
+                          ? 'bg-primary text-white border border-primary shadow-xs'
+                          : isCompleted
+                          ? 'bg-white text-primary border border-primary/30'
+                          : 'bg-white/60 text-secondary/50 border border-border-warm'
+                      }`}
+                    >
+                      <span className="font-body font-bold text-[11px] tracking-wider">
+                        {step.number}
+                      </span>
+                    </div>
+
+                    {/* Milestone Node Circle */}
+                    <div
+                      className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ease-out ${
+                        isActive
+                          ? 'bg-primary border-2 border-primary text-white scale-105 shadow-md ring-4 ring-primary/10'
+                          : isCompleted
+                          ? 'bg-white border-2 border-primary/80 text-primary scale-100 shadow-xs'
+                          : 'bg-white/70 border-2 border-border-warm/80 text-primary/35 scale-100 shadow-2xs'
+                      }`}
+                    >
+                      <Icon
+                        className="w-5 h-5 transition-colors duration-300"
+                        strokeWidth={isActive ? 2 : 1.8}
+                      />
+                    </div>
+
+                    {/* Vertical Connector Stem to Card */}
+                    <div
+                      className={`w-[1px] h-6 border-l mt-1.5 transition-colors duration-300 ${
+                        isActive
+                          ? 'border-primary/50 border-solid'
+                          : isCompleted
+                          ? 'border-primary/30 border-dashed'
+                          : 'border-border-warm/70 border-dashed'
+                      }`}
+                    />
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* 4-Column Card Grid (Positions remain stable; emphasis reflects active progress) */}
+            <div className="grid grid-cols-4 gap-6 xl:gap-8">
+              {ACTION_JOURNEY_STEPS.map((step, index) => {
+                const isActive = activeStepIndex === index
+
+                return (
+                  <div
+                    key={step.id}
+                    className={`flex flex-col h-full p-6 rounded-2xl transition-all duration-300 ease-out ${
+                      isActive
+                        ? 'bg-white border-primary/30 shadow-md ring-1 ring-primary/10 opacity-100 translate-y-0'
+                        : 'bg-white/60 border-border-warm/70 shadow-2xs opacity-60 translate-y-0.5'
+                    }`}
+                  >
+                    {/* Step Marker: Clean editorial label without decorative bullet */}
+                    <span
+                      className={`text-xs font-bold tracking-widest uppercase font-body mb-2 transition-colors duration-300 ${
+                        isActive ? 'text-secondary' : 'text-primary/45'
+                      }`}
+                    >
+                      Langkah {step.number}
+                    </span>
+
+                    {/* Step Title */}
+                    <h3
+                      className={`font-display text-xl leading-snug tracking-tight mb-2.5 transition-colors duration-300 ${
+                        isActive
+                          ? 'text-primary font-normal'
+                          : 'text-primary/75 font-normal'
+                      }`}
+                    >
+                      {step.title}
+                    </h3>
+
+                    {/* Step Description */}
+                    <p
+                      className={`font-body text-sm leading-relaxed mb-4 transition-colors duration-300 ${
+                        isActive ? 'text-primary/85' : 'text-primary/60'
+                      }`}
+                    >
+                      {step.description}
+                    </p>
+
+                    {/* Supporting Microcopy Sentence (Clean editorial, no pill/border) */}
+                    <p
+                      className={`mt-auto pt-1 font-body text-xs sm:text-[0.8125rem] font-medium leading-normal transition-colors duration-300 ${
+                        isActive ? 'text-primary/75' : 'text-primary/45'
+                      }`}
+                    >
+                      {step.supportingText}
+                    </p>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile & Tablet Composition: Vertical Flow with Sequential Scroll Activation */}
+      <div className="block lg:hidden max-w-lg mx-auto px-4 sm:px-6 pb-16">
+        <div className="flex flex-col">
+          {ACTION_JOURNEY_STEPS.map((step, index) => {
+            const Icon = step.icon
+            const isActive = activeStepIndex === index
+            const isCompleted = activeStepIndex > index
+            const isLast = index === ACTION_JOURNEY_STEPS.length - 1
+
+            return (
+              <div
+                key={step.id}
+                ref={(el) => {
+                  mobileStepRefs.current[index] = el
+                }}
+                className="flex flex-col"
+              >
+                {/* Step Card with Integrated Node */}
+                <div
+                  className={`p-5 sm:p-6 rounded-2xl transition-all duration-300 ease-out ${
+                    isActive
+                      ? 'bg-white border-primary/30 shadow-md ring-1 ring-primary/10 opacity-100'
+                      : 'bg-white/70 border-border-warm/70 shadow-xs opacity-75'
+                  }`}
+                >
+                  {/* Card Header: Node Icon + Step Marker + Title */}
+                  <div className="flex items-center gap-3.5 mb-3">
+                    <div
+                      className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ease-out ${
+                        isActive
+                          ? 'bg-primary border-2 border-primary text-white shadow-md'
+                          : isCompleted
+                          ? 'bg-white border-2 border-primary/80 text-primary shadow-xs'
+                          : 'bg-white border-2 border-border-warm text-primary/40'
+                      }`}
+                    >
+                      <Icon
+                        className="w-5 h-5 transition-colors duration-300"
+                        strokeWidth={isActive ? 2 : 1.8}
+                      />
+                    </div>
+                    <div>
+                      <span
+                        className={`block text-xs font-bold tracking-widest uppercase font-body transition-colors duration-300 ${
+                          isActive ? 'text-secondary' : 'text-primary/50'
+                        }`}
+                      >
+                        Langkah {step.number}
+                      </span>
+                      <h3
+                        className={`font-display text-lg sm:text-xl leading-snug tracking-tight transition-colors duration-300 ${
+                          isActive ? 'text-primary' : 'text-primary/80'
+                        }`}
+                      >
+                        {step.title}
+                      </h3>
+                    </div>
+                  </div>
+
+                  {/* Step Description */}
+                  <p
+                    className={`font-body text-sm sm:text-base leading-relaxed pl-0.5 mb-3.5 transition-colors duration-300 ${
+                      isActive ? 'text-primary/85' : 'text-primary/65'
+                    }`}
+                  >
+                    {step.description}
+                  </p>
+
+                  {/* Supporting Microcopy Sentence */}
+                  <p
+                    className={`pl-0.5 font-body text-xs sm:text-sm font-medium leading-normal transition-colors duration-300 ${
+                      isActive ? 'text-primary/75' : 'text-primary/45'
+                    }`}
+                  >
+                    {step.supportingText}
+                  </p>
+                </div>
+
+                {/* Vertical Organic S-Curve Connector between steps */}
+                {!isLast && (
+                  <div
+                    className="py-2.5 flex items-center justify-center select-none"
+                    aria-hidden="true"
+                  >
+                    <svg
+                      className="w-6 h-9 overflow-visible"
+                      viewBox="0 0 24 36"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M 12 0 C 18 9, 6 27, 12 36"
+                        stroke={isCompleted ? '#22603B' : '#E8E5DC'}
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        className="transition-colors duration-300"
+                      />
+                    </svg>
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Reduced-Motion Support */}
+      <style>{`
+        @media (prefers-reduced-motion: reduce) {
+          .transition-all,
+          .transition-colors {
+            transition: none !important;
+          }
+          .scale-105 {
+            transform: none !important;
+          }
+        }
+      `}</style>
+    </section>
+  )
+}
+
+export default ActionJourneySection

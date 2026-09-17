@@ -1,13 +1,13 @@
 import HeroSection from './components/HeroSection'
 import ProblemStorySection from './components/ProblemStorySection'
-import ActionStepsPreviewSection from './components/ActionStepsPreviewSection'
+import ActionJourneySection from './components/ActionJourneySection'
 
 function BerandaPage() {
   return (
     <main>
       <HeroSection />
       <ProblemStorySection />
-      <ActionStepsPreviewSection />
+      <ActionJourneySection />
     </main>
   )
 }

@@ -9,7 +9,7 @@ function ProblemStorySection() {
       className="relative w-full bg-neutral text-primary pt-12 sm:pt-14 lg:pt-16 pb-0 overflow-visible"
       aria-labelledby="problem-story-heading"
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-6">
         {/* Section Editorial Intro (Normal document flow, compact connection to story) */}
         <div className="max-w-2xl mb-6 sm:mb-8">
           <span className="inline-block text-xs uppercase tracking-widest font-body font-bold text-secondary mb-2">
@@ -37,7 +37,7 @@ function ProblemStorySection() {
       >
         {/* Single Story Viewport: Sticky centered vertically in viewport */}
         <div className="sticky top-[max(5rem,calc(50vh-240px))] xl:top-[max(5rem,calc(50vh-260px))] w-full overflow-hidden">
-          <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 grid grid-cols-12 gap-10 xl:gap-14 items-center">
+          <div className="max-w-[1180px] mx-auto w-full px-4 sm:px-6 lg:px-6 grid grid-cols-12 gap-10 xl:gap-14 items-center">
             {/* LEFT: Fixed Visual Scene (Primary visual anchor, ~10% larger presence) */}
             <div className="col-span-7 xl:col-span-7 relative h-[480px] xl:h-[520px] flex items-center justify-center select-none pointer-events-none pr-3 xl:pr-4">
               {PROBLEM_STORY_STATES.map((state, index) => {
