@@ -24,19 +24,21 @@ function getInitialCounts() {
 }
 
 function ImpactClosingSection() {
+  const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const sectionRef = useRef(null)
-  const hasAnimatedRef = useRef(false)
+  const hasAnimatedRef = useRef(prefersReducedMotion)
   const [counts, setCounts] = useState(getInitialCounts)
+  const [isVisible, setIsVisible] = useState(prefersReducedMotion)
+
+  const baseTransition = 'transition-all duration-[550ms] ease-out will-change-[opacity,transform]'
+  const getEntranceClass = () => {
+    return `${baseTransition} ${
+      isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+    }`
+  }
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches
-
-    if (prefersReducedMotion) {
-      hasAnimatedRef.current = true
-      return
-    }
+    if (prefersReducedMotion) return
 
     let rafId = null
 
@@ -44,6 +46,7 @@ function ImpactClosingSection() {
       ([entry]) => {
         if (entry.isIntersecting && !hasAnimatedRef.current) {
           hasAnimatedRef.current = true
+          setIsVisible(true)
           observer.disconnect()
 
           const duration = 850
@@ -92,14 +95,14 @@ function ImpactClosingSection() {
         cancelAnimationFrame(rafId)
       }
     }
-  }, [])
+  }, [prefersReducedMotion])
 
   return (
     <section id="dampak-aksi" className="w-full">
       {/* LAYER 1: Dark Green Impact Statistics Band */}
       <div
         ref={sectionRef}
-        className="w-full bg-primary text-white py-10 sm:py-12 lg:py-14 select-none"
+        className={`w-full bg-primary text-white py-10 sm:py-12 lg:py-14 select-none ${getEntranceClass()}`}
         aria-label="Statistik Dampak Partisipasi"
       >
         <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -128,17 +131,26 @@ function ImpactClosingSection() {
       <div className="w-full bg-[#FAF8F3] text-primary pt-14 sm:pt-16 lg:pt-20 pb-16 sm:pb-20 lg:pb-24 border-t border-border-warm/30">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           {/* Dominant Headline */}
-          <h2 className="font-display text-primary text-3xl sm:text-4xl lg:text-[2.625rem] leading-[1.2] tracking-tight mb-3 sm:mb-3.5">
+          <h2
+            className={`font-display text-primary text-3xl sm:text-4xl lg:text-[2.625rem] leading-[1.2] tracking-tight mb-3 sm:mb-3.5 ${getEntranceClass()}`}
+            style={{ transitionDelay: '50ms' }}
+          >
             {CLOSING_CTA.heading}
           </h2>
 
           {/* Secondary Supporting Text */}
-          <p className="font-body text-primary/75 text-sm sm:text-base lg:text-lg leading-relaxed mb-8 sm:mb-9 max-w-xl mx-auto">
+          <p
+            className={`font-body text-primary/75 text-sm sm:text-base lg:text-lg leading-relaxed mb-8 sm:mb-9 max-w-xl mx-auto ${getEntranceClass()}`}
+            style={{ transitionDelay: '100ms' }}
+          >
             {CLOSING_CTA.subheading}
           </p>
 
           {/* Compact Centered CTA Buttons Row */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4">
+          <div
+            className={`flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 ${getEntranceClass()}`}
+            style={{ transitionDelay: '150ms' }}
+          >
             {/* Primary Filled Button */}
             <Link
               to={CLOSING_CTA.primaryAction.href}

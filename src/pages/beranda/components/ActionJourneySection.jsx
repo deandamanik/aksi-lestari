@@ -15,7 +15,6 @@ function ActionJourneySection() {
       className="relative w-full bg-[#FAF8F3] text-primary pt-16 sm:pt-20 lg:pt-0 pb-16 sm:pb-20 lg:pb-0 border-t border-border-warm/50 overflow-visible"
       aria-labelledby="action-journey-heading"
     >
-      {/* Mobile & Tablet Editorial Intro (Normal document flow) */}
       <div className="block lg:hidden max-w-[1180px] mx-auto px-4 sm:px-6 pt-16 sm:pt-20 mb-10 text-center">
         <span className="inline-block text-xs uppercase tracking-widest font-body font-bold text-secondary mb-2.5">
           LANGKAH PARTISIPASI
@@ -56,9 +55,7 @@ function ActionJourneySection() {
               </p>
             </div>
 
-            {/* Journey Track: Organic Wave Line + 4 Milestone Nodes */}
             <div className="relative w-full h-[140px] mb-8 select-none">
-              {/* SVG Organic Wave Line */}
               <svg
                 viewBox="0 0 1000 140"
                 fill="none"
@@ -67,7 +64,6 @@ function ActionJourneySection() {
                 preserveAspectRatio="none"
                 aria-hidden="true"
               >
-                {/* Muted base path (always visible underneath) */}
                 <path
                   d="M 40 38 L 125 38 C 245 38, 255 78, 375 78 C 495 78, 505 52, 625 52 C 745 52, 755 92, 875 92 L 960 92"
                   stroke="#22603B"
@@ -75,7 +71,6 @@ function ActionJourneySection() {
                   strokeWidth="2.5"
                   strokeLinecap="round"
                 />
-                {/* Active progress stroke (fills continuously via direct DOM strokeDashoffset) */}
                 <path
                   ref={progressPathRef}
                   d="M 40 38 L 125 38 C 245 38, 255 78, 375 78 C 495 78, 505 52, 625 52 C 745 52, 755 92, 875 92 L 960 92"
@@ -86,7 +81,6 @@ function ActionJourneySection() {
                 />
               </svg>
 
-              {/* 4 Journey Milestone Nodes positioned along the curved wave */}
               {ACTION_JOURNEY_STEPS.map((step, index) => {
                 const coords = [
                   { left: '12.5%', top: '27.14%' }, // y = 38px
@@ -105,7 +99,6 @@ function ActionJourneySection() {
                     className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center pointer-events-none select-none z-10"
                     style={{ left: coords.left, top: coords.top }}
                   >
-                    {/* Step Number Tag */}
                     <div
                       className={`mb-1.5 px-2.5 py-0.5 rounded-full transition-all duration-300 ease-out ${
                         isActive
@@ -120,7 +113,6 @@ function ActionJourneySection() {
                       </span>
                     </div>
 
-                    {/* Milestone Node Circle */}
                     <div
                       className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ease-out ${
                         isActive
@@ -136,7 +128,6 @@ function ActionJourneySection() {
                       />
                     </div>
 
-                    {/* Vertical Connector Stem to Card */}
                     <div
                       className={`w-[1px] h-6 border-l mt-1.5 transition-colors duration-300 ${
                         isActive
@@ -151,7 +142,6 @@ function ActionJourneySection() {
               })}
             </div>
 
-            {/* 4-Column Card Grid (Positions remain stable; emphasis reflects active progress) */}
             <div className="grid grid-cols-4 gap-6 xl:gap-8">
               {ACTION_JOURNEY_STEPS.map((step, index) => {
                 const isActive = activeStepIndex === index
@@ -165,7 +155,6 @@ function ActionJourneySection() {
                         : 'bg-white/60 border-border-warm/70 shadow-2xs opacity-60 translate-y-0.5'
                     }`}
                   >
-                    {/* Step Marker: Clean editorial label without decorative bullet */}
                     <span
                       className={`text-xs font-bold tracking-widest uppercase font-body mb-2 transition-colors duration-300 ${
                         isActive ? 'text-secondary' : 'text-primary/45'
@@ -227,7 +216,6 @@ function ActionJourneySection() {
                 }}
                 className="flex flex-col"
               >
-                {/* Step Card with Integrated Node */}
                 <div
                   className={`p-5 sm:p-6 rounded-2xl transition-all duration-300 ease-out ${
                     isActive
@@ -235,7 +223,6 @@ function ActionJourneySection() {
                       : 'bg-white/70 border-border-warm/70 shadow-xs opacity-75'
                   }`}
                 >
-                  {/* Card Header: Node Icon + Step Marker + Title */}
                   <div className="flex items-center gap-3.5 mb-3">
                     <div
                       className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ease-out ${
@@ -269,7 +256,6 @@ function ActionJourneySection() {
                     </div>
                   </div>
 
-                  {/* Step Description */}
                   <p
                     className={`font-body text-sm sm:text-base leading-relaxed pl-0.5 mb-3.5 transition-colors duration-300 ${
                       isActive ? 'text-primary/85' : 'text-primary/65'
@@ -278,7 +264,6 @@ function ActionJourneySection() {
                     {step.description}
                   </p>
 
-                  {/* Supporting Microcopy Sentence */}
                   <p
                     className={`pl-0.5 font-body text-xs sm:text-sm font-medium leading-normal transition-colors duration-300 ${
                       isActive ? 'text-primary/75' : 'text-primary/45'
@@ -288,7 +273,6 @@ function ActionJourneySection() {
                   </p>
                 </div>
 
-                {/* Vertical Organic S-Curve Connector between steps */}
                 {!isLast && (
                   <div
                     className="py-2.5 flex items-center justify-center select-none"

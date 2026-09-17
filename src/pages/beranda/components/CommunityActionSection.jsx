@@ -6,11 +6,22 @@ import {
   APPRECIATION_LEADERBOARD,
 } from '../../../data/beranda/communityActionData'
 import { ClockIcon, MapPinIcon, ZapIcon } from '../../../components/common/Icons'
+import { useInView } from '../../../hooks/useInView'
 
 function CommunityActionSection() {
+  const [ref, inView] = useInView({ threshold: 0.15 })
+
+  const baseTransition = 'transition-all duration-[550ms] ease-out will-change-[opacity,transform]'
+  const getEntranceClass = () => {
+    return `${baseTransition} ${
+      inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+    }`
+  }
+
   return (
     <section
       id="aksi-komunitas"
+      ref={ref}
       className="relative w-full bg-white text-primary pt-8 sm:pt-10 lg:pt-12 pb-16 sm:pb-20 lg:pb-24 border-t border-border-warm/40 overflow-hidden"
       aria-labelledby="community-action-heading"
     >
@@ -21,8 +32,9 @@ function CommunityActionSection() {
           {/* LEFT COLUMN: Aksi Komunitas */}
           {/* ============================================================ */}
           <div className="lg:col-span-7 flex flex-col">
-            {/* Header Eyebrow Row */}
-            <div className="flex items-center justify-between gap-4 mb-2.5">
+            <div
+              className={`flex items-center justify-between gap-4 mb-2.5 ${getEntranceClass(0)}`}
+            >
               <span className="text-xs font-bold uppercase tracking-widest text-secondary font-body">
                 {COMMUNITY_HEADER.eyebrow}
               </span>
@@ -32,27 +44,30 @@ function CommunityActionSection() {
               </div>
             </div>
 
-            {/* Main Title */}
             <h2
               id="community-action-heading"
-              className="font-display text-primary text-2xl sm:text-3xl lg:text-[2.3rem] xl:text-[2.35rem] leading-[1.2] tracking-tight mb-2.5"
+              className={`font-display text-primary text-2xl sm:text-3xl lg:text-[2.3rem] xl:text-[2.35rem] leading-[1.2] tracking-tight mb-2.5 ${getEntranceClass(0)}`}
+              style={{ transitionDelay: '50ms' }}
             >
               {COMMUNITY_HEADER.title}
             </h2>
 
-            {/* Subtitle */}
-            <p className="font-body text-primary/70 text-sm sm:text-base leading-relaxed mb-6 sm:mb-8">
+            <p
+              className={`font-body text-primary/70 text-sm sm:text-base leading-relaxed mb-6 sm:mb-8 ${getEntranceClass(0)}`}
+              style={{ transitionDelay: '100ms' }}
+            >
               {COMMUNITY_HEADER.description}
             </p>
 
-            {/* Agenda Cards List */}
             <div className="flex flex-col gap-4 sm:gap-5 mb-6 sm:mb-8">
-              {COMMUNITY_AGENDAS.map((agenda) => (
+              {COMMUNITY_AGENDAS.map((agenda, index) => (
                 <div
                   key={agenda.id}
-                  className="group relative bg-white rounded-2xl border border-border-warm p-5 sm:p-6 shadow-2xs hover:border-primary/30 hover:shadow-xs transition-all duration-200"
+                  className={`group relative bg-white rounded-2xl border border-border-warm p-5 sm:p-6 shadow-2xs hover:border-primary/30 hover:shadow-xs hover:!translate-y-0 transition-all duration-300 ease-out ${
+                    inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                  }`}
+                  style={{ transitionDelay: `${150 + index * 40}ms` }}
                 >
-                  {/* Top Header Row: Left Info Group (Date/Tag + Title) & Right Volunteers Count */}
                   <div className="flex items-start justify-between gap-4 mb-3 sm:mb-3.5">
                     <div>
                       {/* Event Date / Tag Line */}
@@ -65,7 +80,6 @@ function CommunityActionSection() {
                       </h3>
                     </div>
 
-                    {/* Volunteers Count */}
                     <div className="flex flex-col items-end text-right leading-tight shrink-0">
                       <span className="font-bold text-primary text-sm sm:text-base">
                         {agenda.volunteersCount} {agenda.volunteersLabel}
@@ -76,7 +90,6 @@ function CommunityActionSection() {
                     </div>
                   </div>
 
-                  {/* Metadata Row: Time & Location */}
                   <div className="flex items-center flex-wrap gap-4 sm:gap-6 text-xs sm:text-sm text-primary/75 font-medium">
                     <div className="inline-flex items-center gap-1.5">
                       <ClockIcon className="w-4 h-4 text-primary/60 shrink-0" />
@@ -91,8 +104,10 @@ function CommunityActionSection() {
               ))}
             </div>
 
-            {/* Action Link */}
-            <div>
+            <div
+              className={`${getEntranceClass(0)}`}
+              style={{ transitionDelay: '250ms' }}
+            >
               <Link
                 to={COMMUNITY_HEADER.allActionsHref}
                 className="inline-flex items-center gap-2 text-sm sm:text-base font-bold text-primary hover:text-secondary transition-colors group w-fit"
@@ -109,8 +124,10 @@ function CommunityActionSection() {
           {/* RIGHT COLUMN: Papan Apresiasi */}
           {/* ============================================================ */}
           <div className="lg:col-span-5 relative">
-            {/* Main Papan Apresiasi Card Container */}
-            <div className="relative bg-white rounded-3xl border border-border-warm p-6 sm:p-8 shadow-xs">
+            <div
+              className={`relative bg-white rounded-3xl border border-border-warm p-6 sm:p-8 shadow-xs ${getEntranceClass(0)}`}
+              style={{ transitionDelay: '150ms' }}
+            >
               {/* Header inside Card */}
               <div className="mb-6">
                 <span className="inline-block text-xs font-bold uppercase tracking-widest text-secondary font-body mb-2">
@@ -124,14 +141,12 @@ function CommunityActionSection() {
                 </p>
               </div>
 
-              {/* Leaderboard Rows */}
               <div className="flex flex-col gap-3 mb-6">
                 {APPRECIATION_LEADERBOARD.map((item) => (
                   <div
                     key={item.id}
                     className="flex items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-border-warm bg-white hover:border-primary/20 transition-all duration-200"
                   >
-                    {/* Left: Rank, Avatar, Name & Level */}
                     <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
                       <span
                         className={`font-display font-bold text-base sm:text-lg w-6 sm:w-7 shrink-0 ${
@@ -159,7 +174,6 @@ function CommunityActionSection() {
                       </div>
                     </div>
 
-                    {/* Right: XP Pill */}
                     <div
                       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold shrink-0 ${
                         item.isTop
@@ -178,7 +192,6 @@ function CommunityActionSection() {
                 ))}
               </div>
 
-              {/* Footer Row */}
               <div className="flex items-center justify-between pt-4 border-t border-border-warm/50 text-xs sm:text-sm">
                 <span className="text-primary/50 font-medium text-xs">
                   {APPRECIATION_HEADER.updatedNotice}
