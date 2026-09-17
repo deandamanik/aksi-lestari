@@ -19,24 +19,24 @@ export function smoothStep(t) {
  * @returns {number} Continuous stage coordinate [0, 2]
  */
 export function getStagePosition(p) {
-  // Stage 0 Plateau: 0.00 -> 0.18
-  if (p <= 0.18) return 0
+  // State 01 Reading Plateau: 0.00 -> 0.22 (generous reading time upon entry)
+  if (p <= 0.22) return 0
 
-  // Transition 0 -> 1: 0.18 -> 0.44
-  if (p <= 0.44) {
-    const t = (p - 0.18) / (0.44 - 0.18)
+  // Transition 01 -> 02: 0.22 -> 0.38 (smooth cubic handoff)
+  if (p <= 0.38) {
+    const t = (p - 0.22) / (0.38 - 0.22)
     return smoothStep(t)
   }
 
-  // Stage 1 Plateau: 0.44 -> 0.62
-  if (p <= 0.62) return 1
+  // State 02 Reading Plateau: 0.38 -> 0.60 (clear reading plateau)
+  if (p <= 0.60) return 1
 
-  // Transition 1 -> 2: 0.62 -> 0.88
-  if (p <= 0.88) {
-    const t = (p - 0.62) / (0.88 - 0.62)
+  // Transition 02 -> 03: 0.60 -> 0.76 (smooth cubic handoff)
+  if (p <= 0.76) {
+    const t = (p - 0.60) / (0.76 - 0.60)
     return 1 + smoothStep(t)
   }
 
-  // Stage 2 Plateau: 0.88 -> 1.00
+  // State 03 Reading Plateau & Terminal Hold: 0.76 -> 1.00 (reading + subtle hold before release)
   return 2
 }

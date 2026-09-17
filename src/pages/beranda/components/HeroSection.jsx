@@ -9,7 +9,7 @@ function HeroSection() {
     <section
       className="relative w-full overflow-hidden bg-neutral h-[100svh] min-h-[580px]"
       style={{
-        backgroundImage: 'url(/images/pattern.png)',
+        backgroundImage: 'url(/images/pattern.webp)',
         backgroundSize: 'cover',
         backgroundPosition: 'center center',
         backgroundRepeat: 'no-repeat',

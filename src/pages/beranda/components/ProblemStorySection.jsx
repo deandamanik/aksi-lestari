@@ -2,14 +2,15 @@ import { PROBLEM_STORY_STATES } from '../../../data/beranda/problemStoryStates'
 import { useProblemStoryScroll } from '../../../hooks/useProblemStoryScroll'
 
 function ProblemStorySection() {
-  const { storyTrackRef, cardElsRef, activeIndex } = useProblemStoryScroll()
+  const { storyTrackRef, cardElsRef, imageElsRef, activeIndex } =
+    useProblemStoryScroll()
 
   return (
     <section
       className="relative w-full bg-neutral text-primary pt-12 sm:pt-14 lg:pt-16 pb-0 overflow-visible"
       aria-labelledby="problem-story-heading"
     >
-      <div className="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-6">
+      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Editorial Intro (Normal document flow, compact connection to story) */}
         <div className="max-w-2xl mb-6 sm:mb-8">
           <span className="inline-block text-xs uppercase tracking-widest font-body font-bold text-secondary mb-2">
@@ -33,24 +34,26 @@ function ProblemStorySection() {
       <div
         ref={storyTrackRef}
         className="hidden lg:block relative"
-        style={{ height: '280vh' }}
+        style={{ height: '340vh' }}
       >
         {/* Single Story Viewport: Sticky centered vertically in viewport */}
         <div className="sticky top-[max(5rem,calc(50vh-240px))] xl:top-[max(5rem,calc(50vh-260px))] w-full overflow-hidden">
-          <div className="max-w-[1180px] mx-auto w-full px-4 sm:px-6 lg:px-6 grid grid-cols-12 gap-10 xl:gap-14 items-center">
+          <div className="max-w-[1360px] mx-auto w-full px-4 sm:px-6 lg:px-8 grid grid-cols-12 gap-10 xl:gap-14 items-center">
             {/* LEFT: Fixed Visual Scene (Primary visual anchor, ~10% larger presence) */}
             <div className="col-span-7 xl:col-span-7 relative h-[480px] xl:h-[520px] flex items-center justify-center select-none pointer-events-none pr-3 xl:pr-4">
               {PROBLEM_STORY_STATES.map((state, index) => {
-                const isActive = activeIndex === index
                 return (
                   <div
                     key={state.id}
-                    className={`absolute inset-0 flex items-center justify-center transition-all duration-400 ease-out ${
-                      isActive
-                        ? 'opacity-100 scale-100'
-                        : 'opacity-0 scale-[0.985]'
-                    }`}
-                    style={{ willChange: 'opacity, transform' }}
+                    ref={(el) => {
+                      imageElsRef.current[index] = el
+                    }}
+                    className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                    style={{
+                      willChange: 'opacity, transform',
+                      opacity: index === 0 ? 1 : 0,
+                      transform: index === 0 ? 'scale(1)' : 'scale(0.985)',
+                    }}
                   >
                     <img
                       src={state.image}
@@ -89,24 +92,23 @@ function ProblemStorySection() {
                   >
                     {/* STEP 1: Editorial State Marker */}
                     <div
-                      className={`flex items-center gap-2 mb-3 transition-all duration-350 ease-out delay-[0ms] ${
+                      className={`flex items-center gap-2 mb-3 transition-all duration-200 ease-out ${
                         isActive
                           ? 'opacity-100 translate-y-0'
-                          : 'opacity-0 translate-y-2'
+                          : 'opacity-0 translate-y-1'
                       }`}
                     >
                       <span className="text-xs font-bold tracking-widest uppercase text-secondary">
                         {state.number}
                       </span>
-                      <span className="text-xs text-secondary font-bold">●</span>
                     </div>
 
                     {/* STEP 2: Story Title */}
                     <h3
-                      className={`font-display text-xl sm:text-2xl xl:text-[1.625rem] leading-snug tracking-tight mb-4 text-primary transition-all duration-350 ease-out delay-[50ms] ${
+                      className={`font-display text-xl sm:text-2xl xl:text-[1.625rem] leading-snug tracking-tight mb-4 text-primary transition-all duration-200 ease-out ${
                         isActive
                           ? 'opacity-100 translate-y-0'
-                          : 'opacity-0 translate-y-2'
+                          : 'opacity-0 translate-y-1'
                       }`}
                     >
                       {state.title}
@@ -114,10 +116,10 @@ function ProblemStorySection() {
 
                     {/* STEP 3: Highlighted Statistic Card */}
                     <div
-                      className={`p-4 sm:p-5 rounded-2xl mb-4 bg-white/80 border border-border-warm shadow-xs transition-all duration-350 ease-out delay-[100ms] ${
+                      className={`p-4 sm:p-5 rounded-2xl mb-4 bg-white/80 border border-border-warm shadow-xs transition-all duration-200 ease-out ${
                         isActive
                           ? 'opacity-100 translate-y-0'
-                          : 'opacity-0 translate-y-2'
+                          : 'opacity-0 translate-y-1'
                       }`}
                     >
                       <div className="font-display text-3xl sm:text-4xl text-primary font-bold tracking-tight mb-1">
@@ -130,10 +132,10 @@ function ProblemStorySection() {
 
                     {/* STEP 4: Story Description */}
                     <p
-                      className={`font-body text-sm sm:text-base text-primary/80 leading-relaxed transition-all duration-350 ease-out delay-[150ms] ${
+                      className={`font-body text-sm sm:text-base text-primary/80 leading-relaxed transition-all duration-200 ease-out ${
                         isActive
                           ? 'opacity-100 translate-y-0'
-                          : 'opacity-0 translate-y-2'
+                          : 'opacity-0 translate-y-1'
                       }`}
                     >
                       {state.description}

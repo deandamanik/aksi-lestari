@@ -10,6 +10,7 @@ export function useProblemStoryScroll() {
   const currentActiveRef = useRef(0)
   const storyTrackRef = useRef(null)
   const cardElsRef = useRef([])
+  const imageElsRef = useRef([])
 
   useEffect(() => {
     let rafId = null
@@ -47,6 +48,28 @@ export function useProblemStoryScroll() {
         currentActiveRef.current = nextActive
         setActiveIndex(nextActive)
       }
+
+      // Synchronize left 3D visual images directly to scroll position
+      imageElsRef.current.forEach((el, index) => {
+        if (!el) return
+
+        if (prefersReducedMotion) {
+          el.style.opacity = index === nextActive ? '1' : '0'
+          el.style.transform = index === nextActive ? 'scale(1)' : 'scale(0.985)'
+          return
+        }
+
+        const dist = Math.abs(index - stagePos)
+        if (dist <= 1) {
+          const opacity = Math.max(0, 1 - dist)
+          const scale = 1 - 0.015 * dist
+          el.style.opacity = opacity.toFixed(3)
+          el.style.transform = `scale(${scale.toFixed(4)})`
+        } else {
+          el.style.opacity = '0'
+          el.style.transform = 'scale(0.985)'
+        }
+      })
 
       // Editorial reveal motion: subtle 32px vertical reveal and scale settle
       const maxTravel = 32 // px vertical reveal distance
@@ -119,6 +142,7 @@ export function useProblemStoryScroll() {
   return {
     storyTrackRef,
     cardElsRef,
+    imageElsRef,
     activeIndex,
   }
 }
