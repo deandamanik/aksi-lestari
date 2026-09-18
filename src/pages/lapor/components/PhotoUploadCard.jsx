@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import {
   CameraIcon,
   UploadIcon,
@@ -23,23 +23,24 @@ function formatFileSize(bytes) {
 function PhotoUploadCard({ selectedFile, onFileSelect }) {
   const [isDragging, setIsDragging] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const [previewUrl, setPreviewUrl] = useState(null)
 
   const fileInputRef = useRef(null)
   const cameraInputRef = useRef(null)
 
-  // Manage object URL with useMemo and cleanup on unmount/replacement
-  const previewUrl = useMemo(() => {
-    if (!selectedFile) return null
-    return URL.createObjectURL(selectedFile)
+  useEffect(() => {
+    if (!selectedFile) return
+
+    const url = URL.createObjectURL(selectedFile)
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Synchronizing temporary DOM Blob URL with File object lifecycle
+    setPreviewUrl(url)
+
+    return () => {
+      URL.revokeObjectURL(url)
+    }
   }, [selectedFile])
 
-  useEffect(() => {
-    return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl)
-      }
-    }
-  }, [previewUrl])
+  const activeUrl = selectedFile ? previewUrl : null
 
 
   const validateAndProcessFile = useCallback(
@@ -214,7 +215,7 @@ function PhotoUploadCard({ selectedFile, onFileSelect }) {
             {/* Visual Image Preview (Preserves complete uncropped aspect ratio) */}
             <div className="w-full relative rounded-2xl overflow-hidden border border-border-warm/80 bg-stone-50/70 h-64 sm:h-72 flex items-center justify-center p-2 shadow-xs lapor-preview-enter">
               <img
-                src={previewUrl}
+                src={activeUrl}
                 alt="Pratinjau foto temuan sampah"
                 className="max-h-full max-w-full w-auto h-auto object-contain rounded-xl select-none"
               />

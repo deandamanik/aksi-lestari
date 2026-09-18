@@ -1,25 +1,58 @@
-import { useState } from 'react'
+import { useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useLapor } from '../../context/LaporContext'
 import PhotoUploadCard from './components/PhotoUploadCard'
 import {
   LAPOR_DESKTOP_OBJECTS,
   LAPOR_MOBILE_OBJECTS,
 } from '../../data/lapor/laporDecorativeObjects'
-import { InfoIcon, ArrowRightIcon } from '../../components/common/Icons'
 
+/**
+ * LaporPage — Photo Entry (/lapor)
+ *
+ * The pre-flow entry point for the Lapor reporting feature.
+ * This screen is intentionally NOT part of the 4-step reporting flow —
+ * it exists before the flow begins.
+ *
+ * IMPORTANT — No LaporStepper, no LaporStepHeader, no step progress UI.
+ *
+ * The user selects/captures a photo here, then continues into the
+ * actual 4-step flow which begins at /lapor/temukan.
+ *
+ * State: photo is committed to LaporContext so it persists through the flow.
+ * Blob URLs: managed locally in PhotoUploadCard — never stored in context.
+ */
 function LaporPage() {
-  const [selectedFile, setSelectedFile] = useState(null)
-  const [ctaNotice, setCtaNotice] = useState('')
+  const navigate = useNavigate()
+  const { reportData, updateReport } = useLapor()
 
-  const handleFileSelect = (file) => {
-    setSelectedFile(file)
-    setCtaNotice('')
-  }
+  const photoFile = reportData.temukan.photo.file
 
-  const handleContinue = () => {
-    if (!selectedFile) return
-    // Step 2 is not yet implemented in the codebase; keep CTA structurally ready without inventing fake routes
-    setCtaNotice('Foto temuan telah siap. Tahap identifikasi temuan (Langkah 2) akan segera hadir.')
-  }
+  // Called by PhotoUploadCard when a valid file is selected/dropped
+  const handleFileSelect = useCallback(
+    (file) => {
+      updateReport({
+        temukan: {
+          photo: {
+            file,
+            fileName: file.name,
+            fileSize: file.size,
+            mimeType: file.type,
+            capturedAt: Date.now(),
+          },
+        },
+        reportStatus: 'in-progress',
+        createdAt: reportData.createdAt ?? Date.now(),
+      })
+    },
+    [updateReport, reportData.createdAt]
+  )
+
+  // Enter the actual 4-step reporting flow — Step 01 Temukan
+  const handleContinue = useCallback(() => {
+    if (!photoFile) return
+    navigate('/lapor/temukan')
+  }, [photoFile, navigate])
 
   return (
     <main
@@ -30,20 +63,13 @@ function LaporPage() {
         backgroundPosition: 'center center',
         backgroundRepeat: 'no-repeat',
       }}
-      aria-label="Lapor Sampah - Langkah 1"
+      aria-label="Lapor Sampah - Unggah Foto Temuan"
     >
       {/* Component-scoped Ambient Floating and Entrance Keyframes */}
       <style>{`
-        /* Route Entrance Animation: Smooth, lightweight settle */
         @keyframes lapor-enter {
-          0% {
-            opacity: 0;
-            transform: translateY(12px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          0% { opacity: 0; transform: translateY(12px); }
+          100% { opacity: 1; transform: translateY(0); }
         }
 
         .lapor-enter-header {
@@ -64,16 +90,9 @@ function LaporPage() {
           will-change: opacity, transform;
         }
 
-        /* Photo Preview Subtle Reveal */
         @keyframes lapor-preview-reveal {
-          0% {
-            opacity: 0;
-            transform: scale(0.98);
-          }
-          100% {
-            opacity: 1;
-            transform: scale(1);
-          }
+          0% { opacity: 0; transform: scale(0.98); }
+          100% { opacity: 1; transform: scale(1); }
         }
 
         .lapor-preview-enter {
@@ -81,7 +100,6 @@ function LaporPage() {
           will-change: opacity, transform;
         }
 
-        /* 3D Decorative Assets Ambient Float */
         @keyframes lapor-float-sun {
           0%, 100% { transform: translate3d(0, 0, 0) rotate(-1deg); }
           50% { transform: translate3d(2px, -8px, 0) rotate(1deg); }
@@ -138,21 +156,15 @@ function LaporPage() {
             opacity: 1 !important;
             transform: none !important;
           }
-          .lapor-ambient-sun,
-          .lapor-ambient-recycle,
-          .lapor-ambient-bin,
-          .lapor-ambient-earth,
-          .lapor-ambient-monstera,
-          .lapor-ambient-sprout-left,
-          .lapor-ambient-sprout-right,
-          .lapor-ambient-leaf-a,
-          .lapor-ambient-leaf-b {
+          .lapor-ambient-sun, .lapor-ambient-recycle, .lapor-ambient-bin,
+          .lapor-ambient-earth, .lapor-ambient-monstera, .lapor-ambient-sprout-left,
+          .lapor-ambient-sprout-right, .lapor-ambient-leaf-a, .lapor-ambient-leaf-b {
             animation: none !important;
           }
         }
       `}</style>
 
-      {/* Decorative 3D Assets Layer (Desktop) */}
+      {/* Decorative 3D Assets — Desktop */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block" aria-hidden="true">
         {LAPOR_DESKTOP_OBJECTS.map((obj, index) => (
           <img
@@ -166,7 +178,7 @@ function LaporPage() {
         ))}
       </div>
 
-      {/* Decorative 3D Assets Layer (Mobile) */}
+      {/* Decorative 3D Assets — Mobile */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden md:hidden" aria-hidden="true">
         {LAPOR_MOBILE_OBJECTS.map((obj, index) => (
           <img
@@ -180,9 +192,9 @@ function LaporPage() {
         ))}
       </div>
 
-      {/* Central Content Container */}
+      {/* Central Content */}
       <div className="relative z-10 max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8 flex-1 flex flex-col justify-center">
-        {/* Page Heading & Eyebrow */}
+        {/* Page Heading — NO stepper, NO step chip */}
         <div className="text-center mb-6 sm:mb-8 lapor-enter-header">
           <h1 className="font-display font-bold text-3xl sm:text-4xl lg:text-[42px] text-primary tracking-tight leading-tight">
             Temukan Sampah di Sekitarmu
@@ -192,57 +204,51 @@ function LaporPage() {
           </p>
         </div>
 
-        {/* Central Upload Card */}
+        {/* Upload Card */}
         <div className="w-full lapor-enter-card">
           <PhotoUploadCard
-            selectedFile={selectedFile}
+            selectedFile={photoFile}
             onFileSelect={handleFileSelect}
           />
         </div>
 
-        {/* Supporting Actions Group: Photo Quality Guidance & Continue CTA */}
+        {/* Guidance + CTA */}
         <div className="w-full lapor-enter-actions flex flex-col items-center">
-          {/* Photo Quality Guidance */}
+          {/* Photo quality guidance */}
           <div className="mt-4 sm:mt-5 flex items-center justify-center gap-2 text-xs sm:text-sm text-stone-500 max-w-3xl mx-auto text-center px-4 leading-normal">
-            <InfoIcon className="w-4 h-4 text-stone-400 shrink-0" strokeWidth={2} />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-stone-400 shrink-0" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
             <span className="lg:whitespace-nowrap">
               Foto lebih mudah diidentifikasi jika objek sampah terlihat utuh, terang, dan tidak tertutup benda lain.
             </span>
           </div>
 
-          {/* Continue Action (CTA) */}
+          {/* CTA */}
           <div className="mt-6 sm:mt-8 flex flex-col items-center justify-center text-center">
             <button
               type="button"
-              disabled={!selectedFile}
+              disabled={!photoFile}
               onClick={handleContinue}
               className={`inline-flex items-center justify-center gap-2 h-12 sm:h-13 px-8 sm:px-10 rounded-full font-bold text-sm sm:text-base transition-colors select-none ${
-                selectedFile
+                photoFile
                   ? 'bg-primary hover:bg-[#1A4B2E] text-white cursor-pointer shadow-md hover:shadow-lg active:scale-[0.99] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
                   : 'bg-[#C6CFC9] text-white/95 cursor-not-allowed shadow-none'
               }`}
               aria-label="Lanjutkan ke Temuan"
+              aria-disabled={!photoFile}
             >
               <span>Lanjutkan ke Temuan</span>
-              <ArrowRightIcon className="w-4.5 h-4.5" strokeWidth={2.25} />
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.25} strokeLinecap="round" strokeLinejoin="round" className="w-4.5 h-4.5" aria-hidden="true">
+                <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+              </svg>
             </button>
 
-            {/* Helper Text below CTA */}
             <p className="text-xs text-stone-500 mt-2.5 font-medium tracking-wide">
-              {!selectedFile
+              {!photoFile
                 ? 'Unggah atau ambil foto terlebih dahulu untuk melanjutkan'
                 : 'Foto telah siap. Klik untuk melanjutkan alur pelaporan'}
             </p>
-
-            {/* Contextual Notice if CTA clicked */}
-            {ctaNotice && (
-              <div
-                role="status"
-                className="mt-3 p-2.5 rounded-xl bg-status-success-bg text-status-success-text border border-status-success-text/20 text-xs sm:text-sm animate-in fade-in duration-200 max-w-md"
-              >
-                {ctaNotice}
-              </div>
-            )}
           </div>
         </div>
       </div>
