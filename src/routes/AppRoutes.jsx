@@ -4,6 +4,7 @@ import LaporLayout from '../layouts/LaporLayout'
 import BerandaPage from '../pages/beranda/BerandaPage'
 import LaporPage from '../pages/lapor/LaporPage'
 import LaporTemukanPage from '../pages/lapor/LaporTemukanPage'
+import LaporKenaliPage from '../pages/lapor/LaporKenaliPage'
 import LaporPlaceholderPage from '../pages/lapor/LaporPlaceholderPage'
 import PetaSampahPage from '../pages/peta-sampah/PetaSampahPage'
 import AksiPediaPage from '../pages/aksipedia/AksiPediaPage'
@@ -35,7 +36,7 @@ function AppRoutes() {
           <Route path="/lapor/temukan" element={<LaporTemukanPage />} />
 
           {/* Step 02 — Kenali */}
-          <Route path="/lapor/kenali" element={<LaporPlaceholderPage step={2} />} />
+          <Route path="/lapor/kenali" element={<LaporKenaliPage />} />
 
           {/* Step 03 — Pilih Aksi */}
           <Route path="/lapor/aksi" element={<LaporPlaceholderPage step={3} />} />
