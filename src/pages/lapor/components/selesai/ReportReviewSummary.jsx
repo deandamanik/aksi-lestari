@@ -69,7 +69,7 @@ function ReportReviewSummary({ temukan, kenali, aksi, onEditLocation, onEditDesc
             <p className="text-xs text-stone-500 leading-snug">{secondaryAddress}</p>
           )}
           <div className="flex items-center gap-2 text-[11px] text-stone-400 mt-0.5 flex-wrap">
-            {location?.lat && (
+            {typeof location?.lat === 'number' && typeof location?.lng === 'number' && (
               <span className="font-mono">
                 Koordinat: {location.lat.toFixed(5)}, {location.lng.toFixed(5)}
               </span>
@@ -89,7 +89,7 @@ function ReportReviewSummary({ temukan, kenali, aksi, onEditLocation, onEditDesc
       </div>
 
       {/* 3. Description Summary */}
-      <div className="pt-4.5 border-t border-stone-100 flex flex-col gap-2">
+      <div className="pt-4.5 border-t border-stone-100 flex flex-col gap-2 min-w-0">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 text-stone-900 font-bold text-xs uppercase tracking-wider">
             <FileTextIcon className="w-3.5 h-3.5 text-primary shrink-0" strokeWidth={2} />
@@ -105,7 +105,7 @@ function ReportReviewSummary({ temukan, kenali, aksi, onEditLocation, onEditDesc
           </button>
         </div>
 
-        <p className={`text-xs sm:text-sm leading-relaxed ${descriptionText ? 'text-stone-700' : 'text-stone-400 italic'}`}>
+        <p className={`text-xs sm:text-sm leading-relaxed break-words [overflow-wrap:anywhere] ${descriptionText ? 'text-stone-700' : 'text-stone-400 italic'}`}>
           {descriptionText ? `"${descriptionText}"` : 'Tidak ada deskripsi tambahan.'}
         </p>
       </div>

@@ -7,6 +7,7 @@ import LaporTemukanPage from '../pages/lapor/LaporTemukanPage'
 import LaporKenaliPage from '../pages/lapor/LaporKenaliPage'
 import LaporAksiPage from '../pages/lapor/LaporAksiPage'
 import LaporSelesaiPage from '../pages/lapor/LaporSelesaiPage'
+import LaporTrackingPage from '../pages/lapor/LaporTrackingPage'
 import PetaSampahPage from '../pages/peta-sampah/PetaSampahPage'
 import AksiPediaPage from '../pages/aksipedia/AksiPediaPage'
 import KomunitasPage from '../pages/komunitas/KomunitasPage'
@@ -44,6 +45,9 @@ function AppRoutes() {
 
           {/* Step 04 — Selesai */}
           <Route path="/lapor/selesai" element={<LaporSelesaiPage />} />
+
+          {/* Tracking Laporan */}
+          <Route path="/lapor/tracking" element={<LaporTrackingPage />} />
         </Route>
       </Routes>
     </>
