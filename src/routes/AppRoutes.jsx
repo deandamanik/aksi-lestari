@@ -6,7 +6,7 @@ import LaporPage from '../pages/lapor/LaporPage'
 import LaporTemukanPage from '../pages/lapor/LaporTemukanPage'
 import LaporKenaliPage from '../pages/lapor/LaporKenaliPage'
 import LaporAksiPage from '../pages/lapor/LaporAksiPage'
-import LaporPlaceholderPage from '../pages/lapor/LaporPlaceholderPage'
+import LaporSelesaiPage from '../pages/lapor/LaporSelesaiPage'
 import PetaSampahPage from '../pages/peta-sampah/PetaSampahPage'
 import AksiPediaPage from '../pages/aksipedia/AksiPediaPage'
 import KomunitasPage from '../pages/komunitas/KomunitasPage'
@@ -43,7 +43,7 @@ function AppRoutes() {
           <Route path="/lapor/aksi" element={<LaporAksiPage />} />
 
           {/* Step 04 — Selesai */}
-          <Route path="/lapor/selesai" element={<LaporPlaceholderPage step={4} />} />
+          <Route path="/lapor/selesai" element={<LaporSelesaiPage />} />
         </Route>
       </Routes>
     </>
