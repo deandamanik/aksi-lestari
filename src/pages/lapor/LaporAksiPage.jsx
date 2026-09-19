@@ -45,8 +45,12 @@ function LaporAksiPage() {
 
   const handleContinue = useCallback(() => {
     if (!canContinue) return
-    navigate('/lapor/selesai')
-  }, [canContinue, navigate])
+    if (selectedAction === 'mandiri') {
+      navigate('/lapor/mandiri/konfirmasi')
+    } else {
+      navigate('/lapor/selesai')
+    }
+  }, [canContinue, selectedAction, navigate])
 
   return (
     <main
