@@ -349,7 +349,7 @@ function PhotoCard({ photo, onChangePhoto }) {
           <span className="font-bold text-sm text-primary">Foto Temuan</span>
         </div>
         {photo?.file && (
-          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-secondary bg-secondary/10 px-2.5 py-0.5 rounded-full">
+          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-secondary">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3" aria-hidden="true">
               <path d="M20 6 9 17l-5-5"/>
             </svg>
@@ -462,7 +462,7 @@ function LocationCard({ location, gpsStatus, gpsMessage, mapPin, onGPS, onSaveMa
 
     if (!hasLocation) {
       return (
-        <span className="text-[11px] font-medium text-stone-400 bg-stone-100 px-2.5 py-0.5 rounded-full">
+        <span className="text-[11px] font-medium text-stone-400">
           Belum dipilih
         </span>
       )
@@ -470,7 +470,7 @@ function LocationCard({ location, gpsStatus, gpsMessage, mapPin, onGPS, onSaveMa
 
     if (location.source === 'gps') {
       return (
-        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-secondary bg-secondary/10 px-2.5 py-0.5 rounded-full">
+        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-secondary">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3" aria-hidden="true">
             <path d="M20 6 9 17l-5-5"/>
           </svg>
@@ -481,7 +481,7 @@ function LocationCard({ location, gpsStatus, gpsMessage, mapPin, onGPS, onSaveMa
 
     // Manual / Map selection
     return (
-      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-primary bg-primary/10 px-2.5 py-0.5 rounded-full">
+      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-primary">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3" aria-hidden="true">
           <path d="M20 6 9 17l-5-5"/>
         </svg>
@@ -511,7 +511,7 @@ function LocationCard({ location, gpsStatus, gpsMessage, mapPin, onGPS, onSaveMa
               type="button"
               onClick={onGPS}
               disabled={gpsStatus === 'loading'}
-              className={`flex-1 inline-flex items-center justify-center gap-2 min-h-[44px] py-2.5 px-4 sm:px-5 rounded-full font-semibold text-sm leading-normal whitespace-nowrap transition-colors cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary ${
+              className={`flex-1 inline-flex items-center justify-center gap-2 min-h-[44px] py-2.5 lg:py-0 lg:min-h-0 lg:h-[42px] px-4 sm:px-5 rounded-full font-semibold text-sm leading-normal lg:leading-none whitespace-nowrap transition-colors cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary ${
                 gpsStatus === 'loading'
                   ? 'bg-primary/50 text-white cursor-not-allowed'
                   : 'bg-primary hover:bg-primary/90 text-white shadow-xs active:scale-[0.98]'
@@ -528,7 +528,7 @@ function LocationCard({ location, gpsStatus, gpsMessage, mapPin, onGPS, onSaveMa
             <button
               type="button"
               onClick={handleStartPicker}
-              className="flex-1 inline-flex items-center justify-center gap-2 min-h-[44px] py-2.5 px-4 sm:px-5 rounded-full font-semibold text-sm leading-normal whitespace-nowrap text-primary bg-white hover:bg-primary/[0.04] border border-primary/25 hover:border-primary/45 transition-colors shadow-xs cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98]"
+              className="flex-1 inline-flex items-center justify-center gap-2 min-h-[44px] py-2.5 lg:py-0 lg:min-h-0 lg:h-[42px] px-4 sm:px-5 rounded-full font-semibold text-sm leading-normal lg:leading-none whitespace-nowrap text-primary bg-white hover:bg-primary/[0.04] border border-primary/25 hover:border-primary/45 transition-colors shadow-xs cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98]"
               aria-label="Atur lokasi titik sampah di peta"
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-primary shrink-0" aria-hidden="true">
@@ -626,17 +626,15 @@ function AddressSummary({ location }) {
         <p className="text-[10px] font-bold tracking-[0.08em] uppercase text-stone-400">
           Alamat Terkonfirmasi
         </p>
-        <span className="text-[10px] font-bold text-stone-500 bg-stone-200/60 px-2 py-0.5 rounded-full shrink-0">
-          {location.source === 'gps' ? 'Sumber GPS' : 'Manual Peta'}
+        <span className="text-[10px] font-semibold text-stone-400 shrink-0">
+          {location.source === 'gps' ? 'Sumber: GPS' : 'Sumber: Peta'}
         </span>
       </div>
       <div className="flex items-start gap-2.5 mt-2">
-        <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0 mt-0.5">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5" aria-hidden="true">
-            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/>
-            <circle cx="12" cy="10" r="3"/>
-          </svg>
-        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-primary shrink-0 mt-0.5" aria-hidden="true">
+          <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-bold text-stone-800 leading-snug break-words">{primary}</p>
           {secondary && (
@@ -829,7 +827,7 @@ function DescriptionCard({ value, onChange, maxLength }) {
           </svg>
           <span className="font-bold text-sm text-primary">Deskripsi Tambahan</span>
         </div>
-        <span className="text-[11px] font-semibold text-stone-400 bg-stone-100 px-2 py-0.5 rounded-full">
+        <span className="text-[11px] font-medium text-stone-400">
           Opsional
         </span>
       </div>
