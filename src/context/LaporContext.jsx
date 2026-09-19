@@ -41,6 +41,17 @@ const INITIAL_REPORT = {
     assignedTo: null,    // authority/community target for 'laporkan' (future)
   },
 
+  // Step 04 (Mandiri) — Tangani Sendiri documentation
+  mandiri: {
+    afterPhoto: {
+      file: null,        // File object — blob URLs are NEVER stored here
+      fileName: '',
+      fileSize: 0,       // bytes
+      mimeType: '',
+      capturedAt: null,  // Date.now() when the file was accepted
+    },
+  },
+
   // Meta
   reportStatus: 'idle',
   // Lifecycle values (extend as backend integration is added):

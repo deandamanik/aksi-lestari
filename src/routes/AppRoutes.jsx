@@ -9,6 +9,7 @@ import LaporAksiPage from '../pages/lapor/LaporAksiPage'
 import LaporSelesaiPage from '../pages/lapor/LaporSelesaiPage'
 import LaporMandiriKonfirmasiPage from '../pages/lapor/LaporMandiriKonfirmasiPage'
 import LaporMandiriPanduanPage from '../pages/lapor/LaporMandiriPanduanPage'
+import LaporMandiriFotoPage from '../pages/lapor/LaporMandiriFotoPage'
 import LaporTrackingPage from '../pages/lapor/LaporTrackingPage'
 import PetaSampahPage from '../pages/peta-sampah/PetaSampahPage'
 import AksiPediaPage from '../pages/aksipedia/AksiPediaPage'
@@ -53,6 +54,9 @@ function AppRoutes() {
 
           {/* Step 04 (Mandiri) — Panduan Penanganan Mandiri */}
           <Route path="/lapor/mandiri/panduan" element={<LaporMandiriPanduanPage />} />
+
+          {/* Step 04 (Mandiri) — Dokumentasi Foto Setelah */}
+          <Route path="/lapor/mandiri/foto" element={<LaporMandiriFotoPage />} />
 
           {/* Tracking Laporan */}
           <Route path="/lapor/tracking" element={<LaporTrackingPage />} />
