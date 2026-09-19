@@ -50,6 +50,7 @@ const INITIAL_REPORT = {
       mimeType: '',
       capturedAt: null,  // Date.now() when the file was accepted
     },
+    submittedAt: null,   // Date.now() when user submitted action for validation
   },
 
   // Meta
