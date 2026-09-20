@@ -1,6 +1,7 @@
-import { useState, useEffect, useLayoutEffect, useRef } from 'react'
+import { useState, useLayoutEffect, useRef } from 'react'
 import { NavLink, Link, useLocation } from 'react-router-dom'
 import logoAksiLestari from '../../assets/logo-aksilestari.svg'
+import { ZapIcon, UserIcon } from '../common/Icons'
 
 const NAV_ITEMS = [
   { name: 'Beranda', path: '/' },
@@ -11,7 +12,6 @@ const NAV_ITEMS = [
 ]
 
 function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const location = useLocation()
 
@@ -25,16 +25,6 @@ function Navbar() {
     opacity: 0,
   })
   const [hasInitialized, setHasInitialized] = useState(false)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20)
-    }
-
-    handleScroll()
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
 
   useLayoutEffect(() => {
     const updateIndicator = () => {
@@ -78,38 +68,34 @@ function Navbar() {
   }, [location.pathname, hasInitialized])
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 w-full pt-4 sm:pt-4.5 pb-2 px-4 sm:px-6 lg:px-10 pointer-events-none">
-      <div className="max-w-[1400px] mx-auto pointer-events-auto">
+    <header className="fixed top-0 left-0 right-0 z-40 w-full pt-3.5 pb-2 px-4 sm:px-6 lg:px-8 pointer-events-none">
+      <div className="max-w-[1240px] mx-auto pointer-events-auto">
         <nav
-          className={`w-full flex items-center justify-between px-6 sm:px-10 py-2.5 sm:py-3 rounded-xl transition-all duration-300 ${
-            isScrolled
-              ? 'bg-white/40 backdrop-blur-xl border border-border-warm/50 shadow-[0_8px_30px_rgba(0,0,0,0.04)]'
-              : 'bg-transparent border border-transparent shadow-none'
-          }`}
+          className="w-full flex items-center justify-between px-5 sm:px-7 py-2 rounded-full bg-white border border-border-warm shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
           aria-label="Navigasi Utama"
         >
           {/* Left: Logo */}
-          <div className="flex items-center justify-start shrink-0 min-w-[180px]">
+          <div className="flex items-center justify-start shrink-0 min-w-[150px]">
             <Link
               to="/"
-              className="flex items-center gap-2.5 sm:gap-3 select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
+              className="flex items-center gap-2.5 select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
               aria-label="AksiLestari Beranda"
             >
               <img
                 src={logoAksiLestari}
                 alt="Logo AksiLestari"
-                className="h-7.5 sm:h-8 w-auto object-contain"
+                className="h-7 w-auto object-contain"
               />
-              <span className="font-display font-bold text-xl text-primary tracking-tight">
+              <span className="font-display font-bold text-lg sm:text-xl text-primary tracking-tight">
                 AksiLestari
               </span>
             </Link>
           </div>
 
-          {/* Center: Desktop Navigation with Shared Sliding Active Pill & Animated Underlines */}
+          {/* Center: Desktop Navigation with Shared Sliding Active Pill */}
           <div
             ref={navContainerRef}
-            className="relative hidden md:flex items-center justify-center gap-1 sm:gap-1.5"
+            className="relative hidden md:flex items-center justify-center gap-1"
           >
             {/* Shared sliding active green background indicator */}
             <div
@@ -140,42 +126,44 @@ function Navbar() {
                   ref={(el) => {
                     if (el) itemRefs.current[item.path] = el
                   }}
-                  className={`group relative z-10 inline-flex items-center justify-center h-9 px-3.5 sm:px-4 rounded-full text-sm transition-colors duration-200 select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary ${
+                  className={`group relative z-10 inline-flex items-center justify-center h-8.5 px-3.5 sm:px-4 rounded-full text-xs sm:text-sm transition-colors duration-200 select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary ${
                     isActive
                       ? 'text-white font-bold'
-                      : 'text-primary hover:text-primary font-semibold'
+                      : 'text-primary/90 hover:text-primary font-semibold'
                   }`}
                 >
                   <span className="relative inline-block py-0.5">
                     {item.name}
-
-                    {/* Underline enters left-to-right, retracts right-to-left with consistent thickness */}
-                    {!isActive && (
-                      <span
-                        className="absolute bottom-0 left-0 w-full h-[2px] bg-primary origin-left scale-x-0 transition-transform duration-250 ease-out group-hover:scale-x-100 transform-gpu pointer-events-none"
-                        aria-hidden="true"
-                      />
-                    )}
                   </span>
                 </NavLink>
               )
             })}
           </div>
 
-          {/* Right: Desktop Auth Buttons & Mobile Toggle */}
-          <div className="flex items-center justify-end shrink-0 min-w-[180px] gap-2.5">
-            <div className="hidden md:flex items-center gap-2.5">
+          {/* Right: XP badge, Masuk, and User Profile Avatar */}
+          <div className="flex items-center justify-end shrink-0 min-w-[150px] gap-3">
+            <div className="hidden md:flex items-center gap-3">
+              {/* XP Indicator Badge */}
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FEF6E6] border border-[#FDE68A] text-[#B45309] font-bold text-xs shadow-2xs select-none">
+                <ZapIcon className="w-3.5 h-3.5 text-accent fill-accent" />
+                <span>120 XP</span>
+              </div>
+
+              {/* Masuk link */}
               <Link
                 to="/login"
-                className="inline-flex items-center justify-center h-9 px-5 rounded-full text-sm font-semibold border-2 border-primary text-primary hover:bg-primary/5 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+                className="text-xs sm:text-sm font-bold text-primary hover:text-secondary transition-colors px-1"
               >
-                Login
+                Masuk
               </Link>
+
+              {/* Profile Avatar Circle */}
               <Link
-                to="/register"
-                className="inline-flex items-center justify-center h-9 px-5 rounded-full text-sm font-semibold bg-accent text-white hover:opacity-95 shadow-xs transition-opacity focus:outline-hidden focus-visible:ring-2 focus-visible:ring-accent"
+                to="/profil"
+                className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center hover:opacity-90 transition-opacity shadow-2xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+                aria-label="Profil Pengguna"
               >
-                Register
+                <UserIcon className="w-4 h-4" />
               </Link>
             </div>
 
@@ -215,7 +203,7 @@ function Navbar() {
 
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden mt-2 p-4 bg-white/95 backdrop-blur-md rounded-2xl border border-border-warm/60 shadow-[0_8px_30px_rgba(0,0,0,0.08)] flex flex-col gap-1 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="md:hidden mt-2 p-4 bg-white/95 backdrop-blur-md rounded-2xl border border-border-warm shadow-[0_8px_30px_rgba(0,0,0,0.08)] flex flex-col gap-1 animate-in fade-in slide-in-from-top-2 duration-200">
             {NAV_ITEMS.map((item) => (
               <NavLink
                 key={item.path}
@@ -233,21 +221,27 @@ function Navbar() {
                 {item.name}
               </NavLink>
             ))}
-            <div className="pt-3 mt-2 border-t border-border-warm/60 flex gap-2">
-              <Link
-                to="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex-1 flex items-center justify-center h-10 rounded-full text-sm font-semibold border-2 border-primary text-primary hover:bg-primary/5 transition-colors"
-              >
-                Login
-              </Link>
-              <Link
-                to="/register"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex-1 flex items-center justify-center h-10 rounded-full text-sm font-semibold bg-accent text-white hover:opacity-95 shadow-xs transition-opacity"
-              >
-                Register
-              </Link>
+            <div className="pt-3 mt-2 border-t border-border-warm flex items-center justify-between gap-2 px-1">
+              <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FEF6E6] border border-[#FDE68A] text-[#B45309] font-bold text-xs">
+                <ZapIcon className="w-3.5 h-3.5 text-accent fill-accent" />
+                <span>120 XP</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-sm font-bold text-primary px-2 py-1"
+                >
+                  Masuk
+                </Link>
+                <Link
+                  to="/profil"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center"
+                >
+                  <UserIcon className="w-4 h-4" />
+                </Link>
+              </div>
             </div>
           </div>
         )}
