@@ -15,6 +15,7 @@ import LaporTrackingPage from '../pages/lapor/LaporTrackingPage'
 import PetaSampahPage from '../pages/peta-sampah/PetaSampahPage'
 import AksiPediaPage from '../pages/aksipedia/AksiPediaPage'
 import KomunitasPage from '../pages/komunitas/KomunitasPage'
+import CommunityLeaderboardPage from '../pages/komunitas/leaderboard/CommunityLeaderboardPage'
 import ProfilPage from '../pages/profil/ProfilPage'
 import ScrollToTop from '../components/common/ScrollToTop'
 
@@ -29,6 +30,7 @@ function AppRoutes() {
           <Route path="/peta-sampah" element={<PetaSampahPage />} />
           <Route path="/aksipedia" element={<AksiPediaPage />} />
           <Route path="/komunitas" element={<KomunitasPage />} />
+          <Route path="/komunitas/leaderboard" element={<CommunityLeaderboardPage />} />
           <Route path="/profil" element={<ProfilPage />} />
         </Route>
 

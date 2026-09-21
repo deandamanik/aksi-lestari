@@ -23,4 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
+# Antigravity / AI development context
+.agents/
+AGENTS.md
 AksiLestari_PRD.md

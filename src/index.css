@@ -33,7 +33,7 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 
 body {
@@ -52,3 +52,200 @@ textarea,
 select {
   font: inherit;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ==========================================================================
+   Motion System Tokens & Microinteractions (AksiLestari Community)
+   Calm, natural, responsive — opacity and transform only.
+   "Slower motion + smaller movement"
+   ========================================================================== */
+
+:root {
+  --motion-fast: 180ms;
+  --motion-interaction: 220ms;
+  --motion-content: 320ms;
+  --motion-page: 380ms;
+  --motion-reveal: 450ms;
+  --motion-ease-natural: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes motionPageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes motionContentRise {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes motionDialogEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.985) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes motionPopoverEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes motionToastEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes motionCheckScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes motionErrorSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-enter {
+  animation: motionPageEnter var(--motion-page) var(--motion-ease-natural) both;
+}
+
+.animate-content-rise {
+  animation: motionContentRise var(--motion-content) var(--motion-ease-natural) both;
+}
+
+.animate-dialog-enter {
+  animation: motionDialogEnter 300ms var(--motion-ease-natural) both;
+}
+
+.animate-popover-enter {
+  animation: motionPopoverEnter var(--motion-fast) var(--motion-ease-natural) both;
+}
+
+.animate-toast-enter {
+  animation: motionToastEnter 300ms var(--motion-ease-natural) both;
+}
+
+.animate-check-scale {
+  animation: motionCheckScale var(--motion-fast) var(--motion-ease-natural) both;
+}
+
+.animate-error-slide {
+  animation: motionErrorSlide var(--motion-fast) var(--motion-ease-natural) both;
+}
+
+/* Scroll reveal card: Settle gently into place (450ms) */
+.scroll-reveal-card {
+  opacity: 0;
+  transform: translateY(7px);
+  transition: opacity var(--motion-reveal) var(--motion-ease-natural),
+              transform var(--motion-reveal) var(--motion-ease-natural),
+              box-shadow var(--motion-interaction) ease-out,
+              border-color var(--motion-interaction) ease-out;
+  will-change: opacity, transform;
+}
+
+.scroll-reveal-card.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-reveal-card.is-revealed:hover {
+  transform: translateY(-2px);
+  transition-duration: var(--motion-interaction);
+}
+
+/* Stagger Helpers (Calm sequence) */
+.stagger-community-hero { animation-delay: 0ms; }
+.stagger-community-discovery { animation-delay: 70ms; }
+.stagger-community-main { animation-delay: 130ms; }
+
+.stagger-lb-header { animation-delay: 0ms; }
+.stagger-lb-podium { animation-delay: 80ms; }
+.stagger-lb-table { animation-delay: 150ms; }
+.stagger-lb-xp { animation-delay: 200ms; }
+
+/* Legacy stagger fallbacks */
+.stagger-1 { animation-delay: 70ms; }
+.stagger-2 { animation-delay: 80ms; }
+.stagger-3 { animation-delay: 130ms; }
+.stagger-4 { animation-delay: 150ms; }
+
+/* Global Reduced Motion Overrides */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-page-enter,
+  .animate-content-rise,
+  .animate-dialog-enter,
+  .animate-popover-enter,
+  .animate-toast-enter,
+  .animate-check-scale,
+  .animate-error-slide {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .scroll-reveal-card {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+

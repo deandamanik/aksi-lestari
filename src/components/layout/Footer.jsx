@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom'
 import logoAksiLestari from '../../assets/logo-aksilestari.svg'
+import { ShieldCheckIcon } from '../common/Icons'
 
 function Footer() {
   return (
     <footer className="bg-white border-t border-border-warm/60">
-      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-12 pt-16 sm:pt-20">
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16">
         {/* Main 4-Column Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-8">
           {/* Column 1: Brand / About */}
           <div className="lg:col-span-4 space-y-4">
             <Link
@@ -108,11 +109,15 @@ function Footer() {
         </div>
 
         {/* Horizontal Divider */}
-        <div className="border-t border-border-warm mt-12 sm:mt-16" />
+        <div className="border-t border-border-warm mt-10 sm:mt-12" />
 
-        {/* Bottom Bar: Copyright */}
-        <div className="py-8 text-xs sm:text-sm text-stone-500">
-          <p>© 2026 AksiLestari. Inisiatif Warga untuk Ekosistem Indonesia.</p>
+        {/* Bottom Bar: Copyright and System Verification */}
+        <div className="py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs sm:text-sm text-stone-500">
+          <p>© 2024 AksiLestari. Inisiatif Warga untuk Ekosistem Indonesia.</p>
+          <div className="flex items-center gap-1.5 font-semibold text-primary text-xs sm:text-sm">
+            <ShieldCheckIcon className="w-4 h-4 text-[#22603B]" />
+            <span>Sistem Aktif &amp; Terverifikasi</span>
+          </div>
         </div>
       </div>
     </footer>
