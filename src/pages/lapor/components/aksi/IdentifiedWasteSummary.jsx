@@ -38,7 +38,7 @@ function IdentifiedWasteSummary({ photo, kenali }) {
 
         <div className="min-w-0">
           <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-stone-400 truncate">
-            Temuan Teridentifikasi · {ident.categoryLabel} {ident.typeLabel}
+            Temuan Teridentifikasi
           </p>
           <h2 className="font-display font-bold text-base sm:text-lg text-stone-900 tracking-tight truncate mt-0.5">
             {kenali?.label || ident.label}

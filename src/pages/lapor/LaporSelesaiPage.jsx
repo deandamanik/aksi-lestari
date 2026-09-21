@@ -10,13 +10,29 @@ function LaporSelesaiPage() {
   const navigate = useNavigate()
   const { reportData, updateReport } = useLapor()
 
-  const handleEditLocation = useCallback(() => {
-    navigate('/lapor/temukan')
-  }, [navigate])
+  const handleSaveLocation = useCallback(
+    (newLocation) => {
+      updateReport({
+        temukan: {
+          location: newLocation,
+        },
+      })
+    },
+    [updateReport]
+  )
 
-  const handleEditDescription = useCallback(() => {
-    navigate('/lapor/temukan')
-  }, [navigate])
+  const handleSaveDescription = useCallback(
+    (newText) => {
+      updateReport({
+        temukan: {
+          description: {
+            text: newText,
+          },
+        },
+      })
+    },
+    [updateReport]
+  )
 
   const handleBack = useCallback(() => {
     navigate('/lapor/aksi')
@@ -60,8 +76,8 @@ function LaporSelesaiPage() {
             temukan={reportData.temukan}
             kenali={reportData.kenali}
             aksi={reportData.aksi}
-            onEditLocation={handleEditLocation}
-            onEditDescription={handleEditDescription}
+            onSaveLocation={handleSaveLocation}
+            onSaveDescription={handleSaveDescription}
           />
         </div>
 
@@ -90,5 +106,5 @@ function LaporSelesaiPage() {
     </main>
   )
 }
-export default LaporSelesaiPage
 
+export default LaporSelesaiPage

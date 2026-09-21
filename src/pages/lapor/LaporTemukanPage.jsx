@@ -3,44 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { useLapor } from '../../context/LaporContext'
 import LaporStepHeader from './components/shared/LaporStepHeader'
 import PhotoUploadCard from './components/PhotoUploadCard'
+import {
+  DEFAULT_MAP_PIN,
+  latLngToMapCoords,
+  mapCoordsToLatLng,
+} from '../../utils/mapUtils'
 
 const MAX_DESC = 300
-
-// Default center on mock map viewBox (560x220)
-const DEFAULT_MAP_PIN = { x: 278, y: 110 }
-
-// ---------------------------------------------------------------------------
-// Utilities
-// ---------------------------------------------------------------------------
-
-/**
- * Maps SVG click coordinates (viewBox 560x220) to mock Bandung coordinates
- */
-function mapCoordsToLatLng(x, y) {
-  // Center roughly at -6.9175, 107.6191
-  const baseLat = -6.917464
-  const baseLng = 107.619123
-  const deltaLat = ((y - DEFAULT_MAP_PIN.y) / 220) * -0.015
-  const deltaLng = ((x - DEFAULT_MAP_PIN.x) / 560) * 0.03
-  return {
-    lat: parseFloat((baseLat + deltaLat).toFixed(6)),
-    lng: parseFloat((baseLng + deltaLng).toFixed(6)),
-  }
-}
-
-/**
- * Converts geographic coordinates back to SVG map pin coordinates (viewBox 560x220)
- */
-function latLngToMapCoords(lat, lng) {
-  if (typeof lat !== 'number' || typeof lng !== 'number') return DEFAULT_MAP_PIN
-  const baseLat = -6.917464
-  const baseLng = 107.619123
-  const rawX = DEFAULT_MAP_PIN.x + ((lng - baseLng) / 0.03) * 560
-  const rawY = DEFAULT_MAP_PIN.y + ((lat - baseLat) / -0.015) * 220
-  const clampedX = Math.max(16, Math.min(544, Math.round(rawX)))
-  const clampedY = Math.max(20, Math.min(200, Math.round(rawY)))
-  return { x: clampedX, y: clampedY }
-}
 
 // ---------------------------------------------------------------------------
 // Main page
@@ -742,4 +711,3 @@ function DescriptionCard({ value, onChange, maxLength }) {
 }
 
 export default LaporTemukanPage
-

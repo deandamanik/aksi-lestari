@@ -9,16 +9,32 @@ import { ArrowLeftIcon, ArrowRightIcon } from '../../components/common/Icons'
 
 function LaporMandiriKonfirmasiPage() {
   const navigate = useNavigate()
-  const { reportData } = useLapor()
+  const { reportData, updateReport } = useLapor()
   const [isConfirmed, setIsConfirmed] = useState(false)
 
-  const handleEditLocation = useCallback(() => {
-    navigate('/lapor/temukan')
-  }, [navigate])
+  const handleSaveLocation = useCallback(
+    (newLocation) => {
+      updateReport({
+        temukan: {
+          location: newLocation,
+        },
+      })
+    },
+    [updateReport]
+  )
 
-  const handleEditDescription = useCallback(() => {
-    navigate('/lapor/temukan')
-  }, [navigate])
+  const handleSaveDescription = useCallback(
+    (newText) => {
+      updateReport({
+        temukan: {
+          description: {
+            text: newText,
+          },
+        },
+      })
+    },
+    [updateReport]
+  )
 
   const handleBack = useCallback(() => {
     navigate('/lapor/aksi')
@@ -50,8 +66,8 @@ function LaporMandiriKonfirmasiPage() {
           <MandiriReviewSummary
             temukan={reportData.temukan}
             kenali={reportData.kenali}
-            onEditLocation={handleEditLocation}
-            onEditDescription={handleEditDescription}
+            onSaveLocation={handleSaveLocation}
+            onSaveDescription={handleSaveDescription}
           />
         </div>
 

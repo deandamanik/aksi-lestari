@@ -1,25 +1,40 @@
-const DEFAULT_PIN = { x: 278, y: 110 }
+import { useRef } from 'react'
+import { DEFAULT_MAP_PIN, latLngToMapCoords } from '../../../../utils/mapUtils'
 
-function latLngToMapCoords(lat, lng) {
-  if (typeof lat !== 'number' || typeof lng !== 'number') return DEFAULT_PIN
-  const baseLat = -6.917464
-  const baseLng = 107.619123
-  const rawX = DEFAULT_PIN.x + ((lng - baseLng) / 0.03) * 560
-  const rawY = DEFAULT_PIN.y + ((lat - baseLat) / -0.015) * 220
-  const clampedX = Math.max(16, Math.min(544, Math.round(rawX)))
-  const clampedY = Math.max(20, Math.min(200, Math.round(rawY)))
-  return { x: clampedX, y: clampedY }
-}
-
-function ReportMapPreview({ location, pin }) {
-  const resolvedPin = pin ?? (location?.lat && location?.lng ? latLngToMapCoords(location.lat, location.lng) : DEFAULT_PIN)
+function ReportMapPreview({ location, pin, isPickerMode = false, onMapClick }) {
+  const svgRef = useRef(null)
+  const resolvedPin = pin ?? (location?.lat && location?.lng ? latLngToMapCoords(location.lat, location.lng) : DEFAULT_MAP_PIN)
   const pinX = resolvedPin.x
   const pinY = resolvedPin.y
   const hasLocation = Boolean(location?.lat || pin)
 
+  const handleClick = (e) => {
+    if (!isPickerMode || !svgRef.current || !onMapClick) return
+    const rect = svgRef.current.getBoundingClientRect()
+    const clientX = e.clientX ?? (e.touches && e.touches[0]?.clientX)
+    const clientY = e.clientY ?? (e.touches && e.touches[0]?.clientY)
+    if (clientX === undefined || clientY === undefined) return
+
+    const rawX = ((clientX - rect.left) / rect.width) * 560
+    const rawY = ((clientY - rect.top) / rect.height) * 220
+    const clampedX = Math.max(16, Math.min(544, Math.round(rawX)))
+    const clampedY = Math.max(20, Math.min(200, Math.round(rawY)))
+
+    onMapClick({ x: clampedX, y: clampedY })
+  }
+
   return (
-    <div className="w-full rounded-xl overflow-hidden border border-[#E8E5DC] select-none" aria-label="Pratinjau peta titik lokasi temuan sampah">
+    <div
+      onClick={handleClick}
+      className={`relative w-full rounded-xl overflow-hidden border transition-all duration-200 select-none ${
+        isPickerMode
+          ? 'border-primary ring-2 ring-primary/20 cursor-crosshair shadow-sm'
+          : 'border-[#E8E5DC]'
+      }`}
+      aria-label={isPickerMode ? 'Peta interaktif: klik untuk memilih titik lokasi' : 'Pratinjau peta titik lokasi temuan sampah'}
+    >
       <svg
+        ref={svgRef}
         viewBox="0 0 560 220"
         xmlns="http://www.w3.org/2000/svg"
         className="w-full h-auto block"
@@ -56,8 +71,8 @@ function ReportMapPreview({ location, pin }) {
 
         {hasLocation && (
           <g>
-            <circle cx={pinX} cy={pinY} r={20} fill="#22603B" opacity="0.08" />
-            <circle cx={pinX} cy={pinY} r={12} fill="#22603B" opacity="0.15" />
+            <circle cx={pinX} cy={pinY} r={isPickerMode ? 26 : 20} fill="#22603B" opacity={isPickerMode ? 0.16 : 0.08} />
+            <circle cx={pinX} cy={pinY} r={isPickerMode ? 16 : 12} fill="#22603B" opacity={isPickerMode ? 0.25 : 0.15} />
             <ellipse cx={pinX} cy={pinY + 14} rx={7} ry={3} fill="#112217" opacity="0.25" />
             <path
               d={`M${pinX} ${pinY - 24} C${pinX - 10} ${pinY - 24} ${pinX - 16} ${pinY - 16} ${pinX - 16} ${pinY - 7} C${pinX - 16} ${pinY + 5} ${pinX} ${pinY + 14} ${pinX} ${pinY + 14} C${pinX} ${pinY + 14} ${pinX + 16} ${pinY + 5} ${pinX + 16} ${pinY - 7} C${pinX + 16} ${pinY - 16} ${pinX + 10} ${pinY - 24} ${pinX} ${pinY - 24} Z`}
@@ -78,7 +93,7 @@ function ReportMapPreview({ location, pin }) {
                 fontFamily="system-ui, sans-serif"
                 fontWeight="700"
               >
-                Titik Sampah
+                {isPickerMode ? 'Titik Dipilih' : 'Titik Sampah'}
               </text>
             </g>
           </g>
@@ -94,6 +109,15 @@ function ReportMapPreview({ location, pin }) {
         <rect x="62" y="195" width="1.5" height="8" fill="#888" opacity="0.6" />
         <text x="16" y="212" fill="#777" fontSize="7.5" fontFamily="system-ui, sans-serif">200 m</text>
       </svg>
+
+      {isPickerMode && (
+        <div className="absolute top-2.5 left-2.5 pointer-events-none">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-primary text-white shadow-md">
+            <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+            Klik peta untuk pindahkan pin
+          </span>
+        </div>
+      )}
     </div>
   )
 }
