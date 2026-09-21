@@ -14,18 +14,10 @@ export const COMMUNITY_LOCATIONS = [
 ]
 
 export const COMMUNITY_CATEGORIES = [
-  'Semua Aksi',
   'Bersih Lingkungan',
   'Pilah & Daur Ulang',
   'Penghijauan Kota',
   'Edukasi Warga',
-]
-
-export const SORT_OPTIONS = [
-  { id: 'terdekat', label: 'Terdekat' },
-  { id: 'terbaru', label: 'Terbaru' },
-  { id: 'xp', label: 'Reward XP Tertinggi' },
-  { id: 'peserta', label: 'Peserta Terbanyak' },
 ]
 
 export const COMMUNITY_ACTIONS = [

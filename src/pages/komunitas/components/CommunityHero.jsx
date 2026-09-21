@@ -1,6 +1,6 @@
 export default function CommunityHero() {
   return (
-    <section className="relative w-full pt-3 sm:pt-4 pb-2 sm:pb-3 overflow-visible">
+    <section className="relative w-full pt-20 sm:pt-24 pb-2 sm:pb-3 overflow-visible">
       <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl">
           {/* Headline */}

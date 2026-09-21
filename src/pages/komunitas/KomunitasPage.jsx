@@ -1,6 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import CommunityBreadcrumb from './components/CommunityBreadcrumb'
 import CommunityHero from './components/CommunityHero'
 import CommunityFilterBar from './components/CommunityFilterBar'
 import CommunityFeaturedCard from './components/CommunityFeaturedCard'
@@ -15,15 +14,17 @@ import {
   INITIAL_LOCATION,
   COMMUNITY_LOCATIONS,
 } from '../../data/komunitas/communityActionsData'
-import { CheckIcon, SparklesIcon } from '../../components/common/Icons'
+import { CheckIcon, SparklesIcon, ArrowRightIcon } from '../../components/common/Icons'
 
 function KomunitasPage() {
   // Page local state
   const [actionsList, setActionsList] = useState(COMMUNITY_ACTIONS)
   const [selectedLocation, setSelectedLocation] = useState(INITIAL_LOCATION)
-  const [selectedCategory, setSelectedCategory] = useState('Semua Aksi')
+  const [selectedCategories, setSelectedCategories] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedSort, setSelectedSort] = useState('terdekat')
+
+  // Local state for visible actions count (Load More pattern: 4 initial, +4 per click)
+  const [visibleCount, setVisibleCount] = useState(4)
 
   // Interactive joined actions tracking
   const [joinedActions, setJoinedActions] = useState({})
@@ -68,9 +69,12 @@ function KomunitasPage() {
       )
     )
 
-    showToast(
-      `Selamat! Kamu berhasil mendaftar di "${action.title}". Reward +${action.xpReward || 100} XP telah dicatat.`
-    )
+    showToast({
+      title: 'Pendaftaran berhasil',
+      message: 'Kamu sudah terdaftar di aksi ini. Cek keikutsertaanmu di Profil.',
+      actionTitle: action.title,
+      actionId: action.id,
+    })
   }
 
   // Handle proposal submission
@@ -79,25 +83,60 @@ function KomunitasPage() {
       `Inisiatif "${proposal.title}" berhasil diajukan untuk peninjauan komunitas!`
     )
   }
+  // Search and Location handlers (reset visibleCount to initial 4)
+  const handleSearchChange = (query) => {
+    setSearchQuery(query)
+    setVisibleCount(4)
+  }
+
+  const handleSelectLocation = (loc) => {
+    setSelectedLocation(loc)
+    setVisibleCount(4)
+    showToast(`Lokasi dialihkan ke ${loc}`)
+  }
+
+  // Category handlers (reset visibleCount to initial 4 on every filter change)
+  const handleToggleCategory = (cat) => {
+    setVisibleCount(4)
+    setSelectedCategories((prev) => {
+      if (cat === 'Semua Aksi') return []
+      if (prev.includes(cat)) {
+        return prev.filter((c) => c !== cat)
+      }
+      return [...prev, cat]
+    })
+  }
+
+  const handleRemoveCategory = (cat) => {
+    setVisibleCount(4)
+    setSelectedCategories((prev) => prev.filter((c) => c !== cat))
+  }
+
+  const handleClearAllCategories = () => {
+    setVisibleCount(4)
+    setSelectedCategories([])
+  }
 
   // Reset all filters to default
   const handleResetFilters = () => {
-    setSelectedCategory('Semua Aksi')
+    setSelectedCategories([])
     setSearchQuery('')
     setSelectedLocation(INITIAL_LOCATION)
-    setSelectedSort('terdekat')
+    setVisibleCount(4)
     showToast('Filter dan pencarian telah direset.')
   }
 
   // Active filter state check
   const isFiltered =
-    selectedCategory !== 'Semua Aksi' ||
+    selectedCategories.length > 0 ||
     searchQuery.trim() !== '' ||
-    selectedLocation !== INITIAL_LOCATION ||
-    selectedSort !== 'terdekat'
+    selectedLocation !== INITIAL_LOCATION
 
   // Total actions in the selected location
   const currentLocationActionsCount = useMemo(() => {
+    if (selectedLocation === 'Lokasi saya' || selectedLocation === 'Lokasi perangkat digunakan') {
+      return actionsList.length
+    }
     const locObj = COMMUNITY_LOCATIONS.find((l) => l.name === selectedLocation)
     const locTag = locObj ? locObj.id : ''
     return actionsList.filter((a) => {
@@ -111,7 +150,11 @@ function KomunitasPage() {
     let result = [...actionsList]
 
     // 1. Location Filter
-    if (selectedLocation) {
+    if (
+      selectedLocation &&
+      selectedLocation !== 'Lokasi saya' &&
+      selectedLocation !== 'Lokasi perangkat digunakan'
+    ) {
       const locObj = COMMUNITY_LOCATIONS.find((l) => l.name === selectedLocation)
       const locTag = locObj ? locObj.id : ''
       result = result.filter((action) => {
@@ -124,9 +167,9 @@ function KomunitasPage() {
       })
     }
 
-    // 2. Category Filter
-    if (selectedCategory && selectedCategory !== 'Semua Aksi') {
-      result = result.filter((action) => action.category === selectedCategory)
+    // 2. Category Filter (multi-select)
+    if (selectedCategories.length > 0) {
+      result = result.filter((action) => selectedCategories.includes(action.category))
     }
 
     // 3. Search Query Filter (case-insensitive across title, location, category, organizer, description)
@@ -144,34 +187,8 @@ function KomunitasPage() {
       })
     }
 
-    // 4. Sorting
-    switch (selectedSort) {
-      case 'terdekat':
-        result.sort((a, b) => {
-          const distA = typeof a.distanceKm === 'number' ? a.distanceKm : parseFloat(a.distance) || 999
-          const distB = typeof b.distanceKm === 'number' ? b.distanceKm : parseFloat(b.distance) || 999
-          return distA - distB
-        })
-        break
-      case 'terbaru':
-        result.sort((a, b) => {
-          const timeA = typeof a.dateTimestamp === 'number' ? a.dateTimestamp : 0
-          const timeB = typeof b.dateTimestamp === 'number' ? b.dateTimestamp : 0
-          return timeB - timeA
-        })
-        break
-      case 'xp':
-        result.sort((a, b) => (b.xpReward || 0) - (a.xpReward || 0))
-        break
-      case 'peserta':
-        result.sort((a, b) => (b.participants || 0) - (a.participants || 0))
-        break
-      default:
-        break
-    }
-
     return result
-  }, [actionsList, selectedLocation, selectedCategory, searchQuery, selectedSort])
+  }, [actionsList, selectedLocation, selectedCategories, searchQuery])
 
   // Select featured action from filtered results
   const featuredAction = useMemo(() => {
@@ -200,6 +217,11 @@ function KomunitasPage() {
     return filteredActions.filter((a) => a.id !== featuredAction.id)
   }, [filteredActions, featuredAction])
 
+  // Visible secondary actions limited by visibleCount (1 featured + remaining secondary = visibleCount)
+  const visibleSecondaryActions = useMemo(() => {
+    return secondaryActions.slice(0, Math.max(0, visibleCount - 1))
+  }, [secondaryActions, visibleCount])
+
   // Real-time detail action tracking linked to actionsList to ensure participant count updates live
   const currentDetailAction = useMemo(() => {
     if (!activeDetailAction) return null
@@ -209,30 +231,24 @@ function KomunitasPage() {
   return (
     <main className="min-h-screen bg-[#FAF9F4] text-primary flex flex-col antialiased">
       <div className="w-full flex-1 flex flex-col animate-page-enter">
-        {/* 1. Breadcrumb Navigation & Top Jabodetabek status */}
-        <CommunityBreadcrumb totalActiveActions={currentLocationActionsCount || 14} />
-
-      {/* 2. Hero Section (Stagger 0ms) */}
-      <div className="animate-content-rise stagger-community-hero">
+        {/* Hero Section (Stagger 0ms) */}
+        <div className="animate-content-rise stagger-community-hero">
         <CommunityHero />
       </div>
 
       {/* 3. Main Content Container */}
       <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1">
-        {/* Discovery Controls: Row 1 (Search + Location) & Row 2 (Categories + Sort) (Stagger 70ms) */}
+        {/* Discovery Controls: Search + Location & Filter Tags */}
         <div className="relative z-30 animate-content-rise stagger-community-discovery">
           <CommunityFilterBar
             selectedLocation={selectedLocation}
-            onSelectLocation={(loc) => {
-              setSelectedLocation(loc)
-              showToast(`Lokasi dialihkan ke ${loc}`)
-            }}
-            selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
+            onSelectLocation={handleSelectLocation}
+            selectedCategories={selectedCategories}
+            onToggleCategory={handleToggleCategory}
+            onRemoveCategory={handleRemoveCategory}
+            onClearAllCategories={handleClearAllCategories}
             searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            selectedSort={selectedSort}
-            onSelectSort={setSelectedSort}
+            onSearchChange={handleSearchChange}
             filteredCount={filteredActions.length}
             totalCount={currentLocationActionsCount}
             isFiltered={isFiltered}
@@ -261,10 +277,10 @@ function KomunitasPage() {
               </span>
             </div>
 
-            {/* Actions Display with smooth category/filter change transition (typing in search does not trigger container bounce) */}
+            {/* Actions Display with smooth category/filter change transition */}
             {filteredActions.length > 0 && featuredAction ? (
               <div
-                key={`${selectedCategory}_${selectedSort}`}
+                key={`${selectedCategories.join(',')}_${selectedLocation}`}
                 className="space-y-5 sm:space-y-6 animate-content-rise"
               >
                 {/* Large Featured Action Card */}
@@ -274,9 +290,9 @@ function KomunitasPage() {
                 />
 
                 {/* Secondary Action Cards (Stacked vertically with calm scroll reveal) */}
-                {secondaryActions.length > 0 && (
+                {visibleSecondaryActions.length > 0 && (
                   <div className="space-y-4">
-                    {secondaryActions.map((action, idx) => (
+                    {visibleSecondaryActions.map((action, idx) => (
                       <CommunityActionCard
                         key={action.id}
                         action={action}
@@ -284,6 +300,36 @@ function KomunitasPage() {
                         index={idx}
                       />
                     ))}
+                  </div>
+                )}
+
+                {/* Load More / Collapse Button (Left-aligned list continuation) */}
+                {filteredActions.length > 4 && (
+                  <div className="pt-1 sm:pt-1.5 flex justify-start">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (visibleCount < filteredActions.length) {
+                          setVisibleCount((prev) => prev + 4)
+                        } else {
+                          setVisibleCount(4)
+                        }
+                      }}
+                      className="inline-flex items-center gap-2 h-10 px-4.5 sm:px-5 rounded-xl bg-white border border-border-warm text-stone-700 hover:text-[#22603B] hover:border-[#22603B]/40 hover:bg-[#FAF9F4] text-xs sm:text-[13px] font-semibold font-body transition-all duration-180 shadow-2xs active:scale-[0.98] cursor-pointer group focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]"
+                    >
+                      <span>
+                        {visibleCount < filteredActions.length
+                          ? 'Muat Lebih Banyak'
+                          : 'Lihat Lebih Sedikit'}
+                      </span>
+                      <ArrowRightIcon
+                        className={`w-3.5 h-3.5 text-stone-400 group-hover:text-[#22603B] transition-transform duration-180 motion-reduce:transform-none ${
+                          visibleCount < filteredActions.length
+                            ? 'group-hover:translate-x-0.5'
+                            : '-rotate-90 group-hover:-translate-y-0.5'
+                        }`}
+                      />
+                    </button>
                   </div>
                 )}
               </div>
@@ -354,15 +400,31 @@ function KomunitasPage() {
       {toastMessage &&
         createPortal(
           <div
+            id="community-registration-success-toast"
             role="status"
             aria-live="polite"
+            data-action-id={typeof toastMessage === 'object' ? toastMessage.actionId : undefined}
+            data-action-title={typeof toastMessage === 'object' ? toastMessage.actionTitle : undefined}
             className="fixed bottom-6 left-4 right-4 sm:left-auto sm:right-8 z-50 sm:max-w-md bg-[#22603B] text-white p-4 rounded-2xl shadow-xl border border-white/10 flex items-start gap-3 animate-toast-enter"
           >
             <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0 mt-0.5">
               <CheckIcon className="w-4 h-4 text-white" />
             </div>
-            <div className="flex-1 text-xs sm:text-sm font-medium leading-snug">
-              {toastMessage}
+            <div className="flex-1 text-xs sm:text-sm leading-snug">
+              {typeof toastMessage === 'object' && toastMessage !== null ? (
+                <>
+                  {toastMessage.title && (
+                    <div className="font-bold text-white mb-0.5 text-sm">
+                      {toastMessage.title}
+                    </div>
+                  )}
+                  <div className="font-medium text-white/90">
+                    {toastMessage.message}
+                  </div>
+                </>
+              ) : (
+                <div className="font-medium">{toastMessage}</div>
+              )}
             </div>
             <button
               type="button"
