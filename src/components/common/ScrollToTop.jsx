@@ -1,20 +1,13 @@
-import { useLayoutEffect } from 'react'
+import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
 export default function ScrollToTop() {
   const { pathname } = useLocation()
 
-  useLayoutEffect(() => {
-    // Reset scroll to top immediately before paint on every route change without animated scrolling
-    try {
-      window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-    } catch {
-      window.scrollTo(0, 0)
-    }
-    document.documentElement.scrollTop = 0
-    document.body.scrollTop = 0
+  useEffect(() => {
+    // Reset scroll to top on every route change immediately
+    window.scrollTo(0, 0)
   }, [pathname])
 
   return null
 }
-
