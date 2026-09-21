@@ -76,9 +76,12 @@ function Footer() {
                 </Link>
               </li>
               <li>
-                <span className="text-stone-600 hover:text-primary transition-colors cursor-pointer">
-                  Poin &amp; Penghargaan
-                </span>
+                <Link
+                  to="/profil/saldo"
+                  className="text-stone-600 hover:text-primary transition-colors focus:outline-hidden focus-visible:ring-1 focus-visible:ring-primary rounded"
+                >
+                  Poin &amp; Apresiasi
+                </Link>
               </li>
               <li>
                 <span className="text-stone-600 hover:text-primary transition-colors cursor-pointer">

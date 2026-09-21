@@ -16,6 +16,10 @@ import PetaSampahPage from '../pages/peta-sampah/PetaSampahPage'
 import AksiPediaPage from '../pages/aksipedia/AksiPediaPage'
 import KomunitasPage from '../pages/komunitas/KomunitasPage'
 import ProfilPage from '../pages/profil/ProfilPage'
+import ProfilMisiPage from '../pages/profil/ProfilMisiPage'
+import ProfilSaldoPage from '../pages/profil/ProfilSaldoPage'
+import ProfilRiwayatPage from '../pages/profil/ProfilRiwayatPage'
+import ProfilPengaturanPage from '../pages/profil/ProfilPengaturanPage'
 import ScrollToTop from '../components/common/ScrollToTop'
 
 function AppRoutes() {
@@ -29,7 +33,13 @@ function AppRoutes() {
           <Route path="/peta-sampah" element={<PetaSampahPage />} />
           <Route path="/aksipedia" element={<AksiPediaPage />} />
           <Route path="/komunitas" element={<KomunitasPage />} />
+          
+          {/* Profil routes */}
           <Route path="/profil" element={<ProfilPage />} />
+          <Route path="/profil/misi" element={<ProfilMisiPage />} />
+          <Route path="/profil/saldo" element={<ProfilSaldoPage />} />
+          <Route path="/profil/riwayat" element={<ProfilRiwayatPage />} />
+          <Route path="/profil/pengaturan" element={<ProfilPengaturanPage />} />
         </Route>
 
         {/* Lapor flow — LaporLayout scopes LaporContext to these routes only.

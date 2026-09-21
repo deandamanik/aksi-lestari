@@ -1,6 +1,8 @@
 import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { NavLink, Link, useLocation } from 'react-router-dom'
 import logoAksiLestari from '../../assets/logo-aksilestari.svg'
+import { USER_PROFILE } from '../../data/profil/userProfileData'
+import { ZapIcon } from '../common/Icons'
 
 const NAV_ITEMS = [
   { name: 'Beranda', path: '/' },
@@ -13,6 +15,7 @@ const NAV_ITEMS = [
 function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isAuthenticated] = useState(true) // Mock auth state per PRD Section 6
   const location = useLocation()
 
   const navContainerRef = useRef(null)
@@ -162,21 +165,56 @@ function Navbar() {
             })}
           </div>
 
-          {/* Right: Desktop Auth Buttons & Mobile Toggle */}
+          {/* Right: Desktop Profile / Auth Buttons & Mobile Toggle */}
           <div className="flex items-center justify-end shrink-0 min-w-[180px] gap-2.5">
+            {/* Desktop Auth / Profile Access */}
             <div className="hidden md:flex items-center gap-2.5">
-              <Link
-                to="/login"
-                className="inline-flex items-center justify-center h-9 px-5 rounded-full text-sm font-semibold border-2 border-primary text-primary hover:bg-primary/5 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
-              >
-                Login
-              </Link>
-              <Link
-                to="/register"
-                className="inline-flex items-center justify-center h-9 px-5 rounded-full text-sm font-semibold bg-accent text-white hover:opacity-95 shadow-xs transition-opacity focus:outline-hidden focus-visible:ring-2 focus-visible:ring-accent"
-              >
-                Register
-              </Link>
+              {isAuthenticated ? (
+                <>
+                  <div
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-amber-700 select-none px-1.5 py-0.5"
+                    aria-label={`${USER_PROFILE.currentXP} XP`}
+                  >
+                    <ZapIcon className="w-3.5 h-3.5 text-amber-500 fill-amber-500/20 shrink-0" />
+                    <span>{USER_PROFILE.currentXP} XP</span>
+                  </div>
+
+                  <Link
+                    to="/profil"
+                    className={`inline-flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border transition-colors select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary ${
+                      location.pathname.startsWith('/profil')
+                        ? 'border-primary bg-primary/5 text-primary font-bold'
+                        : 'border-border-warm bg-white/80 hover:bg-white text-stone-800 hover:border-primary/40'
+                    }`}
+                    aria-label={`Buka profil ${USER_PROFILE.name}`}
+                  >
+                    <div
+                      className="w-7 h-7 rounded-full bg-white border border-primary text-primary text-xs font-bold flex items-center justify-center shrink-0"
+                      aria-hidden="true"
+                    >
+                      {USER_PROFILE.initials}
+                    </div>
+                    <span className="text-xs sm:text-sm font-semibold max-w-[100px] truncate">
+                      {USER_PROFILE.name}
+                    </span>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="inline-flex items-center justify-center h-9 px-5 rounded-full text-sm font-semibold border-2 border-primary text-primary hover:bg-primary/5 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="inline-flex items-center justify-center h-9 px-5 rounded-full text-sm font-semibold bg-accent text-white hover:opacity-95 shadow-xs transition-opacity focus:outline-hidden focus-visible:ring-2 focus-visible:ring-accent"
+                  >
+                    Register
+                  </Link>
+                </>
+              )}
             </div>
 
             {/* Mobile Menu Toggle Button */}
@@ -233,22 +271,47 @@ function Navbar() {
                 {item.name}
               </NavLink>
             ))}
-            <div className="pt-3 mt-2 border-t border-border-warm/60 flex gap-2">
-              <Link
-                to="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex-1 flex items-center justify-center h-10 rounded-full text-sm font-semibold border-2 border-primary text-primary hover:bg-primary/5 transition-colors"
-              >
-                Login
-              </Link>
-              <Link
-                to="/register"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex-1 flex items-center justify-center h-10 rounded-full text-sm font-semibold bg-accent text-white hover:opacity-95 shadow-xs transition-opacity"
-              >
-                Register
-              </Link>
-            </div>
+
+            {isAuthenticated ? (
+              <div className="pt-3 mt-2 border-t border-border-warm/60">
+                <NavLink
+                  to="/profil"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 h-12 px-4 rounded-xl text-sm font-semibold transition-colors ${
+                      isActive
+                        ? 'bg-primary text-white font-bold'
+                        : 'text-stone-800 hover:bg-black/[0.03]'
+                    }`
+                  }
+                >
+                  <div className="w-7 h-7 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shrink-0">
+                    {USER_PROFILE.initials}
+                  </div>
+                  <div className="flex flex-col text-left">
+                    <span className="leading-tight font-bold">{USER_PROFILE.name}</span>
+                    <span className="text-[11px] opacity-75 font-normal">Lihat Profil &amp; Saldo</span>
+                  </div>
+                </NavLink>
+              </div>
+            ) : (
+              <div className="pt-3 mt-2 border-t border-border-warm/60 flex gap-2">
+                <Link
+                  to="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex-1 flex items-center justify-center h-10 rounded-full text-sm font-semibold border-2 border-primary text-primary hover:bg-primary/5 transition-colors"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex-1 flex items-center justify-center h-10 rounded-full text-sm font-semibold bg-accent text-white hover:opacity-95 shadow-xs transition-opacity"
+                >
+                  Register
+                </Link>
+              </div>
+            )}
           </div>
         )}
       </div>
