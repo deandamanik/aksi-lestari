@@ -4,7 +4,7 @@ export default function CommunityProposalBanner({ onOpenProposeModal }) {
   return (
     <article className="bg-[#FAF7F0] rounded-2xl sm:rounded-3xl border border-[#EBE7DC] p-5 sm:p-6 shadow-2xs hover:border-[#22603B]/30 transition-all duration-200 relative overflow-hidden">
       {/* Top Header */}
-      <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#22603B] mb-2">
+      <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-[#22603B]/80 mb-2 font-body">
         <MegaphoneIcon className="w-3.5 h-3.5" />
         <span>INISIATIF WARGA</span>
       </div>

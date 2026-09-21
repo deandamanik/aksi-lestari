@@ -14,18 +14,18 @@ export default function LeaderboardTable({ rankings = [], currentUser = null }) 
     <section aria-label="Daftar Peringkat Lengkap Relawan" className="w-full space-y-4">
       {/* Current User Quick Standing Banner (Informative & Accessible) */}
       {currentUser && (
-        <div className="bg-[#F4F9F2] border border-[#DCFCE7] rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+        <div className="bg-white border border-border-warm rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-[#22603B] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+            <div className="w-8 h-8 rounded-lg bg-[#FAF9F4] border border-border-warm text-[#22603B] flex items-center justify-center font-bold text-xs shrink-0">
               #{currentUser.rank}
             </div>
             <div className="flex flex-col min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-1.5 flex-wrap">
                 <span className="font-bold text-primary text-sm sm:text-base leading-tight">
                   {currentUser.name} (Akun Kamu)
                 </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#DCFCE7] text-[#15803D] border border-[#86EFAC]/60">
-                  {currentUser.badge}
+                <span className="text-xs text-stone-500 font-medium">
+                  · {currentUser.badge}
                 </span>
               </div>
               <span className="text-xs text-stone-500 font-medium mt-0.5">
@@ -34,7 +34,7 @@ export default function LeaderboardTable({ rankings = [], currentUser = null }) 
             </div>
           </div>
 
-          <div className="flex items-center justify-between sm:justify-end gap-3 self-end sm:self-auto shrink-0 pl-12 sm:pl-0">
+          <div className="flex items-center justify-between sm:justify-end gap-3 self-end sm:self-auto shrink-0 pl-11 sm:pl-0">
             <span className="text-xs text-stone-500 sm:hidden">Total Poin:</span>
             <span className="font-display font-bold text-base sm:text-lg text-[#22603B]">
               {currentUser.xp}
@@ -62,7 +62,7 @@ export default function LeaderboardTable({ rankings = [], currentUser = null }) 
                 key={entry.id}
                 className={`grid grid-cols-12 gap-2 px-4 sm:px-6 py-3.5 sm:py-4 items-center transition-colors duration-150 ${
                   isSelf
-                    ? 'bg-[#F4F9F2] hover:bg-[#EAF3EC] border-l-4 border-l-[#22603B]'
+                    ? 'bg-[#FAF9F4] hover:bg-[#F2F0E8] border-l-2 border-l-[#22603B]'
                     : 'hover:bg-[#FAF9F4]/80'
                 }`}
               >
@@ -71,7 +71,7 @@ export default function LeaderboardTable({ rankings = [], currentUser = null }) 
                   <span
                     className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold ${
                       isSelf
-                        ? 'bg-[#22603B] text-white shadow-2xs'
+                        ? 'bg-stone-100 text-[#22603B]'
                         : 'text-stone-500 font-semibold'
                     }`}
                   >
@@ -82,13 +82,9 @@ export default function LeaderboardTable({ rankings = [], currentUser = null }) 
                 {/* Contributor Profile & Details */}
                 <div className="col-span-7 sm:col-span-8 flex items-center gap-2.5 sm:gap-3 min-w-0">
                   <div
-                    className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-xs font-bold shrink-0 ${
-                      isSelf
-                        ? 'bg-[#22603B] text-white'
-                        : 'bg-stone-100 text-stone-600 border border-border-warm'
-                    }`}
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-xs font-bold shrink-0 bg-stone-100 text-stone-600 border border-border-warm"
                   >
-                    {isSelf ? <UserIcon className="w-4 h-4 text-white" /> : entry.initials}
+                    {isSelf ? <UserIcon className="w-4 h-4 text-[#22603B]" /> : entry.initials}
                   </div>
 
                   <div className="flex flex-col min-w-0">
@@ -101,13 +97,13 @@ export default function LeaderboardTable({ rankings = [], currentUser = null }) 
                         {entry.name}
                       </span>
                       {isSelf && (
-                        <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-[#22603B] text-white leading-tight">
+                        <span className="text-[11px] font-medium text-[#22603B] px-1.5 py-0.5 rounded bg-[#22603B]/10 leading-tight">
                           Kamu
                         </span>
                       )}
                       {entry.badge && (
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 border border-stone-200 hidden sm:inline">
-                          {entry.badge}
+                        <span className="text-xs text-stone-400 font-normal hidden sm:inline">
+                          · {entry.badge}
                         </span>
                       )}
                     </div>

@@ -63,7 +63,7 @@ export default function LeaderboardXpInfo() {
                   <h4 className="font-bold text-primary text-xs sm:text-sm">
                     {rule.title}
                   </h4>
-                  <span className="shrink-0 text-xs font-bold px-2 py-0.5 rounded-md bg-[#22603B] text-white">
+                  <span className="shrink-0 text-xs font-semibold text-[#22603B]">
                     {rule.reward}
                   </span>
                 </div>
@@ -75,10 +75,10 @@ export default function LeaderboardXpInfo() {
           </div>
 
           {/* Clarification Notice: XP vs Saldo Apresiasi */}
-          <div className="p-4 rounded-2xl bg-[#F0FDF4] border border-[#BBF7D0] flex items-start gap-3 text-xs leading-relaxed text-[#166534]">
-            <ShieldCheckIcon className="w-5 h-5 text-[#166534] shrink-0 mt-0.5" />
+          <div className="p-4 rounded-2xl bg-[#FAF9F4] border border-border-warm flex items-start gap-3 text-xs leading-relaxed text-stone-700">
+            <ShieldCheckIcon className="w-5 h-5 text-[#22603B] shrink-0 mt-0.5" />
             <div>
-              <strong className="font-bold block mb-0.5">
+              <strong className="font-bold text-primary block mb-0.5">
                 Prinsip Poin XP di AksiLestari
               </strong>
               XP (Experience Points) mencerminkan level partisipasi dan reputasi keaktifan warga dalam gotong royong lingkungan. XP bukan uang dan tidak dapat ditukar menjadi uang tunai. Bentuk apresiasi moneter disalurkan terpisah secara transparan melalui saldo <strong>Saldo Apresiasi (Rp)</strong> di menu Profil.

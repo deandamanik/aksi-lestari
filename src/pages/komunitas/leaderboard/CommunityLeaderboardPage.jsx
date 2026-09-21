@@ -32,24 +32,22 @@ export default function CommunityLeaderboardPage() {
             <div className="flex items-center gap-2 text-xs sm:text-sm">
               <Link
                 to="/komunitas"
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#EAF3EC] border border-[#D5E8D8] text-[#22603B] font-bold text-[11px] tracking-wide uppercase hover:bg-[#D5E8D8] transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]"
+                className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-widest text-[#22603B] uppercase hover:text-[#17462A] transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] font-body"
               >
                 <ArrowLeftIcon className="w-3.5 h-3.5" />
                 KOMUNITAS
               </Link>
               <span className="text-stone-300 font-light select-none">/</span>
-              <span className="text-stone-600 font-bold">
+              <span className="text-stone-600 font-medium">
                 Papan Peringkat
               </span>
             </div>
 
             {/* Quick Context Stat */}
-            <div className="inline-flex items-center gap-2 text-xs text-stone-600 self-start sm:self-auto">
-              <div className="w-5 h-5 rounded-full bg-[#EAF3EC] text-[#22603B] flex items-center justify-center shrink-0">
-                <TargetIcon className="w-3.5 h-3.5" />
-              </div>
+            <div className="inline-flex items-center gap-1.5 text-xs text-stone-500 self-start sm:self-auto">
+              <TargetIcon className="w-3.5 h-3.5 text-[#22603B]" />
               <span>
-                <strong className="text-stone-800 font-bold">
+                <strong className="text-stone-700 font-semibold">
                   {activeData.totalActiveVolunteers} Relawan Aktif
                 </strong>{' '}
                 pada periode ini
@@ -65,8 +63,8 @@ export default function CommunityLeaderboardPage() {
         <section className="pt-2 pb-6 sm:pb-8 border-b border-border-warm/60">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#22603B] uppercase tracking-wider mb-2">
-                <TrophyIcon className="w-4 h-4 text-[#22603B]" />
+              <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#22603B]/80 uppercase tracking-widest mb-2 font-body">
+                <TrophyIcon className="w-3.5 h-3.5 text-[#22603B]/70" />
                 <span>PENGAKUAN AKSI WARGA</span>
               </div>
               <h1 className="font-display text-primary text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">

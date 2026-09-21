@@ -15,24 +15,22 @@ export default function CommunityActionCard({
       <div>
         {/* Top Header: Status and SubCategory */}
         <div className="flex items-center justify-between gap-2 mb-2.5">
-          {/* Status Badge */}
+          {/* Status Indicator */}
           <span
-            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold ${
-              isWarning
-                ? 'bg-[#FEF3C7] text-[#B45309]'
-                : 'bg-[#DCFCE7] text-[#15803D]'
+            className={`inline-flex items-center gap-1.5 text-xs font-medium ${
+              isWarning ? 'text-[#B45309]' : 'text-[#22603B]'
             }`}
           >
             <span
-              className={`w-1.5 h-1.5 rounded-full ${
-                isWarning ? 'bg-[#B45309]' : 'bg-[#15803D]'
+              className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                isWarning ? 'bg-[#D97706]' : 'bg-[#22603B]'
               }`}
             />
-            {action.status || 'Terbuka'}
+            <span>{action.status || 'Terbuka'}</span>
           </span>
 
           {/* SubCategory Tag */}
-          <span className="text-xs font-semibold text-stone-500">
+          <span className="text-xs text-stone-400 font-normal">
             {action.subCategory || action.category}
           </span>
         </div>

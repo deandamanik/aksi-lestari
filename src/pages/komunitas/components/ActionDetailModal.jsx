@@ -66,13 +66,16 @@ export default function ActionDetailModal({
           </button>
 
           <div className="flex items-center gap-2 mb-2.5">
-            <span className="text-xs font-bold px-3 py-1 rounded-full bg-secondary/10 text-secondary border border-secondary/20">
+            <span className="text-[11px] font-bold uppercase tracking-widest text-[#22603B] font-body">
               {action.category}
             </span>
             {action.badge && (
-              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-neutral text-primary/70 border border-border-warm">
-                {action.badge}
-              </span>
+              <>
+                <span className="text-stone-300 font-light select-none">·</span>
+                <span className="text-xs font-medium text-stone-500">
+                  {action.badge}
+                </span>
+              </>
             )}
           </div>
 
@@ -162,7 +165,7 @@ export default function ActionDetailModal({
               <ShieldCheckIcon className="w-4 h-4 text-secondary" />
               Tujuan Lingkungan
             </h3>
-            <p className="text-sm sm:text-base text-primary/80 leading-relaxed bg-[#F4F9F2] p-4 rounded-xl border border-primary/20">
+            <p className="text-sm sm:text-base text-stone-700 leading-relaxed bg-[#FAF9F4] p-4 rounded-xl border border-border-warm">
               {action.purpose}
             </p>
           </div>

@@ -16,11 +16,11 @@ export default function CommunitySidebarActionCard({
       <div>
         {/* Top Header: Status and SubCategory */}
         <div className="flex items-center justify-between gap-2 mb-2.5">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#DCFCE7] text-[#15803D] text-xs font-bold">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#15803D]" />
-            {action.status || 'Terbuka'}
+          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#22603B]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#22603B] shrink-0" />
+            <span>{action.status || 'Terbuka'}</span>
           </span>
-          <span className="text-xs font-semibold text-stone-500">
+          <span className="text-xs text-stone-400 font-normal">
             {action.subCategory || 'Edukasi Generasi'}
           </span>
         </div>

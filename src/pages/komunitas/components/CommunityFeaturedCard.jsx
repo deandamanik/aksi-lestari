@@ -41,21 +41,21 @@ export default function CommunityFeaturedCard({
 
         {/* Top Badges */}
         <div className="absolute top-4 inset-x-4 flex items-center justify-between pointer-events-none">
-          {/* Status Badge */}
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#DCFCE7] text-[#15803D] font-bold text-xs shadow-xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#15803D]" />
-            {action.status || 'Terbuka'}
+          {/* Status Indicator */}
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-sm border border-white/15 text-stone-100 font-medium text-xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] shrink-0" />
+            <span>{action.status || 'Terbuka'}</span>
           </span>
 
-          {/* Featured Badge */}
-          <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/95 backdrop-blur-xs text-stone-800 font-bold text-xs shadow-xs">
+          {/* Featured Label */}
+          <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-sm border border-white/15 text-stone-200 font-medium text-xs">
             {action.featuredBadge || 'Aksi Unggulan'}
           </span>
         </div>
 
         {/* Bottom Title & Tag Overlay */}
         <div className="absolute bottom-4 inset-x-4 sm:inset-x-5 pointer-events-none">
-          <span className="inline-block text-[11px] font-bold uppercase tracking-wider text-[#A7F3D0] drop-shadow-xs mb-1">
+          <span className="inline-block text-[11px] font-semibold uppercase tracking-widest text-emerald-200/90 mb-1">
             {action.tag || 'AKSI BERSIH PESISIR'}
           </span>
           <h3 className="font-display text-white text-xl sm:text-2xl md:text-[1.65rem] font-bold tracking-tight leading-snug drop-shadow-sm">
@@ -109,13 +109,7 @@ export default function CommunityFeaturedCard({
               {(action.avatars || ['RK', 'AS', 'BP']).map((init, idx) => (
                 <div
                   key={idx}
-                  className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ring-2 ring-white shadow-2xs ${
-                    idx === 0
-                      ? 'bg-stone-200 text-stone-700'
-                      : idx === 1
-                      ? 'bg-[#DCFCE7] text-[#15803D]'
-                      : 'bg-[#FEF3C7] text-[#B45309]'
-                  }`}
+                  className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ring-2 ring-white shadow-2xs bg-stone-100 text-stone-600 border border-border-warm/60"
                 >
                   {init}
                 </div>

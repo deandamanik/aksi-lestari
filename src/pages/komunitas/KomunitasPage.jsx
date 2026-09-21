@@ -250,7 +250,7 @@ function KomunitasPage() {
                     : 'Kegiatan lingkungan yang sedang terbuka untuk partisipasi sukarela warga.'}
                 </p>
               </div>
-              <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#EAF3EC] border border-[#D5E8D8] text-[#22603B] font-semibold text-xs shrink-0 self-start sm:self-auto">
+              <span className="text-xs text-stone-500 font-medium shrink-0 self-start sm:self-auto">
                 Diperbarui 18 menit lalu
               </span>
             </div>

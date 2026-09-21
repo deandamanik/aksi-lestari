@@ -10,10 +10,10 @@ export default function CommunityLeaderboardPreview() {
     <article className="bg-white rounded-2xl sm:rounded-3xl border border-border-warm p-5 sm:p-6 shadow-2xs">
       {/* Top Header */}
       <div className="flex items-center justify-between gap-2 mb-1.5">
-        <span className="text-[11px] font-bold uppercase tracking-wider text-[#92400E]">
+        <span className="text-[11px] font-bold uppercase tracking-widest text-[#22603B]/80 font-body">
           {eyebrow}
         </span>
-        <AwardIcon className="w-4 h-4 text-accent" />
+        <AwardIcon className="w-4 h-4 text-stone-400" />
       </div>
 
       {/* Title */}
@@ -35,10 +35,8 @@ export default function CommunityLeaderboardPreview() {
               <div
                 className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
                   leader.rank === 1
-                    ? 'bg-[#FEF3C7] text-[#B45309]'
-                    : leader.rank === 2
-                    ? 'bg-stone-100 text-stone-600'
-                    : 'bg-[#FFEDD5] text-[#C2410C]'
+                    ? 'bg-stone-100 text-[#22603B] border border-border-warm'
+                    : 'bg-stone-50 text-stone-500 border border-border-warm/60'
                 }`}
               >
                 {leader.rank}
@@ -51,16 +49,8 @@ export default function CommunityLeaderboardPreview() {
                     {leader.name}
                   </span>
                   {leader.badge && (
-                    <span
-                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded leading-none ${
-                        leader.rank === 1
-                          ? 'bg-[#DCFCE7] text-[#15803D]'
-                          : leader.rank === 2
-                          ? 'bg-[#E0F2FE] text-[#0369A1]'
-                          : 'bg-stone-100 text-stone-600'
-                      }`}
-                    >
-                      {leader.badge}
+                    <span className="text-[11px] text-stone-400 font-normal leading-tight">
+                      · {leader.badge}
                     </span>
                   )}
                 </div>
@@ -71,7 +61,7 @@ export default function CommunityLeaderboardPreview() {
             </div>
 
             {/* XP Value */}
-            <span className="font-bold text-xs sm:text-sm text-stone-800 shrink-0">
+            <span className="text-xs sm:text-sm font-semibold text-stone-600 shrink-0">
               {leader.xp}
             </span>
           </div>
@@ -79,16 +69,16 @@ export default function CommunityLeaderboardPreview() {
 
         {/* Current User Standing Row */}
         {currentUser && (
-          <div className="bg-[#F4F9F2] border border-[#DCFCE7] rounded-xl p-2.5 sm:p-3 flex items-center justify-between gap-2 mt-3.5">
+          <div className="bg-[#FAF9F4] border border-border-warm rounded-xl p-2.5 sm:p-3 flex items-center justify-between gap-2 mt-3.5">
             <div className="flex items-center gap-2 min-w-0">
-              <span className="bg-[#22603B] text-white font-bold text-[11px] px-2 py-0.5 rounded-md shrink-0">
+              <span className="text-xs font-bold text-[#22603B] shrink-0">
                 {currentUser.badgeText}
               </span>
-              <span className="text-xs font-semibold text-stone-800 truncate">
+              <span className="text-xs text-stone-600 font-medium truncate">
                 {currentUser.label}
               </span>
             </div>
-            <span className="font-bold text-xs text-[#22603B] shrink-0">
+            <span className="text-xs font-semibold text-[#22603B] shrink-0">
               {currentUser.xp}
             </span>
           </div>

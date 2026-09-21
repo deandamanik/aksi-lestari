@@ -1,4 +1,48 @@
-import { TrophyIcon, AwardIcon, CheckIcon } from '../../../../components/common/Icons'
+import { TrophyIcon, AwardIcon } from '../../../../components/common/Icons'
+
+function LaurelBranchLeft({ className = 'w-3 h-4', ...props }) {
+  return (
+    <svg
+      viewBox="0 0 14 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+      {...props}
+    >
+      <path d="M12 18c-3.5-1.5-6.5-5-7-10 0-3 1-5.5 3-7" />
+      <path d="M4.5 5.5C3.2 4.5 2.5 3 3 2c.8.2 1.8 1.2 2 3" fill="currentColor" stroke="none" />
+      <path d="M3.5 10C2.2 9.2 1.8 7.8 2.2 7c.8.2 1.8 1 2 2.5" fill="currentColor" stroke="none" />
+      <path d="M4 14.5c-1.2-.5-1.5-1.8-1-2.5.7.2 1.6 1 1.8 2.2" fill="currentColor" stroke="none" />
+      <path d="M6 18c-1-.5-1.2-1.5-.8-2.2.6.2 1.4.8 1.6 1.8" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+function LaurelBranchRight({ className = 'w-3 h-4', ...props }) {
+  return (
+    <svg
+      viewBox="0 0 14 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+      {...props}
+    >
+      <path d="M2 18c3.5-1.5 6.5-5 7-10 0-3-1-5.5-3-7" />
+      <path d="M9.5 5.5C10.8 4.5 11.5 3 11 2c-.8.2-1.8 1.2-2 3" fill="currentColor" stroke="none" />
+      <path d="M10.5 10c1.3-.8 1.7-2.2 1.3-3-.8.2-1.8 1-2 2.5" fill="currentColor" stroke="none" />
+      <path d="M10 14.5c1.2-.5 1.5-1.8 1-2.5-.7.2-1.6 1-1.8 2.2" fill="currentColor" stroke="none" />
+      <path d="M8 18c1-.5 1.2-1.5.8-2.2-.6.2-1.4.8-1.6 1.8" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
 
 export default function LeaderboardPodium({ top3 = [] }) {
   if (!top3 || top3.length < 3) return null
@@ -11,17 +55,15 @@ export default function LeaderboardPodium({ top3 = [] }) {
   return (
     <section aria-label="Tiga Kontributor Teratas" className="w-full">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 items-end">
-        {/* RANK 2 - Left Podium */}
-        <div className="order-2 md:order-1 bg-white rounded-3xl border border-border-warm p-5 sm:p-6 shadow-2xs hover:shadow-xs hover:border-[#22603B]/30 transition-all duration-200 flex flex-col items-center text-center relative overflow-hidden">
-          <div className="absolute top-0 inset-x-0 h-1.5 bg-slate-300" />
-
+        {/* RANK 2 - Left Podium (Soft Silver / Cool Slate-Gray) */}
+        <div className="order-2 md:order-1 bg-gradient-to-b from-[#F7F9F8] via-[#FBFCFB] to-white rounded-3xl border border-[#D8DFDC] p-5 sm:p-6 shadow-2xs hover:shadow-xs hover:border-[#B5C2BD] transition-all duration-200 hover:-translate-y-0.5 motion-reduce:transform-none flex flex-col items-center text-center relative overflow-hidden">
           {/* Rank Badge */}
-          <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-700 font-bold text-sm flex items-center justify-center border border-slate-200 shadow-2xs mb-3">
+          <div className="w-7 h-7 rounded-full bg-[#EEF3F0] text-[#3D5246] font-bold text-xs flex items-center justify-center border border-[#D8DFDC] shadow-2xs mb-3">
             2
           </div>
 
           {/* Avatar Initials */}
-          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-slate-100 text-slate-700 font-bold text-lg sm:text-xl flex items-center justify-center mb-3 border border-slate-200/80 shadow-2xs">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#EEF3F0] text-[#3D5246] font-bold text-lg sm:text-xl flex items-center justify-center mb-3 border border-[#D8DFDC] shadow-2xs">
             {rank2.initials}
           </div>
 
@@ -30,8 +72,7 @@ export default function LeaderboardPodium({ top3 = [] }) {
             {rank2.name}
           </h3>
           {rank2.badge && (
-            <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-[#E0F2FE] text-[#0369A1] border border-[#BAE6FD] mb-2.5">
-              <CheckIcon className="w-3 h-3 text-[#0369A1]" />
+            <span className="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#F0F4F2] text-[#3D5246] border border-[#D8DFDC]/70 mb-2.5">
               {rank2.badge}
             </span>
           )}
@@ -42,7 +83,7 @@ export default function LeaderboardPodium({ top3 = [] }) {
           </p>
 
           {/* XP Total */}
-          <div className="w-full pt-3 border-t border-border-warm/60">
+          <div className="w-full pt-3.5 border-t border-[#DCE4E0]/80 bg-[#F5F8F6]/80 -mx-5 -mb-5 sm:-mx-6 sm:-mb-6 p-3 rounded-b-3xl">
             <span className="text-[11px] uppercase tracking-wider text-stone-400 font-bold block mb-0.5">
               Total Kontribusi
             </span>
@@ -52,22 +93,24 @@ export default function LeaderboardPodium({ top3 = [] }) {
           </div>
         </div>
 
-        {/* RANK 1 - Center Elevated Podium */}
-        <div className="order-1 md:order-2 bg-white rounded-3xl border-2 border-amber-300 p-6 sm:p-7 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col items-center text-center relative overflow-hidden md:-translate-y-2">
-          {/* Top highlight banner */}
-          <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400" />
-
-          {/* Rank Badge with Crown Icon */}
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FEF3C7] text-[#B45309] border border-amber-300 font-bold text-xs shadow-2xs mb-3.5">
-            <TrophyIcon className="w-3.5 h-3.5 text-[#B45309]" />
+        {/* RANK 1 - Center Elevated Podium (Champagne / Muted Warm Gold) */}
+        <div className="order-1 md:order-2 bg-gradient-to-b from-[#FBF8F1] via-[#FDFCF9] to-white rounded-3xl border border-[#E4D9C0] p-6 sm:p-7 shadow-2xs hover:shadow-xs hover:border-[#C5B38C] transition-all duration-200 hover:-translate-y-0.5 md:hover:-translate-y-2.5 motion-reduce:transform-none flex flex-col items-center text-center relative overflow-hidden md:-translate-y-2">
+          {/* Rank Indicator with subtle laurel and trophy */}
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FBF6EA] border border-[#E4D9C0] text-[#7D5E1A] text-xs font-semibold shadow-2xs mb-3.5">
+            <LaurelBranchLeft className="w-2.5 h-3.5 text-[#9E7A26]/60 shrink-0" />
+            <TrophyIcon className="w-3.5 h-3.5 text-[#9E7A26] shrink-0" />
             <span>Peringkat 1</span>
+            <LaurelBranchRight className="w-2.5 h-3.5 text-[#9E7A26]/60 shrink-0" />
           </div>
 
-          {/* Avatar Initials */}
-          <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-2xl bg-amber-50 text-[#B45309] font-bold text-2xl flex items-center justify-center mb-3.5 border-2 border-amber-200 shadow-xs relative">
+          {/* Avatar Initials with Champion Mark */}
+          <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-[#F8F2E2] text-[#7D5E1A] font-bold text-xl sm:text-2xl flex items-center justify-center mb-3.5 border border-[#E4D9C0] shadow-2xs relative">
             {rank1.initials}
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#22603B] text-white flex items-center justify-center shadow-xs">
-              <AwardIcon className="w-3.5 h-3.5" />
+            <div
+              className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#9E7A26] text-white flex items-center justify-center shadow-2xs"
+              aria-hidden="true"
+            >
+              <AwardIcon className="w-3 h-3 text-white" />
             </div>
           </div>
 
@@ -76,8 +119,7 @@ export default function LeaderboardPodium({ top3 = [] }) {
             {rank1.name}
           </h3>
           {rank1.badge && (
-            <span className="inline-flex items-center gap-1 text-[11px] font-bold px-3 py-0.5 rounded-full bg-[#DCFCE7] text-[#15803D] border border-[#86EFAC] mb-3">
-              <CheckIcon className="w-3 h-3 text-[#15803D]" />
+            <span className="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#FBF6EA] text-[#7D5E1A] border border-[#E4D9C0]/70 mb-3">
               {rank1.badge}
             </span>
           )}
@@ -88,7 +130,7 @@ export default function LeaderboardPodium({ top3 = [] }) {
           </p>
 
           {/* XP Total */}
-          <div className="w-full pt-3.5 border-t border-border-warm/60 bg-[#FAF9F4]/60 -mx-6 -mb-6 sm:-mx-7 sm:-mb-7 p-3.5 rounded-b-3xl">
+          <div className="w-full pt-3.5 border-t border-[#E8DEC7]/80 bg-[#FAF6EC]/80 -mx-6 -mb-6 sm:-mx-7 sm:-mb-7 p-3.5 rounded-b-3xl">
             <span className="text-[11px] uppercase tracking-wider text-stone-500 font-bold block mb-0.5">
               Total Kontribusi
             </span>
@@ -98,17 +140,15 @@ export default function LeaderboardPodium({ top3 = [] }) {
           </div>
         </div>
 
-        {/* RANK 3 - Right Podium */}
-        <div className="order-3 bg-white rounded-3xl border border-border-warm p-5 sm:p-6 shadow-2xs hover:shadow-xs hover:border-[#22603B]/30 transition-all duration-200 flex flex-col items-center text-center relative overflow-hidden">
-          <div className="absolute top-0 inset-x-0 h-1.5 bg-orange-300" />
-
+        {/* RANK 3 - Right Podium (Soft Bronze / Warm Beige) */}
+        <div className="order-3 bg-gradient-to-b from-[#FBF8F5] via-[#FCFAF8] to-white rounded-3xl border border-[#E5DDD4] p-5 sm:p-6 shadow-2xs hover:shadow-xs hover:border-[#CFC1B3] transition-all duration-200 hover:-translate-y-0.5 motion-reduce:transform-none flex flex-col items-center text-center relative overflow-hidden">
           {/* Rank Badge */}
-          <div className="w-8 h-8 rounded-full bg-[#FFEDD5] text-[#C2410C] font-bold text-sm flex items-center justify-center border border-orange-200 shadow-2xs mb-3">
+          <div className="w-7 h-7 rounded-full bg-[#F5EFE9] text-[#785842] font-bold text-xs flex items-center justify-center border border-[#E5DDD4] shadow-2xs mb-3">
             3
           </div>
 
           {/* Avatar Initials */}
-          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-orange-50 text-[#C2410C] font-bold text-lg sm:text-xl flex items-center justify-center mb-3 border border-orange-200/80 shadow-2xs">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#F5EFE9] text-[#785842] font-bold text-lg sm:text-xl flex items-center justify-center mb-3 border border-[#E5DDD4] shadow-2xs">
             {rank3.initials}
           </div>
 
@@ -117,8 +157,7 @@ export default function LeaderboardPodium({ top3 = [] }) {
             {rank3.name}
           </h3>
           {rank3.badge && (
-            <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-[#FEF3C7] text-[#B45309] border border-[#FDE68A] mb-2.5">
-              <CheckIcon className="w-3 h-3 text-[#B45309]" />
+            <span className="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#F5EFE9] text-[#785842] border border-[#E5DDD4]/70 mb-2.5">
               {rank3.badge}
             </span>
           )}
@@ -129,7 +168,7 @@ export default function LeaderboardPodium({ top3 = [] }) {
           </p>
 
           {/* XP Total */}
-          <div className="w-full pt-3 border-t border-border-warm/60">
+          <div className="w-full pt-3.5 border-t border-[#EAE2D9]/80 bg-[#F9F5F1]/80 -mx-5 -mb-5 sm:-mx-6 sm:-mb-6 p-3 rounded-b-3xl">
             <span className="text-[11px] uppercase tracking-wider text-stone-400 font-bold block mb-0.5">
               Total Kontribusi
             </span>
