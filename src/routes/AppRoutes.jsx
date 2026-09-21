@@ -1,7 +1,17 @@
 import { Routes, Route } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
+import LaporLayout from '../layouts/LaporLayout'
 import BerandaPage from '../pages/beranda/BerandaPage'
 import LaporPage from '../pages/lapor/LaporPage'
+import LaporTemukanPage from '../pages/lapor/LaporTemukanPage'
+import LaporKenaliPage from '../pages/lapor/LaporKenaliPage'
+import LaporAksiPage from '../pages/lapor/LaporAksiPage'
+import LaporSelesaiPage from '../pages/lapor/LaporSelesaiPage'
+import LaporMandiriKonfirmasiPage from '../pages/lapor/LaporMandiriKonfirmasiPage'
+import LaporMandiriPanduanPage from '../pages/lapor/LaporMandiriPanduanPage'
+import LaporMandiriFotoPage from '../pages/lapor/LaporMandiriFotoPage'
+import LaporMandiriValidasiPage from '../pages/lapor/LaporMandiriValidasiPage'
+import LaporTrackingPage from '../pages/lapor/LaporTrackingPage'
 import PetaSampahPage from '../pages/peta-sampah/PetaSampahPage'
 import AksiPediaPage from '../pages/aksipedia/AksiPediaPage'
 import KomunitasPage from '../pages/komunitas/KomunitasPage'
@@ -14,14 +24,48 @@ function AppRoutes() {
     <>
       <ScrollToTop />
       <Routes>
+        {/* Non-Lapor routes — standard MainLayout (no LaporContext) */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<BerandaPage />} />
-          <Route path="/lapor" element={<LaporPage />} />
           <Route path="/peta-sampah" element={<PetaSampahPage />} />
           <Route path="/aksipedia" element={<AksiPediaPage />} />
           <Route path="/komunitas" element={<KomunitasPage />} />
           <Route path="/komunitas/leaderboard" element={<CommunityLeaderboardPage />} />
           <Route path="/profil" element={<ProfilPage />} />
+        </Route>
+
+        {/* Lapor flow — LaporLayout scopes LaporContext to these routes only.
+            Context resets automatically when the user navigates away. */}
+        <Route element={<LaporLayout />}>
+          {/* Photo Entry — pre-flow, NO stepper */}
+          <Route path="/lapor" element={<LaporPage />} />
+
+          {/* Step 01 — Temukan: stepper visible */}
+          <Route path="/lapor/temukan" element={<LaporTemukanPage />} />
+
+          {/* Step 02 — Kenali */}
+          <Route path="/lapor/kenali" element={<LaporKenaliPage />} />
+
+          {/* Step 03 — Pilih Aksi */}
+          <Route path="/lapor/aksi" element={<LaporAksiPage />} />
+
+          {/* Step 04 — Selesai */}
+          <Route path="/lapor/selesai" element={<LaporSelesaiPage />} />
+
+          {/* Step 04 (Mandiri) — Konfirmasi Aksi Mandiri */}
+          <Route path="/lapor/mandiri/konfirmasi" element={<LaporMandiriKonfirmasiPage />} />
+
+          {/* Step 04 (Mandiri) — Panduan Penanganan Mandiri */}
+          <Route path="/lapor/mandiri/panduan" element={<LaporMandiriPanduanPage />} />
+
+          {/* Step 04 (Mandiri) — Dokumentasi Foto Setelah */}
+          <Route path="/lapor/mandiri/foto" element={<LaporMandiriFotoPage />} />
+
+          {/* Step 04 (Mandiri) — Tracking / Validasi Aksi Mandiri */}
+          <Route path="/lapor/mandiri/validasi" element={<LaporMandiriValidasiPage />} />
+
+          {/* Tracking Laporan */}
+          <Route path="/lapor/tracking" element={<LaporTrackingPage />} />
         </Route>
       </Routes>
     </>

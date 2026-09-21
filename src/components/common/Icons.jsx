@@ -349,6 +349,7 @@ export function ChevronDownIcon({
 }
 
 export function XIcon({
+export function ArrowLeftIcon({
   className = 'w-4 h-4',
   strokeWidth = 2,
   ...props
@@ -368,6 +369,8 @@ export function XIcon({
     >
       <path d="M18 6 6 18" />
       <path d="m6 6 12 12" />
+      <path d="M19 12H5" />
+      <path d="m12 19-7-7 7-7" />
     </svg>
   )
 }
@@ -397,6 +400,9 @@ export function CheckIcon({
 
 export function Share2Icon({
   className = 'w-4 h-4',
+
+export function UploadIcon({
+  className = 'w-5 h-5',
   strokeWidth = 2,
   ...props
 }) {
@@ -418,6 +424,9 @@ export function Share2Icon({
       <circle cx="18" cy="19" r="3" />
       <line x1="8.59" x2="15.42" y1="13.51" y2="17.49" />
       <line x1="15.41" x2="8.59" y1="6.51" y2="10.49" />
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="17 8 12 3 7 8" />
+      <line x1="12" x2="12" y1="3" y2="15" />
     </svg>
   )
 }
@@ -449,6 +458,8 @@ export function InfoIcon({
 
 export function SlidersHorizontalIcon({
   className = 'w-4 h-4',
+export function CheckCircle2Icon({
+  className = 'w-5 h-5',
   strokeWidth = 2,
   ...props
 }) {
@@ -474,12 +485,16 @@ export function SlidersHorizontalIcon({
       <line x1="14" x2="14" y1="2" y2="6" />
       <line x1="8" x2="8" y1="10" y2="14" />
       <line x1="16" x2="16" y1="18" y2="22" />
+      <circle cx="12" cy="12" r="10" />
+      <path d="m9 12 2 2 4-4" />
     </svg>
   )
 }
 
 export function ShieldCheckIcon({
   className = 'w-4 h-4',
+export function AlertCircleIcon({
+  className = 'w-5 h-5',
   strokeWidth = 2,
   ...props
 }) {
@@ -498,11 +513,15 @@ export function ShieldCheckIcon({
     >
       <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
       <path d="m9 12 2 2 4-4" />
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" x2="12" y1="8" y2="12" />
+      <line x1="12" x2="12.01" y1="16" y2="16" />
     </svg>
   )
 }
 
 export function NavigationIcon({
+export function RefreshCwIcon({
   className = 'w-4 h-4',
   strokeWidth = 2,
   ...props
@@ -521,12 +540,18 @@ export function NavigationIcon({
       {...props}
     >
       <polygon points="3 11 22 2 13 21 11 13 3 11" />
+      <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+      <path d="M21 3v5h-5" />
+      <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+      <path d="M8 16H3v5" />
     </svg>
   )
 }
 
 export function LocateIcon({
   className = 'w-4 h-4',
+export function AlertTriangleIcon({
+  className = 'w-5 h-5',
   strokeWidth = 2,
   ...props
 }) {
@@ -548,12 +573,17 @@ export function LocateIcon({
       <line x1="12" x2="12" y1="2" y2="5" />
       <line x1="12" x2="12" y1="19" y2="22" />
       <circle cx="12" cy="12" r="7" />
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+      <line x1="12" y1="9" x2="12" y2="13" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
     </svg>
   )
 }
 
 export function AwardIcon({
   className = 'w-4 h-4',
+export function ShieldAlertIcon({
+  className = 'w-5 h-5',
   strokeWidth = 2,
   ...props
 }) {
@@ -572,11 +602,15 @@ export function AwardIcon({
     >
       <circle cx="12" cy="8" r="6" />
       <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
+      <line x1="12" y1="8" x2="12" y2="12" />
+      <line x1="12" y1="16" x2="12.01" y2="16" />
     </svg>
   )
 }
 
 export function MegaphoneIcon({
+export function HelpCircleIcon({
   className = 'w-4 h-4',
   strokeWidth = 2,
   ...props
@@ -596,11 +630,15 @@ export function MegaphoneIcon({
     >
       <path d="m3 11 18-5v12L3 13v-2z" />
       <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+      <circle cx="12" cy="12" r="10" />
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
     </svg>
   )
 }
 
 export function TargetIcon({
+export function CheckIcon({
   className = 'w-4 h-4',
   strokeWidth = 2,
   ...props
@@ -621,11 +659,13 @@ export function TargetIcon({
       <circle cx="12" cy="12" r="10" />
       <circle cx="12" cy="12" r="6" />
       <circle cx="12" cy="12" r="2" />
+      <polyline points="20 6 9 17 4 12" />
     </svg>
   )
 }
 
 export function GraduationCapIcon({
+export function LeafIcon({
   className = 'w-4 h-4',
   strokeWidth = 2,
   ...props
@@ -646,12 +686,16 @@ export function GraduationCapIcon({
       <path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z" />
       <path d="M22 10v6" />
       <path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5" />
+      <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+      <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
     </svg>
   )
 }
 
 export function ChevronRightIcon({
   className = 'w-4 h-4',
+export function FlagIcon({
+  className = 'w-5 h-5',
   strokeWidth = 2,
   ...props
 }) {
@@ -669,12 +713,16 @@ export function ChevronRightIcon({
       {...props}
     >
       <path d="m9 18 6-6-6-6" />
+      <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+      <line x1="4" y1="22" x2="4" y2="15" />
     </svg>
   )
 }
 
 export function UserIcon({
   className = 'w-4 h-4',
+export function RecycleIcon({
+  className = 'w-5 h-5',
   strokeWidth = 2,
   ...props
 }) {
@@ -693,11 +741,19 @@ export function UserIcon({
     >
       <circle cx="12" cy="8" r="5" />
       <path d="M20 21a8 8 0 1 0-16 0" />
+      <path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5" />
+      <path d="M11 19h8.203a1.83 1.83 0 0 0 1.556-.89 1.784 1.784 0 0 0 0-1.775l-1.226-2.12" />
+      <path d="m14 16-3 3 3 3" />
+      <path d="M8.293 13.596 4 6.16" />
+      <path d="m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 12 3a1.83 1.83 0 0 1 1.563.919l3.99 6.918" />
+      <path d="m10.36 17 2-3.464" />
+      <path d="m7.29 9.5-3 1.732-1.73-3" />
     </svg>
   )
 }
 
 export function ArrowLeftIcon({
+export function FileTextIcon({
   className = 'w-4 h-4',
   strokeWidth = 2,
   ...props
@@ -717,6 +773,11 @@ export function ArrowLeftIcon({
     >
       <path d="m12 19-7-7 7-7" />
       <path d="M19 12H5" />
+      <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+      <path d="M10 9H8" />
+      <path d="M16 13H8" />
+      <path d="M16 17H8" />
     </svg>
   )
 }
