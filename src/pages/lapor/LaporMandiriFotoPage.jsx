@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useLapor } from '../../context/LaporContext'
 import LaporStepHeader from './components/shared/LaporStepHeader'
 import IdentifiedWasteSummary from './components/aksi/IdentifiedWasteSummary'
-import MandiriPhotoAfterCard from './components/mandiri/MandiriPhotoAfterCard'
+import PhotoUploadCard from './components/PhotoUploadCard'
 import { ArrowLeftIcon, ArrowRightIcon } from '../../components/common/Icons'
 
 function LaporMandiriFotoPage() {
@@ -61,9 +61,13 @@ function LaporMandiriFotoPage() {
         />
 
         {/* Main Foto Setelah Documentation Area */}
-        <MandiriPhotoAfterCard
-          photo={afterPhoto}
-          onPhotoSelect={handlePhotoSelect}
+        <PhotoUploadCard
+          file={afterPhoto}
+          onFileSelect={handlePhotoSelect}
+          title="Ambil Foto Setelah"
+          helperText="Dokumentasikan kondisi setelah penanganan untuk menunjukkan hasil tindakanmu."
+          statusText="Foto berhasil ditambahkan"
+          size="default"
         />
 
         {/* Bottom Navigation */}

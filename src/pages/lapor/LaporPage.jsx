@@ -205,10 +205,11 @@ function LaporPage() {
         </div>
 
         {/* Upload Card */}
-        <div className="w-full lapor-enter-card">
+        <div className="w-full max-w-2xl mx-auto lapor-enter-card">
           <PhotoUploadCard
             selectedFile={photoFile}
             onFileSelect={handleFileSelect}
+            size="default"
           />
         </div>
 

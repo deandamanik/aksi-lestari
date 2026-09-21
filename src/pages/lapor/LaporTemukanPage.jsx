@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLapor } from '../../context/LaporContext'
 import LaporStepHeader from './components/shared/LaporStepHeader'
+import PhotoUploadCard from './components/PhotoUploadCard'
 
 const MAX_DESC = 300
 
@@ -11,14 +12,6 @@ const DEFAULT_MAP_PIN = { x: 278, y: 110 }
 // ---------------------------------------------------------------------------
 // Utilities
 // ---------------------------------------------------------------------------
-
-function formatFileSize(bytes) {
-  if (!bytes) return ''
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`
-}
 
 /**
  * Maps SVG click coordinates (viewBox 560x220) to mock Bandung coordinates
@@ -239,9 +232,11 @@ function LaporTemukanPage() {
         />
 
         <div className="mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-5 items-start">
-          <PhotoCard
-            photo={photo}
-            onChangePhoto={() => navigate('/lapor')}
+          <PhotoUploadCard
+            file={photo}
+            onReplace={() => navigate('/lapor')}
+            statusText="Terekam"
+            size="default"
           />
 
           <div className="flex flex-col gap-4">
@@ -307,121 +302,6 @@ function LaporTemukanPage() {
   )
 }
 
-// ---------------------------------------------------------------------------
-// Photo Card
-// ---------------------------------------------------------------------------
-
-/**
- * PhotoCard — Shows the photo selected on /lapor.
- * Creates its temporary object URL locally with rigorous useState + useEffect lifecycle.
- * Preserves intrinsic aspect ratio for both portrait and landscape images.
- * Includes fallback when image rendering fails.
- */
-function PhotoCard({ photo, onChangePhoto }) {
-  const [previewUrl, setPreviewUrl] = useState(null)
-  const [failedFile, setFailedFile] = useState(null)
-  const hasError = Boolean(photo?.file && failedFile === photo?.file)
-
-  useEffect(() => {
-    if (!photo?.file) {
-      return
-    }
-
-    const url = URL.createObjectURL(photo.file)
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- Synchronizing temporary DOM Blob URL with File object lifecycle
-    setPreviewUrl(url)
-
-    return () => {
-      URL.revokeObjectURL(url)
-    }
-  }, [photo?.file])
-
-  const activeUrl = photo?.file ? previewUrl : null
-
-  return (
-    <div className="rounded-2xl bg-white border border-[#E8E5DC] shadow-xs overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-stone-100">
-        <div className="flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-primary" aria-hidden="true">
-            <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
-            <circle cx="12" cy="13" r="3"/>
-          </svg>
-          <span className="font-bold text-sm text-primary">Foto Temuan</span>
-        </div>
-        {photo?.file && (
-          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-secondary">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3" aria-hidden="true">
-              <path d="M20 6 9 17l-5-5"/>
-            </svg>
-            Terekam
-          </span>
-        )}
-      </div>
-
-      <div className="p-3 sm:p-4">
-        {activeUrl && !hasError ? (
-          <div className="w-full rounded-xl overflow-hidden bg-stone-50 border border-stone-100 flex items-center justify-center">
-            <img
-              src={activeUrl}
-              alt="Foto temuan sampah"
-              onError={() => setFailedFile(photo?.file)}
-              className="w-full h-auto block object-contain transition-opacity duration-200"
-              style={{ maxHeight: '720px' }}
-            />
-          </div>
-        ) : hasError ? (
-          <div className="w-full rounded-xl bg-amber-50/60 border border-amber-200/80 p-6 text-center flex flex-col items-center justify-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-amber-600" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-            </svg>
-            <p className="text-sm font-semibold text-stone-700">Pratinjau foto tidak dapat ditampilkan.</p>
-            <p className="text-xs text-stone-400 max-w-xs">Format file mungkin tidak didukung oleh browser Anda.</p>
-            <button
-              type="button"
-              onClick={onChangePhoto}
-              className="mt-2 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold text-primary bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer"
-            >
-              Ganti Foto
-            </button>
-          </div>
-        ) : (
-          <div className="w-full rounded-xl bg-stone-50 border border-dashed border-stone-200 min-h-[220px] flex flex-col items-center justify-center p-6 text-center">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-stone-300 mb-2" aria-hidden="true">
-              <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
-            </svg>
-            <p className="text-sm font-medium text-stone-400">Belum ada foto dipilih</p>
-          </div>
-        )}
-
-        <div className="mt-3.5 space-y-1">
-          <p className="text-xs text-stone-500 leading-relaxed">
-            Foto ini akan dijadikan rujukan utama dalam analisis di langkah berikutnya.
-          </p>
-          {photo?.fileName && (
-            <p className="text-[11px] text-stone-400 font-medium truncate">
-              {photo.fileName} {photo.fileSize ? `· ${formatFileSize(photo.fileSize)}` : ''}
-            </p>
-          )}
-        </div>
-
-        <div className="mt-3.5 pt-3 border-t border-stone-100 flex items-center justify-between gap-3">
-          <button
-            type="button"
-            onClick={onChangePhoto}
-            className="inline-flex items-center gap-1.5 h-8 px-3.5 rounded-full text-xs font-semibold text-primary bg-primary/5 hover:bg-primary/10 border border-primary/20 hover:border-primary/30 transition-colors cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary select-none active:scale-[0.98]"
-            aria-label="Ganti foto temuan"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 shrink-0" aria-hidden="true">
-              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>
-            </svg>
-            <span>Ganti Foto</span>
-          </button>
-          <span className="text-[11px] text-stone-400 font-medium">Foto bukti tersimpan</span>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 function LocationCard({ location, gpsStatus, gpsMessage, mapPin, onGPS, onSaveMapLocation }) {
   const hasLocation = location.lat !== null && location.lat !== undefined
