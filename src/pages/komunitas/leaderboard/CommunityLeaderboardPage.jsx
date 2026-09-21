@@ -24,43 +24,44 @@ export default function CommunityLeaderboardPage() {
 
   return (
     <main className="min-h-screen bg-[#FAF9F4] text-primary flex flex-col antialiased">
-      {/* 1. Breadcrumb & Navigation Bar */}
-      <nav aria-label="Breadcrumb Papan Peringkat" className="pt-20 sm:pt-22 pb-3">
-        <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            {/* Breadcrumb links */}
-            <div className="flex items-center gap-2 text-xs sm:text-sm">
-              <Link
-                to="/komunitas"
-                className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-widest text-[#22603B] uppercase hover:text-[#17462A] transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] font-body"
-              >
-                <ArrowLeftIcon className="w-3.5 h-3.5" />
-                KOMUNITAS
-              </Link>
-              <span className="text-stone-300 font-light select-none">/</span>
-              <span className="text-stone-600 font-medium">
-                Papan Peringkat
-              </span>
-            </div>
+      <div className="w-full flex-1 flex flex-col animate-page-enter">
+        {/* 1. Breadcrumb & Navigation Bar */}
+        <nav aria-label="Breadcrumb Papan Peringkat" className="pt-20 sm:pt-22 pb-3">
+          <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              {/* Breadcrumb links */}
+              <div className="flex items-center gap-2 text-xs sm:text-sm">
+                <Link
+                  to="/komunitas"
+                  className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-widest text-[#22603B] uppercase hover:text-[#17462A] transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] font-body"
+                >
+                  <ArrowLeftIcon className="w-3.5 h-3.5" />
+                  KOMUNITAS
+                </Link>
+                <span className="text-stone-300 font-light select-none">/</span>
+                <span className="text-stone-600 font-medium">
+                  Papan Peringkat
+                </span>
+              </div>
 
-            {/* Quick Context Stat */}
-            <div className="inline-flex items-center gap-1.5 text-xs text-stone-500 self-start sm:self-auto">
-              <TargetIcon className="w-3.5 h-3.5 text-[#22603B]" />
-              <span>
-                <strong className="text-stone-700 font-semibold">
-                  {activeData.totalActiveVolunteers} Relawan Aktif
-                </strong>{' '}
-                pada periode ini
-              </span>
+              {/* Quick Context Stat */}
+              <div className="inline-flex items-center gap-1.5 text-xs text-stone-500 self-start sm:self-auto">
+                <TargetIcon className="w-3.5 h-3.5 text-[#22603B]" />
+                <span>
+                  <strong className="text-stone-700 font-semibold">
+                    {activeData.totalActiveVolunteers} Relawan Aktif
+                  </strong>{' '}
+                  pada periode ini
+                </span>
+              </div>
             </div>
           </div>
-        </div>
-      </nav>
+        </nav>
 
       {/* 2. Main Page Container */}
       <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 pb-16">
-        {/* Page Header Section */}
-        <section className="pt-2 pb-6 sm:pb-8 border-b border-border-warm/60">
+        {/* Page Header Section (Header: 0ms entrance) */}
+        <section className="pt-2 pb-6 sm:pb-8 border-b border-border-warm/60 animate-content-rise stagger-lb-header">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#22603B]/80 uppercase tracking-widest mb-2 font-body">
@@ -93,7 +94,7 @@ export default function CommunityLeaderboardPage() {
                   type="button"
                   onClick={() => setSelectedPeriod(period.id)}
                   aria-pressed={isActive}
-                  className={`shrink-0 whitespace-nowrap inline-flex items-center justify-center h-10 px-4 sm:px-5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 select-none cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] ${
+                  className={`shrink-0 whitespace-nowrap inline-flex items-center justify-center h-10 px-4 sm:px-5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-180 active:scale-[0.98] select-none cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] ${
                     isActive
                       ? 'bg-[#22603B] text-white border border-[#22603B] shadow-xs'
                       : 'bg-white text-stone-700 border border-border-warm hover:bg-[#FAF9F4] hover:border-[#22603B]/30 shadow-2xs'
@@ -106,20 +107,30 @@ export default function CommunityLeaderboardPage() {
           </div>
         </section>
 
-        {/* 3. Section Content: Podium, Table & XP Info */}
-        <div className="space-y-8 sm:space-y-10 mt-6 sm:mt-8">
-          {/* Top 3 Podium */}
-          <LeaderboardPodium top3={activeData.top3} />
+        {/* 3. Section Content: Podium, Table & XP Info (Keyed by selectedPeriod for smooth tab transition ~320ms) */}
+        <div
+          key={selectedPeriod}
+          className="space-y-8 sm:space-y-10 mt-6 sm:mt-8"
+        >
+          {/* Top 3 Podium (Podium: delay 80ms) */}
+          <div className="animate-content-rise stagger-lb-podium">
+            <LeaderboardPodium top3={activeData.top3} />
+          </div>
 
-          {/* Full Ranking Table (Rank 4 onwards + Current User Row) */}
-          <LeaderboardTable
-            rankings={activeData.rankings}
-            currentUser={activeData.currentUser}
-          />
+          {/* Full Ranking Table (Ranking table: delay 150ms) */}
+          <div className="animate-content-rise stagger-lb-table">
+            <LeaderboardTable
+              rankings={activeData.rankings}
+              currentUser={activeData.currentUser}
+            />
+          </div>
 
-          {/* Expandable XP Explanation Section */}
-          <LeaderboardXpInfo />
+          {/* Expandable XP Explanation Section (XP info: delay 200ms) */}
+          <div className="animate-content-rise stagger-lb-xp">
+            <LeaderboardXpInfo />
+          </div>
         </div>
+      </div>
       </div>
     </main>
   )

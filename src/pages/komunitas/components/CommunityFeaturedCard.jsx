@@ -11,7 +11,7 @@ export default function CommunityFeaturedCard({
   if (!action) return null
 
   return (
-    <article className="group bg-white rounded-3xl border border-border-warm overflow-hidden shadow-2xs hover:shadow-xs hover:border-[#22603B]/30 transition-all duration-200 flex flex-col">
+    <article className="group bg-white rounded-3xl border border-border-warm overflow-hidden shadow-2xs hover:shadow-xs hover:border-[#22603B]/30 transition-all duration-200 hover:-translate-y-0.5 motion-reduce:transform-none flex flex-col">
       {/* Upper Large Image with Badges & Title Overlay */}
       <div
         role="button"
@@ -29,7 +29,7 @@ export default function CommunityFeaturedCard({
         <img
           src={action.image || '/images/actions/bersih_pantai_muara.jpg'}
           alt={action.title}
-          className="w-full h-full object-cover object-center group-hover:scale-[1.02] transition-transform duration-500"
+          className="w-full h-full object-cover object-center group-hover:scale-[1.015] transition-transform duration-300 motion-reduce:transform-none"
           onError={(e) => {
             // fallback if image fails to load
             e.target.src = '/images/actions/bersih_pantai_muara.jpg'
@@ -130,10 +130,10 @@ export default function CommunityFeaturedCard({
           <button
             type="button"
             onClick={() => onOpenDetail(action)}
-            className="inline-flex items-center justify-center gap-1.5 h-9 px-5 rounded-full text-xs sm:text-sm font-bold bg-[#22603B] text-white hover:bg-[#1C4E30] transition-colors duration-200 shadow-xs cursor-pointer group/btn focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] active:scale-98"
+            className="inline-flex items-center justify-center gap-1.5 h-9 px-5 rounded-full text-xs sm:text-sm font-bold bg-[#22603B] text-white hover:bg-[#1C4E30] transition-all duration-180 shadow-xs cursor-pointer group/btn focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] active:scale-[0.98]"
           >
             <span>Lihat Aksi</span>
-            <ArrowRightIcon className="w-3.5 h-3.5 transition-transform duration-200 group-hover/btn:translate-x-0.5" />
+            <ArrowRightIcon className="w-3.5 h-3.5 transition-transform duration-180 group-hover/btn:translate-x-0.5 motion-reduce:transform-none" />
           </button>
         </div>
       </div>

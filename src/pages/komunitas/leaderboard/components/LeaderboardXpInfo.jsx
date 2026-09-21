@@ -16,7 +16,7 @@ export default function LeaderboardXpInfo() {
         onClick={() => setIsOpen((prev) => !prev)}
         aria-expanded={isOpen}
         aria-controls="xp-info-content"
-        className="w-full p-5 sm:p-6 flex items-center justify-between gap-4 text-left cursor-pointer hover:bg-[#FAF9F4]/70 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]"
+        className="w-full p-5 sm:p-6 flex items-center justify-between gap-4 text-left cursor-pointer hover:bg-[#FAF9F4]/70 transition-all duration-180 active:scale-[0.99] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]"
       >
         <div className="flex items-center gap-3.5 min-w-0">
           <div className="w-10 h-10 rounded-2xl bg-[#EAF3EC] text-[#22603B] flex items-center justify-center shrink-0 border border-[#D5E8D8]">
@@ -50,7 +50,7 @@ export default function LeaderboardXpInfo() {
       {isOpen && (
         <div
           id="xp-info-content"
-          className="px-5 sm:px-6 pb-6 pt-2 border-t border-border-warm/60 space-y-5 animate-in fade-in duration-150"
+          className="px-5 sm:px-6 pb-6 pt-2 border-t border-border-warm/60 space-y-5 animate-content-rise"
         >
           {/* Rules Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">

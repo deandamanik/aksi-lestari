@@ -44,13 +44,13 @@ export default function CommunityFilterBar({
   }, [])
 
   return (
-    <section className="w-full pt-1 pb-6 sm:pb-8 overflow-visible">
+    <section className="relative z-30 w-full pt-1 pb-6 sm:pb-8 overflow-visible">
       {/* Two-row composition with generous breathing room */}
       <div className="flex flex-col gap-3.5 sm:gap-4">
         {/* ========================================================= */}
         {/* ROW 1: Search Input (Wide & Comfortable) + Location Selector */}
         {/* ========================================================= */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="relative z-30 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
           {/* Search Input - Wide, comfortable, rounded with subtle border */}
           <div className="relative flex-1 min-w-0">
             <label htmlFor="community-search-input" className="sr-only">
@@ -87,13 +87,13 @@ export default function CommunityFilterBar({
 
           {/* Location Selector - Compact, right-aligned, matching height */}
           <div
-            className="w-full sm:w-auto shrink-0 relative"
+            className="w-full sm:w-auto shrink-0 relative z-30"
             ref={locationDropdownRef}
           >
             <button
               type="button"
               onClick={() => setIsLocationOpen((prev) => !prev)}
-              className="w-full sm:w-auto h-12 sm:h-[50px] flex items-center justify-between gap-3 px-3.5 sm:px-4 rounded-2xl bg-white border border-border-warm shadow-2xs hover:border-[#22603B]/40 transition-all duration-200 text-left cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] min-w-[230px] sm:min-w-[250px]"
+              className="w-full sm:w-auto h-12 sm:h-[50px] flex items-center justify-between gap-3 px-3.5 sm:px-4 rounded-2xl bg-white border border-border-warm shadow-2xs hover:border-[#22603B]/40 transition-all duration-180 active:scale-[0.99] text-left cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] min-w-[230px] sm:min-w-[250px]"
               aria-expanded={isLocationOpen}
               aria-haspopup="listbox"
             >
@@ -118,7 +118,7 @@ export default function CommunityFilterBar({
             {/* Location Dropdown Menu */}
             {isLocationOpen && (
               <div
-                className="absolute top-full right-0 mt-2 z-40 w-full sm:w-72 bg-white rounded-2xl border border-border-warm shadow-[0_12px_36px_rgba(0,0,0,0.1)] p-2 animate-in fade-in slide-in-from-top-2 duration-150"
+                className="absolute top-full right-0 mt-2 z-40 w-full sm:w-72 bg-white rounded-2xl border border-border-warm shadow-[0_12px_36px_rgba(0,0,0,0.1)] p-2 animate-popover-enter"
                 role="listbox"
                 aria-label="Pilih Wilayah Pantauan"
               >
@@ -138,7 +138,7 @@ export default function CommunityFilterBar({
                           onSelectLocation(loc.name)
                           setIsLocationOpen(false)
                         }}
-                        className={`flex items-center justify-between w-full px-3 py-2 rounded-xl text-left text-xs sm:text-sm font-body transition-colors cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] ${
+                        className={`flex items-center justify-between w-full px-3 py-2 rounded-xl text-left text-xs sm:text-sm font-body transition-colors duration-180 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] ${
                           isSelected
                             ? 'bg-[#22603B] text-white font-bold'
                             : 'text-primary hover:bg-[#FAF9F4]'
@@ -169,7 +169,7 @@ export default function CommunityFilterBar({
         {/* ========================================================= */}
         {/* ROW 2: Category Filter Buttons (Left) + Sort Control (Far Right) */}
         {/* ========================================================= */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 pt-1">
+        <div className="relative z-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 pt-1">
           {/* LEFT: Category navigation (Independent area) */}
           <div className="min-w-0 flex-1 overflow-hidden">
             <div
@@ -186,7 +186,7 @@ export default function CommunityFilterBar({
                     aria-selected={isActive}
                     onClick={() => onSelectCategory(cat)}
                     type="button"
-                    className={`shrink-0 whitespace-nowrap inline-flex items-center justify-center h-10 px-3.5 sm:px-4 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 select-none cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] ${
+                    className={`shrink-0 whitespace-nowrap inline-flex items-center justify-center h-10 px-3.5 sm:px-4 rounded-full text-xs sm:text-sm font-semibold transition-all duration-180 active:scale-[0.98] select-none cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] ${
                       isActive
                         ? 'bg-[#22603B] text-white border border-[#22603B] shadow-xs'
                         : 'bg-white text-stone-700 border border-border-warm hover:bg-[#FAF9F4] hover:border-primary/30 shadow-2xs'
@@ -210,7 +210,7 @@ export default function CommunityFilterBar({
                 id="community-sort"
                 value={selectedSort}
                 onChange={(e) => onSelectSort(e.target.value)}
-                className="h-10 appearance-none bg-white border border-border-warm rounded-full pl-7.5 sm:pl-8 pr-6.5 sm:pr-7 text-xs sm:text-sm font-semibold font-body text-stone-700 shadow-2xs hover:border-[#22603B]/40 focus:outline-hidden focus:ring-2 focus:ring-[#22603B]/20 cursor-pointer transition-colors"
+                className="h-10 appearance-none bg-white border border-border-warm rounded-full pl-7.5 sm:pl-8 pr-6.5 sm:pr-7 text-xs sm:text-sm font-semibold font-body text-stone-700 shadow-2xs hover:border-[#22603B]/40 focus:outline-hidden focus:ring-2 focus:ring-[#22603B]/20 cursor-pointer transition-colors duration-180"
               >
                 {SORT_OPTIONS.map((opt) => (
                   <option key={opt.id} value={opt.id}>
@@ -237,7 +237,7 @@ export default function CommunityFilterBar({
                 <button
                   type="button"
                   onClick={onResetFilters}
-                  className="whitespace-nowrap font-bold text-[#22603B] hover:underline cursor-pointer focus:outline-hidden focus-visible:underline"
+                  className="whitespace-nowrap font-bold text-[#22603B] hover:underline cursor-pointer focus:outline-hidden focus-visible:underline transition-all duration-180 active:scale-[0.98]"
                   title="Kembalikan semua filter ke pengaturan awal"
                 >
                   Reset

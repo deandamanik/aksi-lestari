@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import {
   XIcon,
   CheckIcon,
@@ -137,16 +138,25 @@ export default function ProposeActionModal({ isOpen, onClose, onSubmitProposal }
     }, 800)
   }
 
-  return (
+  return createPortal(
     <div
-      onClick={handleClose}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/50 backdrop-blur-xs animate-in fade-in duration-200"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="propose-modal-title"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+      role="region"
+      aria-label="Modal Ajukan Kegiatan"
     >
+      {/* Backdrop: Fixed to viewport, opacity animation only, no transform */}
       <div
-        className="relative w-full max-w-2xl bg-white rounded-3xl border border-border-warm shadow-2xl overflow-hidden my-6 max-h-[92vh] flex flex-col animate-in zoom-in-95 duration-200"
+        className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-300 animate-in fade-in"
+        onClick={handleClose}
+        aria-hidden="true"
+      />
+
+      {/* Dialog: Flex-centered, animated with transform & opacity */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="propose-modal-title"
+        className="relative z-10 w-full max-w-2xl bg-white rounded-3xl border border-border-warm shadow-2xl overflow-hidden max-h-[calc(100vh-32px)] sm:max-h-[calc(100vh-48px)] flex flex-col animate-dialog-enter my-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -155,7 +165,7 @@ export default function ProposeActionModal({ isOpen, onClose, onSubmitProposal }
             <button
               type="button"
               onClick={handleClose}
-              className="absolute top-6 right-6 p-2 rounded-full text-stone-400 hover:text-primary hover:bg-neutral transition-colors cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]"
+              className="absolute top-6 right-6 p-2 rounded-full text-stone-400 hover:text-primary hover:bg-neutral transition-all duration-180 active:scale-95 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]"
               aria-label="Tutup form pengajuan"
             >
               <XIcon className="w-5 h-5" />
@@ -181,9 +191,9 @@ export default function ProposeActionModal({ isOpen, onClose, onSubmitProposal }
         {/* Modal Body */}
         {submissionState === 'success' ? (
           /* SUCCESS STATE */
-          <div className="p-6 sm:p-10 overflow-y-auto text-center flex flex-col items-center justify-center space-y-5">
+          <div className="p-6 sm:p-10 overflow-y-auto text-center flex flex-col items-center justify-center space-y-5 animate-content-rise flex-1 min-h-0">
             <div className="w-16 h-16 rounded-full bg-[#DCFCE7] text-[#15803D] flex items-center justify-center border-2 border-[#86EFAC] shadow-xs">
-              <CheckIcon className="w-8 h-8 text-[#15803D]" strokeWidth={2.5} />
+              <CheckIcon className="w-8 h-8 text-[#15803D] animate-check-scale" strokeWidth={2.5} />
             </div>
 
             <div className="max-w-md">
@@ -205,7 +215,7 @@ export default function ProposeActionModal({ isOpen, onClose, onSubmitProposal }
                   {formData.category}
                 </span>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-stone-600">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-stone-600 text-xs">
                 <div className="flex items-center gap-1.5 truncate">
                   <MapPinIcon className="w-3.5 h-3.5 text-[#22603B] shrink-0" />
                   <span className="truncate">{formData.location}</span>
@@ -238,7 +248,7 @@ export default function ProposeActionModal({ isOpen, onClose, onSubmitProposal }
               <button
                 type="button"
                 onClick={handleClose}
-                className="inline-flex items-center justify-center h-11 px-8 rounded-full text-sm font-bold bg-[#22603B] text-white hover:bg-[#17462A] transition-colors shadow-xs cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]"
+                className="inline-flex items-center justify-center h-11 px-8 rounded-full text-sm font-bold bg-[#22603B] text-white hover:bg-[#17462A] transition-all duration-180 active:scale-[0.98] shadow-xs cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]"
               >
                 Kembali ke Komunitas
               </button>
@@ -249,7 +259,7 @@ export default function ProposeActionModal({ isOpen, onClose, onSubmitProposal }
           <form
             onSubmit={handleSubmit}
             noValidate
-            className="flex flex-col flex-1 overflow-hidden"
+            className="flex flex-col flex-1 min-h-0 overflow-hidden"
           >
             <div className="p-6 sm:p-7 overflow-y-auto space-y-4.5 flex-1">
               {/* 1. Nama Kegiatan */}
@@ -276,7 +286,7 @@ export default function ProposeActionModal({ isOpen, onClose, onSubmitProposal }
                   }`}
                 />
                 {errors.title && (
-                  <p id="error-propose-title" className="text-xs text-red-600 font-medium mt-1">
+                  <p id="error-propose-title" className="text-xs text-red-600 font-medium mt-1 animate-error-slide">
                     {errors.title}
                   </p>
                 )}
@@ -311,7 +321,7 @@ export default function ProposeActionModal({ isOpen, onClose, onSubmitProposal }
                     ))}
                   </select>
                   {errors.category && (
-                    <p id="error-propose-category" className="text-xs text-red-600 font-medium mt-1">
+                    <p id="error-propose-category" className="text-xs text-red-600 font-medium mt-1 animate-error-slide">
                       {errors.category}
                     </p>
                   )}
@@ -340,7 +350,7 @@ export default function ProposeActionModal({ isOpen, onClose, onSubmitProposal }
                     }`}
                   />
                   {errors.organizer && (
-                    <p id="error-propose-organizer" className="text-xs text-red-600 font-medium mt-1">
+                    <p id="error-propose-organizer" className="text-xs text-red-600 font-medium mt-1 animate-error-slide">
                       {errors.organizer}
                     </p>
                   )}
@@ -371,7 +381,7 @@ export default function ProposeActionModal({ isOpen, onClose, onSubmitProposal }
                   }`}
                 />
                 {errors.location && (
-                  <p id="error-propose-location" className="text-xs text-red-600 font-medium mt-1">
+                  <p id="error-propose-location" className="text-xs text-red-600 font-medium mt-1 animate-error-slide">
                     {errors.location}
                   </p>
                 )}
@@ -401,7 +411,7 @@ export default function ProposeActionModal({ isOpen, onClose, onSubmitProposal }
                     }`}
                   />
                   {errors.date && (
-                    <p id="error-propose-date" className="text-xs text-red-600 font-medium mt-1">
+                    <p id="error-propose-date" className="text-xs text-red-600 font-medium mt-1 animate-error-slide">
                       {errors.date}
                     </p>
                   )}
@@ -429,7 +439,7 @@ export default function ProposeActionModal({ isOpen, onClose, onSubmitProposal }
                     }`}
                   />
                   {errors.time && (
-                    <p id="error-propose-time" className="text-xs text-red-600 font-medium mt-1">
+                    <p id="error-propose-time" className="text-xs text-red-600 font-medium mt-1 animate-error-slide">
                       {errors.time}
                     </p>
                   )}
@@ -460,7 +470,7 @@ export default function ProposeActionModal({ isOpen, onClose, onSubmitProposal }
                     }`}
                   />
                   {errors.capacity && (
-                    <p id="error-propose-capacity" className="text-xs text-red-600 font-medium mt-1">
+                    <p id="error-propose-capacity" className="text-xs text-red-600 font-medium mt-1 animate-error-slide">
                       {errors.capacity}
                     </p>
                   )}
@@ -491,7 +501,7 @@ export default function ProposeActionModal({ isOpen, onClose, onSubmitProposal }
                   }`}
                 />
                 {errors.description && (
-                  <p id="error-propose-description" className="text-xs text-red-600 font-medium mt-1">
+                  <p id="error-propose-description" className="text-xs text-red-600 font-medium mt-1 animate-error-slide">
                     {errors.description}
                   </p>
                 )}
@@ -504,14 +514,14 @@ export default function ProposeActionModal({ isOpen, onClose, onSubmitProposal }
                 type="button"
                 onClick={handleClose}
                 disabled={submissionState === 'loading'}
-                className="px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold text-primary/70 hover:text-primary hover:bg-neutral transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold text-primary/70 hover:text-primary hover:bg-neutral transition-all duration-180 active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Batal
               </button>
               <button
                 type="submit"
                 disabled={submissionState === 'loading'}
-                className="inline-flex items-center justify-center gap-2 h-11 px-7 rounded-full text-xs sm:text-sm font-bold bg-[#22603B] text-white hover:bg-[#17462A] shadow-xs transition-all active:scale-98 cursor-pointer disabled:opacity-75 disabled:cursor-wait"
+                className="inline-flex items-center justify-center gap-2 h-11 px-7 rounded-full text-xs sm:text-sm font-bold bg-[#22603B] text-white hover:bg-[#17462A] shadow-xs transition-all duration-180 active:scale-[0.98] cursor-pointer disabled:opacity-75 disabled:cursor-wait"
               >
                 {submissionState === 'loading' ? (
                   <>
@@ -526,6 +536,7 @@ export default function ProposeActionModal({ isOpen, onClose, onSubmitProposal }
           </form>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

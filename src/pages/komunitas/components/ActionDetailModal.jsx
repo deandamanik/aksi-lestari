@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import {
   XIcon,
   CalendarIcon,
@@ -42,16 +43,25 @@ export default function ActionDetailModal({
   )
   const isFull = action.participants >= action.capacity
 
-  return (
+  return createPortal(
     <div
-      onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/50 backdrop-blur-xs animate-in fade-in duration-200"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="action-detail-title"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+      role="region"
+      aria-label="Modal Rincian Aksi"
     >
+      {/* Backdrop: Fixed to viewport, opacity animation only, no transform */}
       <div
-        className="relative w-full max-w-2xl bg-white rounded-3xl border border-border-warm shadow-2xl overflow-hidden my-8 max-h-[90vh] flex flex-col animate-in zoom-in-95 duration-200"
+        className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-300 animate-in fade-in"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      {/* Dialog: Flex-centered, animated with transform & opacity */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="action-detail-title"
+        className="relative z-10 w-full max-w-2xl bg-white rounded-3xl border border-border-warm shadow-2xl overflow-hidden max-h-[calc(100vh-32px)] sm:max-h-[calc(100vh-48px)] flex flex-col animate-dialog-enter my-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
@@ -59,7 +69,7 @@ export default function ActionDetailModal({
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-6 right-6 p-2 rounded-full text-primary/60 hover:text-primary hover:bg-neutral transition-colors cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]"
+            className="absolute top-6 right-6 p-2 rounded-full text-primary/60 hover:text-primary hover:bg-neutral transition-all duration-180 active:scale-95 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]"
             aria-label="Tutup rincian aksi"
           >
             <XIcon className="w-5 h-5" />
@@ -93,7 +103,7 @@ export default function ActionDetailModal({
         </div>
 
         {/* Modal Body (Scrollable) */}
-        <div className="p-6 sm:p-8 overflow-y-auto space-y-6">
+        <div className="p-6 sm:p-8 overflow-y-auto space-y-6 flex-1 min-h-0">
           {/* Quick Details Strip */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 rounded-2xl bg-neutral/80 border border-border-warm text-xs sm:text-sm font-medium">
             <div className="flex items-center gap-2.5 text-primary">
@@ -207,11 +217,11 @@ export default function ActionDetailModal({
         </div>
 
         {/* Modal Footer / Action CTA */}
-        <div className="p-5 sm:p-6 bg-neutral/60 border-t border-border-warm flex items-center justify-between gap-3">
+        <div className="p-5 sm:p-6 bg-neutral/60 border-t border-border-warm flex items-center justify-between gap-3 shrink-0">
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold text-primary/70 hover:text-primary hover:bg-neutral transition-colors cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]"
+            className="px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold text-primary/70 hover:text-primary hover:bg-neutral transition-all duration-180 active:scale-95 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]"
           >
             Tutup
           </button>
@@ -224,17 +234,17 @@ export default function ActionDetailModal({
               }
             }}
             disabled={isJoined || isFull}
-            className={`inline-flex items-center justify-center gap-2 h-11 px-7 rounded-full text-sm font-bold transition-all duration-200 ${
+            className={`inline-flex items-center justify-center gap-2 h-11 px-7 rounded-full text-sm font-bold transition-all duration-180 ${
               isJoined
                 ? 'bg-[#DCFCE7] text-[#15803D] border border-[#86EFAC] cursor-default'
                 : isFull
                 ? 'bg-stone-200 text-stone-500 border border-stone-300 cursor-not-allowed'
-                : 'bg-[#22603B] text-white hover:bg-[#17462A] shadow-xs active:scale-98 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]'
+                : 'bg-[#22603B] text-white hover:bg-[#17462A] shadow-xs active:scale-[0.98] cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]'
             }`}
           >
             {isJoined ? (
               <>
-                <CheckIcon className="w-4 h-4 text-[#15803D]" />
+                <CheckIcon className="w-4 h-4 text-[#15803D] animate-check-scale" />
                 <span>Kamu Sudah Terdaftar</span>
               </>
             ) : isFull ? (
@@ -250,6 +260,7 @@ export default function ActionDetailModal({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

@@ -7,7 +7,7 @@ export default function CommunityLeaderboardPreview() {
     LEADERBOARD_PREVIEW
 
   return (
-    <article className="bg-white rounded-2xl sm:rounded-3xl border border-border-warm p-5 sm:p-6 shadow-2xs">
+    <article className="bg-white rounded-2xl sm:rounded-3xl border border-border-warm p-5 sm:p-6 shadow-2xs hover:border-[#22603B]/30 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 motion-reduce:transform-none">
       {/* Top Header */}
       <div className="flex items-center justify-between gap-2 mb-1.5">
         <span className="text-[11px] font-bold uppercase tracking-widest text-[#22603B]/80 font-body">
@@ -89,10 +89,10 @@ export default function CommunityLeaderboardPreview() {
       <div className="pt-3.5 mt-3 border-t border-border-warm/60">
         <Link
           to={allLink}
-          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#22603B] hover:text-[#17462A] transition-colors duration-200 group focus:outline-hidden focus-visible:underline"
+          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#22603B] hover:text-[#17462A] transition-colors duration-180 group focus:outline-hidden focus-visible:underline"
         >
           <span>{allLinkLabel}</span>
-          <ArrowRightIcon className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+          <ArrowRightIcon className="w-3.5 h-3.5 transition-transform duration-180 group-hover:translate-x-0.5 motion-reduce:transform-none" />
         </Link>
       </div>
     </article>

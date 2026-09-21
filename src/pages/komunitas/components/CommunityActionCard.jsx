@@ -3,15 +3,24 @@ import {
   CalendarIcon,
   ChevronRightIcon,
 } from '../../../components/common/Icons'
+import { useInView } from '../../../hooks/useInView'
 
 export default function CommunityActionCard({
   action,
   onOpenDetail,
+  index = 0,
 }) {
+  const [cardRef, inView] = useInView({ threshold: 0.12 })
   const isWarning = action.statusVariant === 'warning' || action.status === 'Segera Dimulai' || action.status === 'Kuota Menipis'
 
   return (
-    <article className="group bg-white rounded-2xl sm:rounded-3xl border border-border-warm p-5 sm:p-6 shadow-2xs hover:border-[#22603B]/30 hover:shadow-xs transition-all duration-200 flex flex-col justify-between">
+    <article
+      ref={cardRef}
+      style={index > 0 ? { transitionDelay: `${Math.min(index * 40, 120)}ms` } : undefined}
+      className={`scroll-reveal-card group bg-white rounded-2xl sm:rounded-3xl border border-border-warm p-5 sm:p-6 shadow-2xs hover:border-[#22603B]/30 hover:shadow-xs flex flex-col justify-between motion-reduce:opacity-100 motion-reduce:transform-none ${
+        inView ? 'is-revealed' : ''
+      }`}
+    >
       <div>
         {/* Top Header: Status and SubCategory */}
         <div className="flex items-center justify-between gap-2 mb-2.5">
@@ -38,7 +47,7 @@ export default function CommunityActionCard({
         {/* Title */}
         <h3
           onClick={() => onOpenDetail(action)}
-          className="font-display text-primary text-base sm:text-lg font-bold leading-snug tracking-tight mb-2 group-hover:text-[#22603B] transition-colors duration-200 cursor-pointer"
+          className="font-display text-primary text-base sm:text-lg font-bold leading-snug tracking-tight mb-2 group-hover:text-[#22603B] transition-colors duration-180 cursor-pointer"
         >
           {action.title}
         </h3>
@@ -70,10 +79,10 @@ export default function CommunityActionCard({
         <button
           type="button"
           onClick={() => onOpenDetail(action)}
-          className="inline-flex items-center gap-1 font-bold text-[#22603B] hover:text-[#17462A] transition-colors duration-200 cursor-pointer group/cta focus:outline-hidden focus-visible:underline"
+          className="inline-flex items-center gap-1 font-bold text-[#22603B] hover:text-[#17462A] transition-all duration-180 active:scale-[0.98] cursor-pointer group/cta focus:outline-hidden focus-visible:underline"
         >
           <span>Lihat Aksi</span>
-          <ChevronRightIcon className="w-3.5 h-3.5 transition-transform duration-200 group-hover/cta:translate-x-0.5" />
+          <ChevronRightIcon className="w-3.5 h-3.5 transition-transform duration-180 group-hover/cta:translate-x-0.5 motion-reduce:transform-none" />
         </button>
       </div>
     </article>

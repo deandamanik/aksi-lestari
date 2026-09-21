@@ -60,7 +60,7 @@ export default function LeaderboardTable({ rankings = [], currentUser = null }) 
             return (
               <div
                 key={entry.id}
-                className={`grid grid-cols-12 gap-2 px-4 sm:px-6 py-3.5 sm:py-4 items-center transition-colors duration-150 ${
+                className={`grid grid-cols-12 gap-2 px-4 sm:px-6 py-3.5 sm:py-4 items-center transition-colors duration-180 ${
                   isSelf
                     ? 'bg-[#FAF9F4] hover:bg-[#F2F0E8] border-l-2 border-l-[#22603B]'
                     : 'hover:bg-[#FAF9F4]/80'

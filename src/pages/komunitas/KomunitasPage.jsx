@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import CommunityBreadcrumb from './components/CommunityBreadcrumb'
 import CommunityHero from './components/CommunityHero'
 import CommunityFilterBar from './components/CommunityFilterBar'
@@ -207,35 +208,40 @@ function KomunitasPage() {
 
   return (
     <main className="min-h-screen bg-[#FAF9F4] text-primary flex flex-col antialiased">
-      {/* 1. Breadcrumb Navigation & Top Jabodetabek status */}
-      <CommunityBreadcrumb totalActiveActions={currentLocationActionsCount || 14} />
+      <div className="w-full flex-1 flex flex-col animate-page-enter">
+        {/* 1. Breadcrumb Navigation & Top Jabodetabek status */}
+        <CommunityBreadcrumb totalActiveActions={currentLocationActionsCount || 14} />
 
-      {/* 2. Hero Section */}
-      <CommunityHero />
+      {/* 2. Hero Section (Stagger 0ms) */}
+      <div className="animate-content-rise stagger-community-hero">
+        <CommunityHero />
+      </div>
 
       {/* 3. Main Content Container */}
       <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1">
-        {/* Discovery Controls: Row 1 (Search + Location) & Row 2 (Categories + Sort) */}
-        <CommunityFilterBar
-          selectedLocation={selectedLocation}
-          onSelectLocation={(loc) => {
-            setSelectedLocation(loc)
-            showToast(`Lokasi dialihkan ke ${loc}`)
-          }}
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          selectedSort={selectedSort}
-          onSelectSort={setSelectedSort}
-          filteredCount={filteredActions.length}
-          totalCount={currentLocationActionsCount}
-          isFiltered={isFiltered}
-          onResetFilters={handleResetFilters}
-        />
+        {/* Discovery Controls: Row 1 (Search + Location) & Row 2 (Categories + Sort) (Stagger 70ms) */}
+        <div className="relative z-30 animate-content-rise stagger-community-discovery">
+          <CommunityFilterBar
+            selectedLocation={selectedLocation}
+            onSelectLocation={(loc) => {
+              setSelectedLocation(loc)
+              showToast(`Lokasi dialihkan ke ${loc}`)
+            }}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            selectedSort={selectedSort}
+            onSelectSort={setSelectedSort}
+            filteredCount={filteredActions.length}
+            totalCount={currentLocationActionsCount}
+            isFiltered={isFiltered}
+            onResetFilters={handleResetFilters}
+          />
+        </div>
 
-        {/* 4. Two-Column Main Composition Matching Reference */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start pb-16 pt-1">
+        {/* 4. Two-Column Main Composition Matching Reference (Stagger 130ms) */}
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start pb-16 pt-1 animate-content-rise stagger-community-main">
           {/* Left Column: Main Actions (Wider Column ~64%) */}
           <div className="lg:col-span-7 xl:col-span-8 space-y-5 sm:space-y-6">
             {/* Section Heading with Dynamic Subtitle & Diperbarui badge */}
@@ -255,23 +261,27 @@ function KomunitasPage() {
               </span>
             </div>
 
-            {/* Actions Display */}
+            {/* Actions Display with smooth category/filter change transition (typing in search does not trigger container bounce) */}
             {filteredActions.length > 0 && featuredAction ? (
-              <div className="space-y-5 sm:space-y-6">
+              <div
+                key={`${selectedCategory}_${selectedSort}`}
+                className="space-y-5 sm:space-y-6 animate-content-rise"
+              >
                 {/* Large Featured Action Card */}
                 <CommunityFeaturedCard
                   action={featuredAction}
                   onOpenDetail={setActiveDetailAction}
                 />
 
-                {/* Secondary Action Cards (Stacked vertically) */}
+                {/* Secondary Action Cards (Stacked vertically with calm scroll reveal) */}
                 {secondaryActions.length > 0 && (
                   <div className="space-y-4">
-                    {secondaryActions.map((action) => (
+                    {secondaryActions.map((action, idx) => (
                       <CommunityActionCard
                         key={action.id}
                         action={action}
                         onOpenDetail={setActiveDetailAction}
+                        index={idx}
                       />
                     ))}
                   </div>
@@ -279,7 +289,7 @@ function KomunitasPage() {
               </div>
             ) : (
               /* Clean Empty State */
-              <div className="w-full py-16 px-6 bg-white rounded-3xl border border-border-warm text-center flex flex-col items-center justify-center my-2 shadow-2xs">
+              <div className="w-full py-16 px-6 bg-white rounded-3xl border border-border-warm text-center flex flex-col items-center justify-center my-2 shadow-2xs animate-content-rise">
                 <div className="w-12 h-12 rounded-full bg-[#FAF9F4] flex items-center justify-center text-[#22603B] mb-3 border border-border-warm">
                   <SparklesIcon className="w-5 h-5" />
                 </div>
@@ -292,7 +302,7 @@ function KomunitasPage() {
                 <button
                   type="button"
                   onClick={handleResetFilters}
-                  className="inline-flex items-center justify-center h-9 px-5 rounded-full text-xs sm:text-sm font-bold bg-[#22603B] text-white hover:bg-[#1C4E30] transition-colors shadow-xs cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]"
+                  className="inline-flex items-center justify-center h-9 px-5 rounded-full text-xs sm:text-sm font-bold bg-[#22603B] text-white hover:bg-[#1C4E30] transition-all duration-150 shadow-xs cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] active:scale-[0.98]"
                 >
                   Reset Filter
                 </button>
@@ -320,6 +330,7 @@ function KomunitasPage() {
           </aside>
         </div>
       </div>
+      </div>
 
       {/* Action Detail Modal */}
       <ActionDetailModal
@@ -339,32 +350,34 @@ function KomunitasPage() {
         onSubmitProposal={handleProposalSubmit}
       />
 
-      {/* Interactive Toast Notification */}
-      {toastMessage && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="fixed bottom-6 left-4 right-4 sm:left-auto sm:right-8 z-50 sm:max-w-md bg-[#22603B] text-white p-4 rounded-2xl shadow-xl border border-white/10 flex items-start gap-3 animate-in fade-in slide-in-from-bottom-3 duration-200"
-        >
-          <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0 mt-0.5">
-            <CheckIcon className="w-4 h-4 text-white" />
-          </div>
-          <div className="flex-1 text-xs sm:text-sm font-medium leading-snug">
-            {toastMessage}
-          </div>
-          <button
-            type="button"
-            onClick={() => {
-              if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current)
-              setToastMessage(null)
-            }}
-            className="text-white/70 hover:text-white transition-colors text-xs font-bold cursor-pointer p-1 -mr-1 -mt-0.5 rounded-full hover:bg-white/10 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-white"
-            aria-label="Tutup notifikasi"
+      {/* Interactive Toast Notification (Natural fade + rise entrance, anchored to viewport via portal) */}
+      {toastMessage &&
+        createPortal(
+          <div
+            role="status"
+            aria-live="polite"
+            className="fixed bottom-6 left-4 right-4 sm:left-auto sm:right-8 z-50 sm:max-w-md bg-[#22603B] text-white p-4 rounded-2xl shadow-xl border border-white/10 flex items-start gap-3 animate-toast-enter"
           >
-            ✕
-          </button>
-        </div>
-      )}
+            <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0 mt-0.5">
+              <CheckIcon className="w-4 h-4 text-white" />
+            </div>
+            <div className="flex-1 text-xs sm:text-sm font-medium leading-snug">
+              {toastMessage}
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current)
+                setToastMessage(null)
+              }}
+              className="text-white/70 hover:text-white transition-all duration-180 text-xs font-bold cursor-pointer p-1 -mr-1 -mt-0.5 rounded-full hover:bg-white/10 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-white active:scale-95"
+              aria-label="Tutup notifikasi"
+            >
+              ✕
+            </button>
+          </div>,
+          document.body
+        )}
     </main>
   )
 }
