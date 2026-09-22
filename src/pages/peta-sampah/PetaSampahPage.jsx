@@ -1,9 +1,9 @@
+import WasteMap from './components/WasteMap'
+
 function PetaSampahPage() {
   return (
-    <main className="min-h-[120vh] bg-border-warm flex items-center justify-center">
-      <h1 className="font-display text-primary text-4xl sm:text-5xl font-bold">
-        AksiLestari Peta Sampah
-      </h1>
+    <main className="relative w-full h-[100dvh] overflow-hidden">
+      <WasteMap />
     </main>
   )
 }

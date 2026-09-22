@@ -15,6 +15,9 @@ function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const location = useLocation()
 
+  const isPetaRoute = location.pathname.startsWith('/peta-sampah')
+  const isFloating = isPetaRoute || isScrolled
+
   const navContainerRef = useRef(null)
   const itemRefs = useRef({})
   const [indicatorStyle, setIndicatorStyle] = useState({
@@ -82,7 +85,7 @@ function Navbar() {
       <div className="max-w-[1400px] mx-auto pointer-events-auto">
         <nav
           className={`w-full flex items-center justify-between px-6 sm:px-10 py-2.5 sm:py-3 rounded-xl transition-all duration-300 ${
-            isScrolled
+            isFloating
               ? 'bg-white/40 backdrop-blur-xl border border-border-warm/50 shadow-[0_8px_30px_rgba(0,0,0,0.04)]'
               : 'bg-transparent border border-transparent shadow-none'
           }`}
