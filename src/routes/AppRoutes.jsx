@@ -14,6 +14,9 @@ import LaporMandiriValidasiPage from '../pages/lapor/LaporMandiriValidasiPage'
 import LaporTrackingPage from '../pages/lapor/LaporTrackingPage'
 import PetaSampahPage from '../pages/peta-sampah/PetaSampahPage'
 import AksiPediaPage from '../pages/aksipedia/AksiPediaPage'
+import ModuleListPage from '../pages/aksipedia/ModuleListPage'
+import ModuleDetailPage from '../pages/aksipedia/ModuleDetailPage'
+import ModuleQuizPage from '../pages/aksipedia/ModuleQuizPage'
 import KomunitasPage from '../pages/komunitas/KomunitasPage'
 import CommunityLeaderboardPage from '../pages/komunitas/leaderboard/CommunityLeaderboardPage'
 import ProfilPage from '../pages/profil/ProfilPage'
@@ -29,6 +32,9 @@ function AppRoutes() {
           <Route path="/" element={<BerandaPage />} />
           <Route path="/peta-sampah" element={<PetaSampahPage />} />
           <Route path="/aksipedia" element={<AksiPediaPage />} />
+          <Route path="/aksipedia/modul" element={<ModuleListPage />} />
+          <Route path="/aksipedia/modul/:moduleId" element={<ModuleDetailPage />} />
+          <Route path="/aksipedia/modul/:moduleId/quiz" element={<ModuleQuizPage />} />
           <Route path="/komunitas" element={<KomunitasPage />} />
           <Route path="/komunitas/leaderboard" element={<CommunityLeaderboardPage />} />
           <Route path="/profil" element={<ProfilPage />} />
