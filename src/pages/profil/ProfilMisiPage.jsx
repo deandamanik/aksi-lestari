@@ -1,22 +1,24 @@
 import { Link } from 'react-router-dom'
 import { ArrowLeftIcon } from '../../components/common/Icons'
-import ProfilNavTabs from './components/ProfilNavTabs'
 import MisiWeeklySummary from './components/MisiWeeklySummary'
+import MisiAktivitasRingan from './components/MisiAktivitasRingan'
 import MisiList from './components/MisiList'
 import MisiCompletionSummary from './components/MisiCompletionSummary'
 
 /**
  * ProfilMisiPage — Weekly Mission Hub
  *
- * Visual hierarchy (top → bottom):
- * 1. Page Header   — back link, heading, subtitle
- * 2. Nav Tabs      — sub-navigation
- * 3. Weekly Summary — primary visual anchor (progress, status, XP)
- * 4. Mission List  — content core (individual mission cards)
- * 5. Completion Summary — closing section (target status, CTA to riwayat)
+ * Section order (matching reference layout):
+ * 1. Back navigation  — ← Kembali ke Profil
+ * 2. Breadcrumb       — PROFIL / MISI & TANTANGAN (desktop only)
+ * 3. Page heading     — PROFIL eyebrow + "Misi" heading + subtitle
+ * 4. Weekly Summary   — progress, status, XP
+ * 5. Aktivitas Kontribusi Ringan — light activities (NOT daily missions)
+ * 6. Misi Minggu Ini  — 2-column mission cards
+ * 7. Contribution Callout — link to riwayat
  *
- * Design direction: calm, actionable, editorial.
- * Weekly missions only — no daily anything.
+ * Design: clean, editorial, calm, premium. Typography-driven.
+ * Weekly missions only — no daily mechanics.
  */
 function ProfilMisiPage() {
   return (
@@ -24,10 +26,9 @@ function ProfilMisiPage() {
       className="min-h-[100svh] bg-[#FAF9F4] pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8"
       aria-label="Halaman Misi Mingguan AksiLestari"
     >
-      <div className="max-w-5xl mx-auto flex flex-col gap-6 sm:gap-8">
-        {/* A. Page Header */}
-        <div className="profil-enter flex flex-col gap-3">
-          {/* Back link */}
+      <div className="max-w-5xl mx-auto flex flex-col gap-8 sm:gap-10">
+        {/* 1. Back navigation + 2. Breadcrumb */}
+        <div className="profil-enter flex items-center justify-between gap-4">
           <Link
             to="/profil"
             className="group inline-flex items-center gap-2 text-sm font-semibold text-stone-500 hover:text-primary transition-colors duration-200 w-fit focus:outline-hidden focus-visible:underline"
@@ -39,37 +40,47 @@ function ProfilMisiPage() {
             <span>Kembali ke Profil</span>
           </Link>
 
-          {/* Heading */}
-          <div className="flex flex-col gap-1">
-            <span className="text-[11px] font-bold text-stone-400 uppercase tracking-widest select-none">
-              Profil
-            </span>
-            <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl text-stone-900 font-bold tracking-tight">
-              Misi Minggu Ini
-            </h1>
-            <p className="text-sm sm:text-base text-stone-500 leading-relaxed max-w-xl mt-1">
-              Selesaikan target kontribusimu minggu ini dan dapatkan XP.
-            </p>
-          </div>
+          {/* Breadcrumb — desktop only */}
+          <nav
+            aria-label="Breadcrumb"
+            className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-stone-400 select-none"
+          >
+            <span>PROFIL</span>
+            <span aria-hidden="true">/</span>
+            <span className="text-stone-500">MISI &amp; TANTANGAN</span>
+          </nav>
         </div>
 
-        {/* B. Sub-navigation tabs */}
-        <div className="profil-enter profil-enter-delay-1">
-          <ProfilNavTabs />
+        {/* 3. Page heading */}
+        <div className="profil-enter profil-enter-delay-1 flex flex-col gap-2">
+          <span className="text-[11px] font-bold text-stone-400 uppercase tracking-widest select-none">
+            Profil
+          </span>
+          <h1 className="font-display text-3xl sm:text-4xl lg:text-[2.75rem] text-stone-900 font-bold tracking-tight leading-tight">
+            Misi
+          </h1>
+          <p className="text-sm sm:text-base text-stone-500 leading-relaxed max-w-xl mt-1">
+            Capai target kontribusi minggu ini dan terus bergerak untuk lingkungan yang lebih baik.
+          </p>
         </div>
 
-        {/* C. Weekly Summary — Primary Visual Anchor */}
+        {/* 4. Weekly Summary */}
         <div className="profil-enter profil-enter-delay-2">
           <MisiWeeklySummary />
         </div>
 
-        {/* D. Mission List — Content Core */}
+        {/* 5. Aktivitas Kontribusi Ringan */}
         <div className="profil-enter profil-enter-delay-3">
+          <MisiAktivitasRingan />
+        </div>
+
+        {/* 6. Misi Minggu Ini — Mission Cards */}
+        <div className="profil-enter profil-enter-delay-4">
           <MisiList />
         </div>
 
-        {/* E. Completion Summary — Closing Section */}
-        <div className="profil-enter profil-enter-delay-4">
+        {/* 7. Contribution Callout */}
+        <div className="profil-enter profil-enter-delay-5">
           <MisiCompletionSummary />
         </div>
       </div>
