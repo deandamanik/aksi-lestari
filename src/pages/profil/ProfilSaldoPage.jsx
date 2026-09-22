@@ -1,40 +1,106 @@
-import ProfilNavTabs from './components/ProfilNavTabs'
-import { CheckCircle2Icon, InfoIcon } from '../../components/common/Icons'
-import { SALDO_APRESIASI } from '../../data/profil/saldoRedeemData'
+import { Link } from 'react-router-dom'
+import { ArrowLeftIcon } from '../../components/common/Icons'
+import SaldoBalanceCard from './components/SaldoBalanceCard'
+import SaldoTransparencyNote from './components/SaldoTransparencyNote'
+import SaldoContributionSources from './components/SaldoContributionSources'
+import SaldoRedeemSection from './components/SaldoRedeemSection'
+import SaldoRedemptionHistory from './components/SaldoRedemptionHistory'
+import SaldoGovernanceInfo from './components/SaldoGovernanceInfo'
 
+/**
+ * ProfilSaldoPage — Saldo & Redeem Hub
+ *
+ * Section order (following reference layout):
+ * 1. Back navigation + Breadcrumb
+ * 2. Page heading — "Saldo & Redeem" + subtitle + contextual label
+ * 3. Balance card — primary focal point
+ * 4. Transparency note — informational
+ * 5. Contribution sources — how balance grows
+ * 6. Redeem section — interactive E-Wallet / Voucher
+ * 7. Redemption history — past transactions
+ * 8. Governance info — closing section
+ *
+ * Design: civic-tech, trustworthy, editorial, functional.
+ * Consistent with ProfilMisiPage patterns.
+ */
 function ProfilSaldoPage() {
   return (
-    <main className="min-h-[100svh] bg-[#FAF9F4] pt-24 sm:pt-28 pb-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-5xl mx-auto flex flex-col gap-6">
-        {/* Header Title */}
-        <div className="flex flex-col gap-1">
-          <h1 className="font-display text-2xl sm:text-3xl text-primary font-bold">
+    <main
+      className="min-h-[100svh] bg-[#FAF9F4] pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8"
+      aria-label="Halaman Saldo dan Redeem AksiLestari"
+    >
+      <div className="max-w-5xl mx-auto flex flex-col gap-8 sm:gap-10">
+        {/* 1. Back navigation + Breadcrumb */}
+        <div className="profil-enter flex items-center justify-between gap-4">
+          <Link
+            to="/profil"
+            className="group inline-flex items-center gap-2 text-sm font-semibold text-stone-500 hover:text-primary transition-colors duration-200 w-fit focus:outline-hidden focus-visible:underline"
+          >
+            <ArrowLeftIcon
+              className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-0.5"
+              strokeWidth={2}
+            />
+            <span>Kembali ke Profil</span>
+          </Link>
+
+          {/* Breadcrumb — desktop only */}
+          <nav
+            aria-label="Breadcrumb"
+            className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-stone-400 select-none"
+          >
+            <span>PROFIL</span>
+            <span aria-hidden="true">/</span>
+            <span className="text-stone-500">SALDO &amp; REDEEM</span>
+          </nav>
+        </div>
+
+        {/* 2. Page heading */}
+        <div className="profil-enter profil-enter-delay-1 flex flex-col gap-2">
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-[11px] font-bold text-stone-400 uppercase tracking-widest select-none">
+              Profil
+            </span>
+            <span className="text-[10px] font-bold text-primary/70 bg-primary/5 px-2.5 py-1 rounded-md uppercase tracking-widest select-none">
+              Apresiasi Warga
+            </span>
+          </div>
+          <h1 className="font-display text-3xl sm:text-4xl lg:text-[2.75rem] text-stone-900 font-bold tracking-tight leading-tight">
             Saldo &amp; Redeem
           </h1>
-          <p className="text-xs sm:text-sm text-stone-600">
-            Apresiasi moneter dalam mata uang Rupiah atas kontribusi nyata yang telah tervalidasi.
+          <p className="text-sm sm:text-base text-stone-500 leading-relaxed max-w-xl mt-1">
+            Kelola apresiasi yang kamu kumpulkan dari setiap kontribusi nyata untuk lingkungan dan tata kelola bersama.
           </p>
         </div>
 
-        {/* Sub-navigation tabs */}
-        <ProfilNavTabs />
+        {/* 3. Balance card */}
+        <div className="profil-enter profil-enter-delay-2">
+          <SaldoBalanceCard />
+        </div>
 
-        {/* Placeholder Foundation Card */}
-        <section className="bg-white rounded-2xl border border-[#E8E5DC] shadow-xs p-6 sm:p-8 flex flex-col items-center justify-center text-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center text-primary">
-            <CheckCircle2Icon className="w-6 h-6 text-primary" strokeWidth={2} />
-          </div>
-          <h2 className="font-display font-bold text-lg text-stone-900">
-            Fondasi Saldo Apresiasi Siap
-          </h2>
-          <p className="text-xs sm:text-sm text-stone-600 max-w-md leading-relaxed">
-            Data saldo riil ({SALDO_APRESIASI.formattedBalance}) dan dua jalur penukaran terpisah (E-Wallet &amp; Voucher) telah terpasang. Tampilan penarikan dan katalog voucher akan dibangun pada tahap berikutnya.
-          </p>
-          <div className="inline-flex items-center gap-1.5 text-xs text-stone-500 pt-2">
-            <InfoIcon className="w-3.5 h-3.5 text-stone-400" strokeWidth={2} />
-            <span>Saldo Apresiasi berdenominasi Rupiah dan terpisah mutlak dari XP.</span>
-          </div>
-        </section>
+        {/* 4. Transparency note */}
+        <div className="profil-enter profil-enter-delay-2">
+          <SaldoTransparencyNote />
+        </div>
+
+        {/* 5. Contribution sources */}
+        <div className="profil-enter profil-enter-delay-3">
+          <SaldoContributionSources />
+        </div>
+
+        {/* 6. Redeem section */}
+        <div className="profil-enter profil-enter-delay-4">
+          <SaldoRedeemSection />
+        </div>
+
+        {/* 7. Redemption history */}
+        <div className="profil-enter profil-enter-delay-5">
+          <SaldoRedemptionHistory />
+        </div>
+
+        {/* 8. Governance info */}
+        <div className="profil-enter profil-enter-delay-6">
+          <SaldoGovernanceInfo />
+        </div>
       </div>
     </main>
   )

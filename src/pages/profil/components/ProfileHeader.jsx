@@ -3,11 +3,11 @@ import { USER_PROFILE } from '../../../data/profil/userProfileData'
 /**
  * ProfileHeader — Primary Visual Anchor
  *
- * Design: Editorial-style identity card.
- * Name is the dominant typographic element.
- * Level is quiet secondary text.
- * XP + progress bar is prominent but restrained.
- * No colored badges, no heavy decorations.
+ * One unified composition: avatar + identity + XP progression.
+ * Name is the dominant typographic element (Quando).
+ * Level shown as quiet secondary text — no pills, no badges.
+ * XP progression is prominent with a refined progress bar.
+ * Avatar has a subtle green ring for identity anchoring.
  */
 function ProfileHeader() {
   const {
@@ -25,71 +25,75 @@ function ProfileHeader() {
 
   return (
     <header className="bg-white rounded-2xl border border-[#E8E5DC] overflow-hidden">
-      {/* Top: Identity + Bio */}
-      <div className="p-6 sm:p-8 pb-0 sm:pb-0">
+      {/* Top: Identity + Bio — single composition */}
+      <div className="p-6 sm:p-8 pb-5 sm:pb-6">
         <div className="flex items-start gap-5 sm:gap-6">
-          {/* Avatar — clean, calm */}
+          {/* Avatar — refined with subtle green accent ring */}
           <div
-            className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#FAF9F4] border-2 border-[#E8E5DC] text-primary flex items-center justify-center font-display text-2xl sm:text-3xl font-bold shrink-0 select-none"
+            className="shrink-0 w-[4.5rem] h-[4.5rem] sm:w-[5.5rem] sm:h-[5.5rem] rounded-full bg-[#FAF9F4] border-[2.5px] border-primary/20 text-primary flex items-center justify-center font-display text-2xl sm:text-[2rem] font-bold select-none transition-colors duration-300"
             aria-label={`Inisial relawan ${name}`}
           >
             {initials}
           </div>
 
           {/* Name + Level + Tagline */}
-          <div className="flex flex-col gap-1.5 min-w-0 pt-0.5">
-            <div className="flex flex-col">
-              <h1 className="font-display text-3xl sm:text-4xl text-stone-900 font-bold tracking-tight leading-none">
+          <div className="flex flex-col gap-2 min-w-0 pt-1">
+            {/* Name — dominant typography */}
+            <div className="flex flex-col gap-0.5">
+              <h1 className="font-display text-[1.75rem] sm:text-[2.125rem] text-stone-900 font-bold tracking-tight leading-none">
                 {name}
               </h1>
-              <span className="text-sm text-stone-400 font-medium mt-1.5 select-none">
-                {currentLevel} · {levelTierName}
+              <span className="text-sm text-stone-400 font-medium mt-1 select-none">
+                {currentLevel}{' '}
+                <span className="text-stone-300 mx-0.5" aria-hidden="true">·</span>{' '}
+                <span className="text-primary/70">{levelTierName}</span>
               </span>
             </div>
 
-            <p className="text-sm sm:text-base text-stone-500 leading-relaxed max-w-lg mt-1">
+            {/* Tagline — personal statement feel */}
+            <p className="text-sm sm:text-[0.938rem] text-stone-500/90 leading-relaxed max-w-lg mt-0.5">
               &ldquo;{bio}&rdquo;
             </p>
           </div>
         </div>
       </div>
 
-      {/* Bottom: XP Progression — full-width, integrated, prominent */}
-      <div className="mt-6 sm:mt-8 px-6 sm:px-8 pb-6 sm:pb-7 bg-[#FAF9F4]/60 border-t border-[#E8E5DC]/60">
-        <div className="pt-5 sm:pt-6">
-          {/* XP Value — prominent number */}
-          <div className="flex items-end justify-between gap-4 mb-3">
-            <div className="flex items-baseline gap-2">
-              <span className="font-display text-3xl sm:text-4xl font-bold text-stone-900 tracking-tight leading-none">
-                {currentXP}
-              </span>
-              <span className="text-sm font-bold text-primary tracking-wide">XP</span>
-            </div>
-            <span className="text-sm text-stone-400 font-medium tabular-nums">
-              {currentXP} / {nextLevelXP}
+      {/* Bottom: XP Progression — integrated, warm surface */}
+      <div className="px-6 sm:px-8 pb-6 sm:pb-7 pt-5 sm:pt-6 bg-[#FAF9F4]/50 border-t border-[#E8E5DC]/50">
+        {/* XP Value row */}
+        <div className="flex items-end justify-between gap-4 mb-3.5">
+          <div className="flex items-baseline gap-1.5">
+            <span className="font-display text-[2rem] sm:text-[2.5rem] font-bold text-stone-900 tracking-tight leading-none tabular-nums">
+              {currentXP}
             </span>
+            <span className="text-sm font-bold text-primary/80 tracking-wide">XP</span>
           </div>
-
-          {/* Progress bar — slightly thicker for presence */}
-          <div
-            className="w-full h-2.5 rounded-full bg-stone-200/70 overflow-hidden"
-            role="progressbar"
-            aria-valuenow={currentXP}
-            aria-valuemin={0}
-            aria-valuemax={nextLevelXP}
-            aria-label={`Progres level: ${currentXP} dari ${nextLevelXP} XP`}
-          >
-            <div
-              className="h-full rounded-full bg-primary progress-fill-animate"
-              style={{ width: `${levelProgressPercent}%` }}
-            />
-          </div>
-
-          {/* Footer label */}
-          <p className="text-xs sm:text-sm text-stone-400 mt-2.5 text-right">
-            <span className="font-semibold text-stone-600">{xpToNextLevel} XP</span> menuju Level {nextLevelNumber}
-          </p>
+          <span className="text-sm text-stone-400 font-medium tabular-nums">
+            {currentXP} / {nextLevelXP}
+          </span>
         </div>
+
+        {/* Progress bar — refined, meaningful height */}
+        <div
+          className="group w-full h-3 rounded-full bg-stone-200/50 overflow-hidden transition-colors duration-300 hover:bg-stone-200/70 cursor-default"
+          role="progressbar"
+          aria-valuenow={currentXP}
+          aria-valuemin={0}
+          aria-valuemax={nextLevelXP}
+          aria-label={`Progres level: ${currentXP} dari ${nextLevelXP} XP (${levelProgressPercent}%)`}
+        >
+          <div
+            className="h-full rounded-full bg-primary progress-fill-animate transition-all duration-300"
+            style={{ width: `${levelProgressPercent}%` }}
+          />
+        </div>
+
+        {/* Footer label */}
+        <p className="text-xs sm:text-sm text-stone-400 mt-3 text-right">
+          <span className="font-semibold text-stone-600 tabular-nums">{xpToNextLevel} XP</span>{' '}
+          menuju{' '}
+          <span className="font-medium text-stone-500">Level {nextLevelNumber}</span>
+        </p>
       </div>
     </header>
   )
