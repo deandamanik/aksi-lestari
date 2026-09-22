@@ -1,23 +1,28 @@
 import { useState, useMemo } from 'react'
 import WasteMap from './components/WasteMap'
 import MapControlPanel from './components/MapControlPanel'
+import MapDetailPanel from './components/MapDetailPanel'
 import { WASTE_REPORTS } from '../../data/peta-sampah/wasteReportsData'
 import { BANK_SAMPAH } from '../../data/peta-sampah/bankSampahData'
 
 /**
- * PetaSampahPage Component (Step 5 Revised)
+ * PetaSampahPage Component (Step 5 Layer System + Step 6 Marker Detail Panel)
  *
  * Dedicated full-screen map experience with:
  * - Full-viewport map layer engine (WasteMap)
  * - Map layer visibility state (Heatmap, Laporan, Bank Sampah)
  * - Dual-dataset search (Waste reports & Bank Sampah)
  * - Geolocation centering ("Gunakan Lokasiku")
+ * - Side overlay detail sheet for selected Waste Report & Bank Sampah markers
  */
 function PetaSampahPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [heatmapVisible, setHeatmapVisible] = useState(true)
   const [reportsVisible, setReportsVisible] = useState(true)
   const [bankSampahVisible, setBankSampahVisible] = useState(true)
+
+  // Step 6: Single source of truth for active marker selection ({ type: 'report'|'bank', data })
+  const [selectedPoint, setSelectedPoint] = useState(null)
 
   // Geolocation states
   const [flyToCoords, setFlyToCoords] = useState(null)
@@ -56,6 +61,25 @@ function PetaSampahPage() {
     })
   }, [searchQuery])
 
+  // Step 6: Derive active selected point: validate that it still exists in the visible datasets and active layers
+  const activeSelectedPoint = useMemo(() => {
+    if (!selectedPoint) return null
+
+    if (selectedPoint.type === 'report') {
+      if (!reportsVisible) return null
+      const exists = visibleWasteReports.some((r) => r.id === selectedPoint.data.id)
+      return exists ? selectedPoint : null
+    }
+
+    if (selectedPoint.type === 'bank') {
+      if (!bankSampahVisible) return null
+      const exists = visibleBankSampah.some((b) => b.id === selectedPoint.data.id)
+      return exists ? selectedPoint : null
+    }
+
+    return null
+  }, [selectedPoint, reportsVisible, bankSampahVisible, visibleWasteReports, visibleBankSampah])
+
   // Geolocation trigger
   const handleUseMyLocation = () => {
     if (!navigator.geolocation) {
@@ -92,6 +116,8 @@ function PetaSampahPage() {
         reportsVisible={reportsVisible}
         bankSampahVisible={bankSampahVisible}
         flyToCoords={flyToCoords}
+        selectedPoint={activeSelectedPoint}
+        onSelectPoint={setSelectedPoint}
       />
       <MapControlPanel
         searchQuery={searchQuery}
@@ -107,6 +133,10 @@ function PetaSampahPage() {
         onUseMyLocation={handleUseMyLocation}
         isLocating={isLocating}
         locationError={locationError}
+      />
+      <MapDetailPanel
+        selectedPoint={activeSelectedPoint}
+        onClose={() => setSelectedPoint(null)}
       />
     </main>
   )

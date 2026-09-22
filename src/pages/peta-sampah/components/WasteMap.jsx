@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { Map, Marker, setWorkerUrl } from 'maplibre-gl'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import 'maplibre-gl/dist/maplibre-gl.css'
@@ -11,9 +11,9 @@ import { BANK_SAMPAH } from '../../../data/peta-sampah/bankSampahData'
 setWorkerUrl(workerUrl)
 
 /**
- * Creates a distinct circular DOM marker for waste reports (with severity color coding).
+ * Creates a distinct circular DOM marker for waste reports (with severity color coding and subtle selection).
  */
-function createWasteMarkerElement(report) {
+function createWasteMarkerElement(report, isSelected, onClick) {
   const markerEl = document.createElement('div')
   markerEl.className = 'group relative cursor-pointer'
   markerEl.setAttribute('role', 'button')
@@ -34,6 +34,11 @@ function createWasteMarkerElement(report) {
         ? '#7AAB2B' // Secondary green
         : '#22603B' // Primary forest green
 
+  const initialShadow = isSelected
+    ? `0 0 0 2.5px ${bgColor}, 0 3px 12px rgba(0, 0, 0, 0.35)`
+    : '0 2px 8px rgba(0, 0, 0, 0.22)'
+  const initialTransform = isSelected ? 'scale(1.15)' : 'scale(1)'
+
   markerEl.innerHTML = `
     <div style="
       width: 26px;
@@ -41,7 +46,8 @@ function createWasteMarkerElement(report) {
       background-color: ${bgColor};
       border: 2.5px solid #FFFFFF;
       border-radius: 9999px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+      box-shadow: ${initialShadow};
+      transform: ${initialTransform};
       display: flex;
       align-items: center;
       justify-content: center;
@@ -57,26 +63,38 @@ function createWasteMarkerElement(report) {
   `
 
   const innerBadge = markerEl.firstElementChild
+  if (innerBadge) {
+    innerBadge.dataset.selected = isSelected ? 'true' : 'false'
+  }
+
   markerEl.addEventListener('mouseenter', () => {
     if (innerBadge) {
-      innerBadge.style.transform = 'scale(1.2)'
-      innerBadge.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)'
+      innerBadge.style.transform = 'scale(1.22)'
+      innerBadge.style.boxShadow = '0 4px 14px rgba(0, 0, 0, 0.35)'
     }
   })
   markerEl.addEventListener('mouseleave', () => {
     if (innerBadge) {
-      innerBadge.style.transform = 'scale(1)'
-      innerBadge.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.22)'
+      const selected = innerBadge.dataset.selected === 'true'
+      innerBadge.style.transform = selected ? 'scale(1.15)' : 'scale(1)'
+      innerBadge.style.boxShadow = selected
+        ? `0 0 0 2.5px ${bgColor}, 0 3px 12px rgba(0, 0, 0, 0.35)`
+        : '0 2px 8px rgba(0, 0, 0, 0.22)'
     }
   })
 
-  return markerEl
+  markerEl.addEventListener('click', (e) => {
+    e.stopPropagation()
+    onClick?.(report)
+  })
+
+  return { markerEl, innerBadge, bgColor }
 }
 
 /**
- * Creates a dedicated blue location marker for Bank Sampah points.
+ * Creates a dedicated blue location marker for Bank Sampah points (with subtle selection).
  */
-function createBankMarkerElement(bank) {
+function createBankMarkerElement(bank, isSelected, onClick) {
   const markerEl = document.createElement('div')
   markerEl.className = 'group relative cursor-pointer'
   markerEl.setAttribute('role', 'button')
@@ -89,6 +107,11 @@ function createBankMarkerElement(bank) {
     `${bank.name}\n${bank.address}\nJam: ${bank.operatingHours}\nTerima: ${bank.acceptedMaterials.join(', ')}`
   )
 
+  const initialShadow = isSelected
+    ? '0 0 0 2.5px #1D70B8, 0 3px 12px rgba(29, 112, 184, 0.45)'
+    : '0 2px 8px rgba(0, 0, 0, 0.25)'
+  const initialTransform = isSelected ? 'scale(1.15)' : 'scale(1)'
+
   markerEl.innerHTML = `
     <div style="
       width: 26px;
@@ -96,7 +119,8 @@ function createBankMarkerElement(bank) {
       background-color: #1D70B8;
       border: 2.5px solid #FFFFFF;
       border-radius: 9999px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+      box-shadow: ${initialShadow};
+      transform: ${initialTransform};
       display: flex;
       align-items: center;
       justify-content: center;
@@ -113,27 +137,40 @@ function createBankMarkerElement(bank) {
   `
 
   const innerBadge = markerEl.firstElementChild
+  if (innerBadge) {
+    innerBadge.dataset.selected = isSelected ? 'true' : 'false'
+  }
+
   markerEl.addEventListener('mouseenter', () => {
     if (innerBadge) {
-      innerBadge.style.transform = 'scale(1.2)'
-      innerBadge.style.boxShadow = '0 4px 12px rgba(29, 112, 184, 0.45)'
+      innerBadge.style.transform = 'scale(1.22)'
+      innerBadge.style.boxShadow = '0 4px 14px rgba(29, 112, 184, 0.45)'
     }
   })
   markerEl.addEventListener('mouseleave', () => {
     if (innerBadge) {
-      innerBadge.style.transform = 'scale(1)'
-      innerBadge.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.25)'
+      const selected = innerBadge.dataset.selected === 'true'
+      innerBadge.style.transform = selected ? 'scale(1.15)' : 'scale(1)'
+      innerBadge.style.boxShadow = selected
+        ? '0 0 0 2.5px #1D70B8, 0 3px 12px rgba(29, 112, 184, 0.45)'
+        : '0 2px 8px rgba(0, 0, 0, 0.25)'
     }
   })
 
-  return markerEl
+  markerEl.addEventListener('click', (e) => {
+    e.stopPropagation()
+    onClick?.(bank)
+  })
+
+  return { markerEl, innerBadge }
 }
 
 /**
- * WasteMap Component (Step 1–4 Foundation + Step 5 Map Layer & Bank Sampah Integration)
+ * WasteMap Component (Step 1–4 Foundation + Step 5 Map Layers + Step 6 Marker Selection)
  *
  * Renders MapLibre GL with MapTiler Dataviz basemap, custom soft editorial styling,
- * waste-report markers, Bank Sampah markers, and a native MapLibre heatmap density layer.
+ * waste-report markers, Bank Sampah markers, native MapLibre heatmap density layer,
+ * and marker click handling for the detail overlay panel.
  */
 function WasteMap({
   wasteReports = WASTE_REPORTS,
@@ -142,11 +179,15 @@ function WasteMap({
   reportsVisible = true,
   bankSampahVisible = true,
   flyToCoords = null,
+  selectedPoint = null,
+  onSelectPoint = null,
 }) {
   const mapContainerRef = useRef(null)
   const mapRef = useRef(null)
   const wasteMarkersRef = useRef([])
+  const wasteMarkersDataRef = useRef([])
   const bankMarkersRef = useRef([])
+  const bankMarkersDataRef = useRef([])
   const mapLoadedRef = useRef(false)
   const [runtimeError, setRuntimeError] = useState(null)
 
@@ -156,7 +197,80 @@ function WasteMap({
     heatmapVisible,
     reportsVisible,
     bankSampahVisible,
+    selectedPoint,
   })
+
+  const updateWasteMarkers = useCallback((targetMap, reportsList) => {
+    wasteMarkersRef.current.forEach((marker) => marker.remove())
+    wasteMarkersRef.current = []
+    wasteMarkersDataRef.current = []
+
+    const selectedId = stateRef.current.selectedPoint?.data?.id
+    const selectedType = stateRef.current.selectedPoint?.type
+
+    reportsList.forEach((report) => {
+      const isSelected = selectedType === 'report' && report.id === selectedId
+      const { markerEl, innerBadge, bgColor } = createWasteMarkerElement(
+        report,
+        isSelected,
+        (rep) => {
+          onSelectPoint?.({ type: 'report', data: rep })
+        }
+      )
+
+      const marker = new Marker({
+        element: markerEl,
+        anchor: 'center',
+      })
+        .setLngLat([report.longitude, report.latitude])
+        .addTo(targetMap)
+
+      wasteMarkersRef.current.push(marker)
+      wasteMarkersDataRef.current.push({ id: report.id, innerBadge, bgColor })
+    })
+  }, [onSelectPoint])
+
+  const clearWasteMarkers = () => {
+    wasteMarkersRef.current.forEach((marker) => marker.remove())
+    wasteMarkersRef.current = []
+    wasteMarkersDataRef.current = []
+  }
+
+  const updateBankMarkers = useCallback((targetMap, banksList) => {
+    bankMarkersRef.current.forEach((marker) => marker.remove())
+    bankMarkersRef.current = []
+    bankMarkersDataRef.current = []
+
+    const selectedId = stateRef.current.selectedPoint?.data?.id
+    const selectedType = stateRef.current.selectedPoint?.type
+
+    banksList.forEach((bank) => {
+      const isSelected = selectedType === 'bank' && bank.id === selectedId
+      const { markerEl, innerBadge } = createBankMarkerElement(
+        bank,
+        isSelected,
+        (b) => {
+          onSelectPoint?.({ type: 'bank', data: b })
+        }
+      )
+
+      const marker = new Marker({
+        element: markerEl,
+        anchor: 'center',
+      })
+        .setLngLat([bank.longitude, bank.latitude])
+        .addTo(targetMap)
+
+      bankMarkersRef.current.push(marker)
+      bankMarkersDataRef.current.push({ id: bank.id, innerBadge })
+    })
+  }, [onSelectPoint])
+
+  const clearBankMarkers = () => {
+    bankMarkersRef.current.forEach((marker) => marker.remove())
+    bankMarkersRef.current = []
+    bankMarkersDataRef.current = []
+  }
 
   // Synchronize stateRef for map load callback
   useEffect(() => {
@@ -166,54 +280,50 @@ function WasteMap({
       heatmapVisible,
       reportsVisible,
       bankSampahVisible,
+      selectedPoint,
+      updateWasteMarkers,
+      updateBankMarkers,
     }
-  }, [wasteReports, bankSampah, heatmapVisible, reportsVisible, bankSampahVisible])
+  }, [
+    wasteReports,
+    bankSampah,
+    heatmapVisible,
+    reportsVisible,
+    bankSampahVisible,
+    selectedPoint,
+    updateWasteMarkers,
+    updateBankMarkers,
+  ])
 
   const maptilerKey = import.meta.env.VITE_MAPTILER_KEY
 
-  const updateWasteMarkers = (targetMap, reportsList) => {
-    wasteMarkersRef.current.forEach((marker) => marker.remove())
-    wasteMarkersRef.current = []
+  // Reactive selection update when selectedPoint changes
+  useEffect(() => {
+    const selectedId = selectedPoint?.data?.id
+    const selectedType = selectedPoint?.type
 
-    reportsList.forEach((report) => {
-      const markerEl = createWasteMarkerElement(report)
-      const marker = new Marker({
-        element: markerEl,
-        anchor: 'center',
-      })
-        .setLngLat([report.longitude, report.latitude])
-        .addTo(targetMap)
-
-      wasteMarkersRef.current.push(marker)
+    wasteMarkersDataRef.current.forEach(({ id, innerBadge, bgColor }) => {
+      const isSelected = selectedType === 'report' && id === selectedId
+      if (innerBadge) {
+        innerBadge.dataset.selected = isSelected ? 'true' : 'false'
+        innerBadge.style.transform = isSelected ? 'scale(1.15)' : 'scale(1)'
+        innerBadge.style.boxShadow = isSelected
+          ? `0 0 0 2.5px ${bgColor}, 0 3px 12px rgba(0, 0, 0, 0.35)`
+          : '0 2px 8px rgba(0, 0, 0, 0.22)'
+      }
     })
-  }
 
-  const clearWasteMarkers = () => {
-    wasteMarkersRef.current.forEach((marker) => marker.remove())
-    wasteMarkersRef.current = []
-  }
-
-  const updateBankMarkers = (targetMap, banksList) => {
-    bankMarkersRef.current.forEach((marker) => marker.remove())
-    bankMarkersRef.current = []
-
-    banksList.forEach((bank) => {
-      const markerEl = createBankMarkerElement(bank)
-      const marker = new Marker({
-        element: markerEl,
-        anchor: 'center',
-      })
-        .setLngLat([bank.longitude, bank.latitude])
-        .addTo(targetMap)
-
-      bankMarkersRef.current.push(marker)
+    bankMarkersDataRef.current.forEach(({ id, innerBadge }) => {
+      const isSelected = selectedType === 'bank' && id === selectedId
+      if (innerBadge) {
+        innerBadge.dataset.selected = isSelected ? 'true' : 'false'
+        innerBadge.style.transform = isSelected ? 'scale(1.15)' : 'scale(1)'
+        innerBadge.style.boxShadow = isSelected
+          ? '0 0 0 2.5px #1D70B8, 0 3px 12px rgba(29, 112, 184, 0.45)'
+          : '0 2px 8px rgba(0, 0, 0, 0.25)'
+      }
     })
-  }
-
-  const clearBankMarkers = () => {
-    bankMarkersRef.current.forEach((marker) => marker.remove())
-    bankMarkersRef.current = []
-  }
+  }, [selectedPoint])
 
   // Reactive toggle: Heatmap layer visibility
   useEffect(() => {
@@ -244,7 +354,7 @@ function WasteMap({
     } else {
       clearWasteMarkers()
     }
-  }, [wasteReports, reportsVisible])
+  }, [wasteReports, reportsVisible, updateWasteMarkers])
 
   // Reactive update: Bank Sampah markers
   useEffect(() => {
@@ -254,7 +364,7 @@ function WasteMap({
     } else {
       clearBankMarkers()
     }
-  }, [bankSampah, bankSampahVisible])
+  }, [bankSampah, bankSampahVisible, updateBankMarkers])
 
   // Reactive update: Geolocation flyTo
   useEffect(() => {
@@ -408,10 +518,10 @@ function WasteMap({
 
       // Initial marker renders based on layer visibility
       if (initialReportsVisible) {
-        updateWasteMarkers(map, initialWasteReports)
+        stateRef.current.updateWasteMarkers(map, initialWasteReports)
       }
       if (initialBankVisible) {
-        updateBankMarkers(map, initialBankSampah)
+        stateRef.current.updateBankMarkers(map, initialBankSampah)
       }
     })
 
