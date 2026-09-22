@@ -6,7 +6,7 @@ import { WASTE_REPORTS } from '../../data/peta-sampah/wasteReportsData'
 import { BANK_SAMPAH } from '../../data/peta-sampah/bankSampahData'
 
 /**
- * PetaSampahPage Component (Step 5 Layer System + Step 6 Marker Detail Panel)
+ * PetaSampahPage Component
  *
  * Dedicated full-screen map experience with:
  * - Full-viewport map layer engine (WasteMap)
@@ -21,10 +21,8 @@ function PetaSampahPage() {
   const [reportsVisible, setReportsVisible] = useState(true)
   const [bankSampahVisible, setBankSampahVisible] = useState(true)
 
-  // Step 6: Single source of truth for active marker selection ({ type: 'report'|'bank', data })
   const [selectedPoint, setSelectedPoint] = useState(null)
 
-  // Geolocation states
   const [flyToCoords, setFlyToCoords] = useState(null)
   const [isLocating, setIsLocating] = useState(false)
   const [locationError, setLocationError] = useState(null)
@@ -61,7 +59,7 @@ function PetaSampahPage() {
     })
   }, [searchQuery])
 
-  // Step 6: Derive active selected point: validate that it still exists in the visible datasets and active layers
+  // Derive active selected point: validate that it still exists in the visible datasets and active layers
   const activeSelectedPoint = useMemo(() => {
     if (!selectedPoint) return null
 
@@ -80,7 +78,6 @@ function PetaSampahPage() {
     return null
   }, [selectedPoint, reportsVisible, bankSampahVisible, visibleWasteReports, visibleBankSampah])
 
-  // Geolocation trigger
   const handleUseMyLocation = () => {
     if (!navigator.geolocation) {
       setLocationError('Perangkat atau peramban tidak mendukung geolokasi.')
@@ -107,15 +104,19 @@ function PetaSampahPage() {
     )
   }
 
+  const hasNoResults = visibleWasteReports.length === 0 && visibleBankSampah.length === 0
+
   return (
     <main className="relative w-full h-[100dvh] overflow-hidden">
       <WasteMap
         wasteReports={visibleWasteReports}
         bankSampah={visibleBankSampah}
+        searchQuery={searchQuery}
         heatmapVisible={heatmapVisible}
         reportsVisible={reportsVisible}
         bankSampahVisible={bankSampahVisible}
         flyToCoords={flyToCoords}
+        onFlyToComplete={() => setFlyToCoords(null)}
         selectedPoint={activeSelectedPoint}
         onSelectPoint={setSelectedPoint}
       />
@@ -128,11 +129,11 @@ function PetaSampahPage() {
         setReportsVisible={setReportsVisible}
         bankSampahVisible={bankSampahVisible}
         setBankSampahVisible={setBankSampahVisible}
-        matchingReportsCount={visibleWasteReports.length}
-        matchingBanksCount={visibleBankSampah.length}
+        hasNoResults={hasNoResults}
         onUseMyLocation={handleUseMyLocation}
         isLocating={isLocating}
         locationError={locationError}
+        isDetailOpen={Boolean(activeSelectedPoint)}
       />
       <MapDetailPanel
         selectedPoint={activeSelectedPoint}

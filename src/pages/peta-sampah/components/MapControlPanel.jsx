@@ -2,10 +2,10 @@ import { useState } from 'react'
 import { SearchIcon } from '../../../components/common/Icons'
 
 /**
- * MapControlPanel Component (Peta Sampah Step 5 Revised)
+ * MapControlPanel Component
  *
  * Dedicated "Peta Titik & Pantau" map control layer providing:
- * - Editorial header: "PANTAU WILAYAH" eyebrow + "Peta Titik & Pantau"
+ * - Editorial header: "Monitoring Sebaran Sampah" eyebrow + "Peta Titik & Pantau"
  * - Dual-dataset search: searches both waste reports and Bank Sampah
  * - Map layer toggles: "Heatmap", "Laporan", "Bank Sampah"
  * - Dynamic legend: "Konsentrasi Masalah" (heatmap density) & marker dots
@@ -20,24 +20,32 @@ function MapControlPanel({
   setReportsVisible,
   bankSampahVisible,
   setBankSampahVisible,
-  matchingReportsCount,
-  matchingBanksCount,
+  hasNoResults = false,
   onUseMyLocation,
   isLocating,
   locationError,
+  isDetailOpen = false,
 }) {
-  const [isMobileCollapsed, setIsMobileCollapsed] = useState(false)
+  const [isMobileCollapsed, setIsMobileCollapsed] = useState(true)
 
   const hasSearch = searchQuery.trim().length > 0
-  const noResults = hasSearch && matchingReportsCount === 0 && matchingBanksCount === 0
+  const noResults = hasSearch && hasNoResults
 
   return (
-    <div className="absolute top-20 sm:top-24 left-3 sm:left-6 lg:left-8 z-20 w-[calc(100%-1.5rem)] max-w-[360px] sm:w-[360px] pointer-events-none">
-      <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-border-warm shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-3.5 sm:p-4 pointer-events-auto transition-all duration-200">
+    <div
+      className={`fixed md:absolute bottom-3 md:bottom-auto left-3 sm:left-4 md:left-4 lg:left-8 md:top-24 z-20 w-[calc(100%-1.5rem)] sm:w-[calc(100%-2rem)] md:w-[300px] lg:w-[360px] pointer-events-none transition-all duration-200 ease-out ${
+        isDetailOpen
+          ? 'max-md:opacity-0 max-md:pointer-events-none max-md:translate-y-6 max-md:invisible'
+          : 'max-md:opacity-100 max-md:translate-y-0'
+      }`}
+    >
+      <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-border-warm shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-3.5 sm:p-4 pointer-events-auto max-h-[68dvh] md:max-h-[calc(100dvh-7.5rem)] flex flex-col overflow-hidden transition-all duration-200">
+        {/* Mobile Pull Handle */}
+        <div className="md:hidden w-8 h-1 bg-stone-300 rounded-full mx-auto mb-2 shrink-0" aria-hidden="true" />
+
         {/* Panel Header */}
-        <div className="flex items-start justify-between gap-2 mb-3">
+        <div className="flex items-start justify-between gap-2 mb-2.5 sm:mb-3 shrink-0">
           <div>
-            {/* Contextual Eyebrow */}
             <div className="flex items-center gap-1.5 mb-1">
               <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" aria-hidden="true" />
               <span className="font-body text-[10px] sm:text-[11px] font-semibold tracking-wider text-stone-500 uppercase">
@@ -45,35 +53,38 @@ function MapControlPanel({
               </span>
             </div>
 
-            <h1 className="font-display font-semibold text-primary text-[20px] sm:text-[21px] leading-[1.15] tracking-tight">
+            <h1 className="font-display font-semibold text-primary text-[19px] sm:text-[20px] lg:text-[21px] leading-[1.15] tracking-tight">
               Peta Titik &amp; Pantau
             </h1>
-            <p className="font-body text-xs sm:text-[13px] text-stone-500 mt-1 leading-snug">
+            <p className="font-body text-xs sm:text-[13px] text-stone-500 mt-0.5 sm:mt-1 leading-snug">
               Laporan warga &amp; sebaran Bank Sampah.
             </p>
           </div>
 
-          {/* Mobile Collapse Button */}
           <button
             type="button"
             onClick={() => setIsMobileCollapsed((prev) => !prev)}
-            className="sm:hidden p-1 text-stone-400 hover:text-primary transition-colors"
-            aria-label={isMobileCollapsed ? 'Buka panel kontrol' : 'Ciutkan panel kontrol'}
+            className="md:hidden p-1 text-stone-400 hover:text-primary transition-colors shrink-0"
+            aria-label={isMobileCollapsed ? 'Buka lapisan peta & legenda' : 'Ciutkan panel kontrol'}
             aria-expanded={!isMobileCollapsed}
           >
             <svg
-              className={`w-4 h-4 transition-transform duration-200 ${isMobileCollapsed ? 'rotate-180' : ''}`}
+              className="w-4 h-4 text-stone-500"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              {isMobileCollapsed ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              )}
             </svg>
           </button>
         </div>
 
         {/* Search Input across both datasets */}
-        <div className="relative mb-3">
+        <div className="relative mb-2.5 sm:mb-3 shrink-0">
           <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400 pointer-events-none" />
           <input
             type="text"
@@ -96,8 +107,7 @@ function MapControlPanel({
         </div>
 
         {/* Expandable Section on mobile, always visible on tablet/desktop */}
-        <div className={`space-y-3 ${isMobileCollapsed ? 'hidden sm:block' : 'block'}`}>
-          {/* Map Layer System (Lapisan Peta) */}
+        <div className={`space-y-3 overflow-y-auto pr-0.5 ${isMobileCollapsed ? 'hidden md:block' : 'block'}`}>
           <div className="pt-2.5 border-t border-border-warm/60">
             <div className="mb-1.5">
               <span className="font-body text-[10px] font-medium text-stone-700">
@@ -105,9 +115,7 @@ function MapControlPanel({
               </span>
             </div>
 
-            {/* Layer Control Pills in one horizontal row */}
             <div className="flex items-center gap-1.5 w-full">
-              {/* Heatmap Layer Toggle */}
               <button
                 type="button"
                 onClick={() => setHeatmapVisible((prev) => !prev)}
@@ -121,7 +129,6 @@ function MapControlPanel({
                 <span>Heatmap</span>
               </button>
 
-              {/* Laporan Layer Toggle */}
               <button
                 type="button"
                 onClick={() => setReportsVisible((prev) => !prev)}
@@ -135,7 +142,6 @@ function MapControlPanel({
                 <span>Laporan</span>
               </button>
 
-              {/* Bank Sampah Layer Toggle */}
               <button
                 type="button"
                 onClick={() => setBankSampahVisible((prev) => !prev)}
@@ -168,7 +174,6 @@ function MapControlPanel({
           {/* Dynamic Legend */}
           {(heatmapVisible || reportsVisible || bankSampahVisible) && (
             <div className="pt-2.5 border-t border-border-warm/60 space-y-2">
-              {/* Heatmap Density Legend (Shown only when Heatmap layer is active) */}
               {heatmapVisible && (
                 <div>
                   <div className="font-body text-[11px] sm:text-xs font-medium text-stone-700 mb-1">
@@ -190,7 +195,6 @@ function MapControlPanel({
                 </div>
               )}
 
-              {/* Marker Legend (Shows active marker categories) */}
               {(reportsVisible || bankSampahVisible) && (
                 <div className="flex items-center gap-4 pt-0.5 font-body text-[11px] sm:text-xs text-stone-600">
                   {reportsVisible && (

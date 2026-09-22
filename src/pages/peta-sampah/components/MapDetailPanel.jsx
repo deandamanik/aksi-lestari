@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 /**
- * MapDetailPanel Component (Step 6)
+ * MapDetailPanel Component
  *
  * Floating editorial detail overlay panel for:
  * - Waste Reports (status, severity, category, address, reported date, route CTA)
@@ -11,12 +11,10 @@ import { useEffect, useState } from 'react'
  * and keyboard Escape accessibility.
  */
 function MapDetailPanel({ selectedPoint, onClose }) {
-  // Retain last point to allow smooth exit animation without sudden DOM blanking
-  const [prevPoint, setPrevPoint] = useState(selectedPoint)
+  // Retain last active point to allow smooth exit animation without sudden DOM blanking
   const [cachedPoint, setCachedPoint] = useState(selectedPoint)
 
-  if (selectedPoint && selectedPoint !== prevPoint) {
-    setPrevPoint(selectedPoint)
+  if (selectedPoint && selectedPoint !== cachedPoint) {
     setCachedPoint(selectedPoint)
   }
 
@@ -50,16 +48,18 @@ function MapDetailPanel({ selectedPoint, onClose }) {
 
   return (
     <div
-      className={`fixed sm:absolute bottom-3 sm:bottom-auto left-3 sm:left-auto right-3 sm:right-6 lg:right-8 sm:top-24 z-30 sm:z-20 w-[calc(100%-1.5rem)] sm:w-[350px] max-w-[360px] pointer-events-none transition-all duration-200 ease-out ${
+      className={`fixed md:absolute bottom-3 md:bottom-auto left-3 sm:left-4 md:left-auto right-3 sm:right-4 md:right-4 lg:right-8 md:top-24 z-30 md:z-20 w-[calc(100%-1.5rem)] sm:w-[calc(100%-2rem)] md:w-[300px] lg:w-[350px] pointer-events-none transition-all duration-200 ease-out ${
         selectedPoint
-          ? 'opacity-100 translate-y-0 sm:translate-x-0'
-          : 'opacity-0 translate-y-4 sm:translate-y-0 sm:translate-x-4 pointer-events-none'
+          ? 'opacity-100 translate-y-0 md:translate-x-0'
+          : 'opacity-0 translate-y-6 md:translate-y-0 md:translate-x-6 pointer-events-none'
       }`}
     >
-      <div className="bg-white/98 backdrop-blur-md rounded-2xl border border-border-warm shadow-[0_12px_36px_rgba(0,0,0,0.12)] p-4 sm:p-5 pointer-events-auto max-h-[75dvh] sm:max-h-[calc(100dvh-7.5rem)] flex flex-col overflow-hidden">
-        {/* Panel Header: Eyebrow + Close Action */}
+      <div className="bg-white/98 backdrop-blur-md rounded-2xl border border-border-warm shadow-[0_12px_36px_rgba(0,0,0,0.12)] p-4 sm:p-4.5 md:p-5 pb-[max(1rem,env(safe-area-inset-bottom))] md:pb-5 pointer-events-auto max-h-[68dvh] md:max-h-[calc(100dvh-7.5rem)] flex flex-col overflow-hidden">
+        {/* Mobile Pull Handle */}
+        <div className="md:hidden w-8 h-1 bg-stone-300 rounded-full mx-auto mb-2.5 shrink-0" aria-hidden="true" />
+
+        {/* Panel Header */}
         <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-border-warm/60 shrink-0">
-          {/* Eyebrow badge depending on type */}
           {isReport && (
             <div className="flex items-center gap-1.5">
               <span
@@ -87,7 +87,6 @@ function MapDetailPanel({ selectedPoint, onClose }) {
             </div>
           )}
 
-          {/* Close Button */}
           <button
             type="button"
             onClick={onClose}
@@ -111,10 +110,8 @@ function MapDetailPanel({ selectedPoint, onClose }) {
 
         {/* Scrollable Body Content */}
         <div className="overflow-y-auto pt-3 pb-1 space-y-3 font-body text-xs text-stone-600">
-          {/* WASTE REPORT VIEW */}
           {isReport && (
             <>
-              {/* Report Title */}
               <div>
                 <h2 className="font-display font-semibold text-primary text-[17px] sm:text-[18px] leading-snug">
                   {data.title}
@@ -125,7 +122,6 @@ function MapDetailPanel({ selectedPoint, onClose }) {
                 </p>
               </div>
 
-              {/* Location Address */}
               <div className="pt-2 border-t border-border-warm/60">
                 <span className="text-[10px] uppercase font-semibold tracking-wider text-stone-400 block mb-0.5">
                   Lokasi Temuan
@@ -135,7 +131,6 @@ function MapDetailPanel({ selectedPoint, onClose }) {
                 </p>
               </div>
 
-              {/* Two-Column Info: Category & Status */}
               <div className="grid grid-cols-2 gap-2 pt-2 border-t border-border-warm/60">
                 <div>
                   <span className="text-[10px] uppercase font-semibold tracking-wider text-stone-400 block mb-1">
@@ -169,10 +164,8 @@ function MapDetailPanel({ selectedPoint, onClose }) {
             </>
           )}
 
-          {/* BANK SAMPAH VIEW */}
           {isBank && (
             <>
-              {/* Bank Name */}
               <div>
                 <h2 className="font-display font-semibold text-primary text-[17px] sm:text-[18px] leading-snug">
                   {data.name}
@@ -184,7 +177,6 @@ function MapDetailPanel({ selectedPoint, onClose }) {
                 )}
               </div>
 
-              {/* Location Address */}
               <div className="pt-2 border-t border-border-warm/60">
                 <span className="text-[10px] uppercase font-semibold tracking-wider text-stone-400 block mb-0.5">
                   Alamat Lengkap
@@ -194,7 +186,6 @@ function MapDetailPanel({ selectedPoint, onClose }) {
                 </p>
               </div>
 
-              {/* Operating Hours */}
               {data.operatingHours && (
                 <div className="pt-2 border-t border-border-warm/60">
                   <span className="text-[10px] uppercase font-semibold tracking-wider text-stone-400 block mb-0.5">
@@ -206,7 +197,6 @@ function MapDetailPanel({ selectedPoint, onClose }) {
                 </div>
               )}
 
-              {/* Accepted Materials */}
               {data.acceptedMaterials && data.acceptedMaterials.length > 0 && (
                 <div className="pt-2 border-t border-border-warm/60">
                   <span className="text-[10px] uppercase font-semibold tracking-wider text-stone-400 block mb-1">
@@ -225,7 +215,6 @@ function MapDetailPanel({ selectedPoint, onClose }) {
                 </div>
               )}
 
-              {/* Contact */}
               {data.contact && (
                 <div className="pt-2 border-t border-border-warm/60">
                   <span className="text-[10px] uppercase font-semibold tracking-wider text-stone-400 block mb-0.5">
@@ -243,7 +232,7 @@ function MapDetailPanel({ selectedPoint, onClose }) {
           )}
         </div>
 
-        {/* Primary Action Button: "Rute ke Lokasi →" */}
+        {/* Primary Action Button */}
         <div className="pt-3 mt-1 border-t border-border-warm/60 shrink-0">
           <a
             href={routeUrl}

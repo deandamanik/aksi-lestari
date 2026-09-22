@@ -1,6 +1,6 @@
 /**
  * Static dummy dataset for Bank Sampah locations on Peta Sampah (AksiLestari).
- * Deterministic coordinates across Jabodetabek with operating details and accepted materials.
+ * Deterministic coordinates across Indonesia with operating details and accepted materials.
  */
 
 export const BANK_SAMPAH = [
@@ -113,5 +113,297 @@ export const BANK_SAMPAH = [
     operatingHours: 'Rabu & Sabtu: 09.00 - 14.00',
     acceptedMaterials: ['Plastik', 'Kertas', 'Logam', 'Organik Kompos'],
     contact: '+62 813-7788-9910',
+  },
+
+  // =========================================================================
+  // NATIONAL EXPANSION: JAVA (REGIONAL)
+  // =========================================================================
+  {
+    id: 'bs-011',
+    name: 'Bank Sampah Resik Braga',
+    address: 'Jl. Braga No. 42, Sumur Bandung',
+    district: 'Kota Bandung',
+    latitude: -6.918,
+    longitude: 107.609,
+    operatingHours: 'Senin - Jumat: 08.30 - 15.30',
+    acceptedMaterials: ['Plastik', 'Kertas', 'Minyak Jelantah', 'Aluminium'],
+    contact: '+62 822-1122-3311',
+  },
+  {
+    id: 'bs-012',
+    name: 'Bank Sampah Pandanaran Mandiri',
+    address: 'Jl. Pandanaran No. 58, Mugassari',
+    district: 'Kota Semarang',
+    latitude: -6.988,
+    longitude: 110.415,
+    operatingHours: 'Senin - Sabtu: 08.00 - 14.00',
+    acceptedMaterials: ['Plastik Botol', 'Kardus', 'Logam', 'Kaca'],
+    contact: '+62 812-4455-6612',
+  },
+  {
+    id: 'bs-013',
+    name: 'Bank Sampah Jogja Gumregah',
+    address: 'Jl. Malioboro No. 60, Sosromenduran',
+    district: 'Kota Yogyakarta',
+    latitude: -7.792,
+    longitude: 110.366,
+    operatingHours: 'Selasa - Minggu: 09.00 - 16.00',
+    acceptedMaterials: ['Plastik', 'Kertas HVS', 'Tetra Pak', 'Kaleng'],
+    contact: '+62 878-3344-5513',
+  },
+  {
+    id: 'bs-014',
+    name: 'Bank Sampah Solo Berseri',
+    address: 'Jl. Slamet Riyadi No. 182, Laweyan',
+    district: 'Kota Surakarta',
+    latitude: -7.568,
+    longitude: 110.812,
+    operatingHours: 'Senin - Jumat: 08.00 - 15.00',
+    acceptedMaterials: ['Plastik', 'Kardus', 'Logam', 'Besi'],
+    contact: '+62 813-8899-1114',
+  },
+  {
+    id: 'bs-015',
+    name: 'Bank Sampah Surabaya Harmoni',
+    address: 'Jl. Pemuda No. 33, Embong Kaliasin, Genteng',
+    district: 'Kota Surabaya',
+    latitude: -7.265,
+    longitude: 112.748,
+    operatingHours: 'Senin - Sabtu: 08.00 - 16.00',
+    acceptedMaterials: ['Plastik Botol', 'Kertas', 'Elektronik', 'Aluminium'],
+    contact: '+62 811-9988-7715',
+  },
+  {
+    id: 'bs-016',
+    name: 'Bank Sampah Ijen Makmur',
+    address: 'Jl. Besar Ijen No. 25, Gading Kasri, Klojen',
+    district: 'Kota Malang',
+    latitude: -7.973,
+    longitude: 112.624,
+    operatingHours: 'Senin - Jumat: 08.30 - 15.00',
+    acceptedMaterials: ['Plastik', 'Kardus', 'Minyak Jelantah', 'Kaca'],
+    contact: '+62 821-6677-8816',
+  },
+
+  // =========================================================================
+  // NATIONAL EXPANSION: BALI & NUSA TENGGARA
+  // =========================================================================
+  {
+    id: 'bs-017',
+    name: 'Bank Sampah Bali Wastu Lestari',
+    address: 'Jl. Gatot Subroto Timur No. 88, Tonja',
+    district: 'Kota Denpasar',
+    latitude: -8.638,
+    longitude: 115.228,
+    operatingHours: 'Senin - Sabtu: 08.00 - 16.00',
+    acceptedMaterials: ['Plastik', 'Kardus', 'Aluminium', 'Minyak Jelantah'],
+    contact: '+62 819-3344-5517',
+  },
+  {
+    id: 'bs-018',
+    name: 'Bank Sampah Kuta Mumbul Asri',
+    address: 'Jl. Raya Kuta No. 105, Tuban',
+    district: 'Kabupaten Badung',
+    latitude: -8.721,
+    longitude: 115.179,
+    operatingHours: 'Senin - Jumat: 08.30 - 15.00',
+    acceptedMaterials: ['Plastik Botol', 'Kaleng Minuman', 'Kertas', 'Kaca'],
+    contact: '+62 812-7788-9918',
+  },
+  {
+    id: 'bs-019',
+    name: 'Bank Sampah Bumi Gora Berdaya',
+    address: 'Jl. Pejanggik No. 45, Cakranegara Barat',
+    district: 'Kota Mataram',
+    latitude: -8.583,
+    longitude: 116.128,
+    operatingHours: 'Senin - Sabtu: 08.00 - 14.30',
+    acceptedMaterials: ['Plastik', 'Kardus', 'Logam', 'Besi'],
+    contact: '+62 877-2233-4419',
+  },
+  {
+    id: 'bs-020',
+    name: 'Bank Sampah Flobamora Bersih',
+    address: 'Jl. El Tari No. 12, Oebobo',
+    district: 'Kota Kupang',
+    latitude: -10.168,
+    longitude: 123.608,
+    operatingHours: 'Senin - Jumat: 08.00 - 15.00',
+    acceptedMaterials: ['Plastik Botol', 'Kertas', 'Aluminium', 'Kardus'],
+    contact: '+62 813-5566-7720',
+  },
+
+  // =========================================================================
+  // NATIONAL EXPANSION: SUMATRA
+  // =========================================================================
+  {
+    id: 'bs-021',
+    name: 'Bank Sampah Meutuah Banda',
+    address: 'Jl. T. Nyak Arief No. 34, Syiah Kuala',
+    district: 'Kota Banda Aceh',
+    latitude: 5.568,
+    longitude: 95.352,
+    operatingHours: 'Senin - Sabtu: 08.00 - 15.00',
+    acceptedMaterials: ['Plastik', 'Kertas', 'Logam', 'Kardus'],
+    contact: '+62 852-1122-4421',
+  },
+  {
+    id: 'bs-022',
+    name: 'Bank Sampah Deli Berkah Lestari',
+    address: 'Jl. Brigjend Katamso No. 76, Kampung Baru',
+    district: 'Kota Medan',
+    latitude: 3.578,
+    longitude: 98.685,
+    operatingHours: 'Senin - Jumat: 08.30 - 16.00',
+    acceptedMaterials: ['Plastik', 'Kardus', 'Besi', 'Minyak Jelantah'],
+    contact: '+62 812-6655-4422',
+  },
+  {
+    id: 'bs-023',
+    name: 'Bank Sampah Ranah Minang Bersih',
+    address: 'Jl. Khatib Sulaiman No. 18, Ulak Karang',
+    district: 'Kota Padang',
+    latitude: -0.924,
+    longitude: 100.362,
+    operatingHours: 'Senin - Sabtu: 08.00 - 15.00',
+    acceptedMaterials: ['Plastik Botol', 'Kertas', 'Kaca', 'Aluminium'],
+    contact: '+62 813-7744-8823',
+  },
+  {
+    id: 'bs-024',
+    name: 'Bank Sampah Lancang Kuning Mandiri',
+    address: 'Jl. Sudirman No. 112, Jadirejo, Sukajadi',
+    district: 'Kota Pekanbaru',
+    latitude: 0.505,
+    longitude: 101.448,
+    operatingHours: 'Senin - Jumat: 08.00 - 15.30',
+    acceptedMaterials: ['Plastik', 'Kardus', 'Minyak Jelantah', 'Logam'],
+    contact: '+62 823-8899-0024',
+  },
+  {
+    id: 'bs-025',
+    name: 'Bank Sampah Sriwijaya Peduli',
+    address: 'Jl. Kapten A. Rivai No. 29, 26 Ilir',
+    district: 'Kota Palembang',
+    latitude: -2.979,
+    longitude: 104.748,
+    operatingHours: 'Senin - Sabtu: 08.00 - 15.00',
+    acceptedMaterials: ['Plastik', 'Kertas HVS', 'Kardus', 'Aluminium'],
+    contact: '+62 812-9900-1125',
+  },
+  {
+    id: 'bs-026',
+    name: 'Bank Sampah Tapis Berseri',
+    address: 'Jl. Raden Intan No. 55, Enggal',
+    district: 'Kota Bandar Lampung',
+    latitude: -5.421,
+    longitude: 105.258,
+    operatingHours: 'Senin - Jumat: 08.30 - 15.00',
+    acceptedMaterials: ['Plastik', 'Kardus', 'Kaca', 'Logam'],
+    contact: '+62 857-8899-2226',
+  },
+
+  // =========================================================================
+  // NATIONAL EXPANSION: KALIMANTAN
+  // =========================================================================
+  {
+    id: 'bs-027',
+    name: 'Bank Sampah Khatulistiwa Hijau',
+    address: 'Jl. Gajah Mada No. 88, Benua Melayu Darat',
+    district: 'Kota Pontianak',
+    latitude: -0.038,
+    longitude: 109.338,
+    operatingHours: 'Senin - Sabtu: 08.00 - 15.30',
+    acceptedMaterials: ['Plastik Botol', 'Kertas', 'Minyak Jelantah', 'Aluminium'],
+    contact: '+62 853-4455-6627',
+  },
+  {
+    id: 'bs-028',
+    name: 'Bank Sampah Bungas Martapura',
+    address: 'Jl. Lambung Mangkurat No. 22, Kertak Baru Ilir',
+    district: 'Kota Banjarmasin',
+    latitude: -3.321,
+    longitude: 114.593,
+    operatingHours: 'Senin - Jumat: 08.00 - 14.30',
+    acceptedMaterials: ['Plastik', 'Kardus', 'Besi', 'Kaleng'],
+    contact: '+62 811-5566-7728',
+  },
+  {
+    id: 'bs-029',
+    name: 'Bank Sampah Beriman Madani',
+    address: 'Jl. Jenderal Sudirman No. 40, Klandasan Ulu',
+    district: 'Kota Balikpapan',
+    latitude: -1.272,
+    longitude: 116.828,
+    operatingHours: 'Senin - Sabtu: 08.00 - 15.00',
+    acceptedMaterials: ['Plastik', 'Kertas', 'Elektronik Rumah Tangga', 'Aluminium'],
+    contact: '+62 812-3344-8829',
+  },
+  {
+    id: 'bs-030',
+    name: 'Bank Sampah Mahakam Indah',
+    address: 'Jl. Bhayangkara No. 15, Bugis',
+    district: 'Kota Samarinda',
+    latitude: -0.498,
+    longitude: 117.145,
+    operatingHours: 'Senin - Jumat: 08.30 - 15.00',
+    acceptedMaterials: ['Plastik Botol', 'Kardus', 'Logam', 'Kaca'],
+    contact: '+62 822-7788-9930',
+  },
+
+  // =========================================================================
+  // NATIONAL EXPANSION: SULAWESI
+  // =========================================================================
+  {
+    id: 'bs-031',
+    name: 'Bank Sampah Anging Mammiri',
+    address: 'Jl. Penghibur No. 10, Maloku, Ujung Pandang',
+    district: 'Kota Makassar',
+    latitude: -5.141,
+    longitude: 119.406,
+    operatingHours: 'Senin - Sabtu: 08.00 - 16.00',
+    acceptedMaterials: ['Plastik', 'Kertas', 'Minyak Jelantah', 'Aluminium'],
+    contact: '+62 813-4455-8831',
+  },
+  {
+    id: 'bs-032',
+    name: 'Bank Sampah Nyiur Melambai',
+    address: 'Jl. Piere Tendean No. 19, Wenang Selatan',
+    district: 'Kota Manado',
+    latitude: 1.488,
+    longitude: 124.838,
+    operatingHours: 'Senin - Jumat: 08.30 - 15.00',
+    acceptedMaterials: ['Plastik', 'Kardus', 'Logam', 'Kaca'],
+    contact: '+62 852-9988-1132',
+  },
+
+  // =========================================================================
+  // NATIONAL EXPANSION: MALUKU
+  // =========================================================================
+  {
+    id: 'bs-033',
+    name: 'Bank Sampah Manise Berdaya',
+    address: 'Jl. Pattimura No. 8, Honipopu, Sirimau',
+    district: 'Kota Ambon',
+    latitude: -3.698,
+    longitude: 128.184,
+    operatingHours: 'Senin - Sabtu: 08.00 - 14.00',
+    acceptedMaterials: ['Plastik Botol', 'Kertas', 'Aluminium', 'Kardus'],
+    contact: '+62 812-4400-5533',
+  },
+
+  // =========================================================================
+  // NATIONAL EXPANSION: PAPUA
+  // =========================================================================
+  {
+    id: 'bs-034',
+    name: 'Bank Sampah Port Numbay Asri',
+    address: 'Jl. Percetakan Negara No. 14, Gurabesi',
+    district: 'Kota Jayapura',
+    latitude: -2.538,
+    longitude: 140.708,
+    operatingHours: 'Senin - Jumat: 08.30 - 15.00',
+    acceptedMaterials: ['Plastik', 'Kardus', 'Logam', 'Kaca'],
+    contact: '+62 813-2211-9934',
   },
 ]
