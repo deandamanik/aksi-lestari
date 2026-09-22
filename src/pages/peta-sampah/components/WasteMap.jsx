@@ -6,22 +6,265 @@ import {
   WASTE_REPORTS,
   wasteReportsToGeoJSON,
 } from '../../../data/peta-sampah/wasteReportsData'
+import { BANK_SAMPAH } from '../../../data/peta-sampah/bankSampahData'
 
 setWorkerUrl(workerUrl)
 
 /**
- * WasteMap Component (Step 1–3 Foundation + Step 4 Heatmap)
+ * Creates a distinct circular DOM marker for waste reports (with severity color coding).
+ */
+function createWasteMarkerElement(report) {
+  const markerEl = document.createElement('div')
+  markerEl.className = 'group relative cursor-pointer'
+  markerEl.setAttribute('role', 'button')
+  markerEl.setAttribute(
+    'aria-label',
+    `${report.title} (${report.category}, Tingkat: ${report.severity})`
+  )
+  markerEl.setAttribute(
+    'title',
+    `${report.title}\n${report.category} · Tingkat: ${report.severity}\n${report.address}`
+  )
+
+  // Marker color matching AksiLestari design system
+  const bgColor =
+    report.severity === 'tinggi'
+      ? '#FFA938' // Accent warm amber
+      : report.severity === 'sedang'
+        ? '#7AAB2B' // Secondary green
+        : '#22603B' // Primary forest green
+
+  markerEl.innerHTML = `
+    <div style="
+      width: 26px;
+      height: 26px;
+      background-color: ${bgColor};
+      border: 2.5px solid #FFFFFF;
+      border-radius: 9999px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.18s ease-out, box-shadow 0.18s ease-out;
+    ">
+      <div style="
+        width: 8px;
+        height: 8px;
+        background-color: #FFFFFF;
+        border-radius: 9999px;
+      "></div>
+    </div>
+  `
+
+  const innerBadge = markerEl.firstElementChild
+  markerEl.addEventListener('mouseenter', () => {
+    if (innerBadge) {
+      innerBadge.style.transform = 'scale(1.2)'
+      innerBadge.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)'
+    }
+  })
+  markerEl.addEventListener('mouseleave', () => {
+    if (innerBadge) {
+      innerBadge.style.transform = 'scale(1)'
+      innerBadge.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.22)'
+    }
+  })
+
+  return markerEl
+}
+
+/**
+ * Creates a dedicated blue location marker for Bank Sampah points.
+ */
+function createBankMarkerElement(bank) {
+  const markerEl = document.createElement('div')
+  markerEl.className = 'group relative cursor-pointer'
+  markerEl.setAttribute('role', 'button')
+  markerEl.setAttribute(
+    'aria-label',
+    `${bank.name} (${bank.district})`
+  )
+  markerEl.setAttribute(
+    'title',
+    `${bank.name}\n${bank.address}\nJam: ${bank.operatingHours}\nTerima: ${bank.acceptedMaterials.join(', ')}`
+  )
+
+  markerEl.innerHTML = `
+    <div style="
+      width: 26px;
+      height: 26px;
+      background-color: #1D70B8;
+      border: 2.5px solid #FFFFFF;
+      border-radius: 9999px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.18s ease-out, box-shadow 0.18s ease-out;
+    ">
+      <div style="
+        width: 8px;
+        height: 8px;
+        background-color: #FFFFFF;
+        border-radius: 1.5px;
+        transform: rotate(45deg);
+      "></div>
+    </div>
+  `
+
+  const innerBadge = markerEl.firstElementChild
+  markerEl.addEventListener('mouseenter', () => {
+    if (innerBadge) {
+      innerBadge.style.transform = 'scale(1.2)'
+      innerBadge.style.boxShadow = '0 4px 12px rgba(29, 112, 184, 0.45)'
+    }
+  })
+  markerEl.addEventListener('mouseleave', () => {
+    if (innerBadge) {
+      innerBadge.style.transform = 'scale(1)'
+      innerBadge.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.25)'
+    }
+  })
+
+  return markerEl
+}
+
+/**
+ * WasteMap Component (Step 1–4 Foundation + Step 5 Map Layer & Bank Sampah Integration)
  *
  * Renders MapLibre GL with MapTiler Dataviz basemap, custom soft editorial styling,
- * waste-report markers, and a native MapLibre heatmap density layer.
+ * waste-report markers, Bank Sampah markers, and a native MapLibre heatmap density layer.
  */
-function WasteMap() {
+function WasteMap({
+  wasteReports = WASTE_REPORTS,
+  bankSampah = BANK_SAMPAH,
+  heatmapVisible = true,
+  reportsVisible = true,
+  bankSampahVisible = true,
+  flyToCoords = null,
+}) {
   const mapContainerRef = useRef(null)
   const mapRef = useRef(null)
-  const markersRef = useRef([])
+  const wasteMarkersRef = useRef([])
+  const bankMarkersRef = useRef([])
+  const mapLoadedRef = useRef(false)
   const [runtimeError, setRuntimeError] = useState(null)
 
+  const stateRef = useRef({
+    wasteReports,
+    bankSampah,
+    heatmapVisible,
+    reportsVisible,
+    bankSampahVisible,
+  })
+
+  // Synchronize stateRef for map load callback
+  useEffect(() => {
+    stateRef.current = {
+      wasteReports,
+      bankSampah,
+      heatmapVisible,
+      reportsVisible,
+      bankSampahVisible,
+    }
+  }, [wasteReports, bankSampah, heatmapVisible, reportsVisible, bankSampahVisible])
+
   const maptilerKey = import.meta.env.VITE_MAPTILER_KEY
+
+  const updateWasteMarkers = (targetMap, reportsList) => {
+    wasteMarkersRef.current.forEach((marker) => marker.remove())
+    wasteMarkersRef.current = []
+
+    reportsList.forEach((report) => {
+      const markerEl = createWasteMarkerElement(report)
+      const marker = new Marker({
+        element: markerEl,
+        anchor: 'center',
+      })
+        .setLngLat([report.longitude, report.latitude])
+        .addTo(targetMap)
+
+      wasteMarkersRef.current.push(marker)
+    })
+  }
+
+  const clearWasteMarkers = () => {
+    wasteMarkersRef.current.forEach((marker) => marker.remove())
+    wasteMarkersRef.current = []
+  }
+
+  const updateBankMarkers = (targetMap, banksList) => {
+    bankMarkersRef.current.forEach((marker) => marker.remove())
+    bankMarkersRef.current = []
+
+    banksList.forEach((bank) => {
+      const markerEl = createBankMarkerElement(bank)
+      const marker = new Marker({
+        element: markerEl,
+        anchor: 'center',
+      })
+        .setLngLat([bank.longitude, bank.latitude])
+        .addTo(targetMap)
+
+      bankMarkersRef.current.push(marker)
+    })
+  }
+
+  const clearBankMarkers = () => {
+    bankMarkersRef.current.forEach((marker) => marker.remove())
+    bankMarkersRef.current = []
+  }
+
+  // Reactive toggle: Heatmap layer visibility
+  useEffect(() => {
+    if (!mapLoadedRef.current || !mapRef.current) return
+    if (mapRef.current.getLayer('waste-reports-heatmap')) {
+      mapRef.current.setLayoutProperty(
+        'waste-reports-heatmap',
+        'visibility',
+        heatmapVisible ? 'visible' : 'none'
+      )
+    }
+  }, [heatmapVisible])
+
+  // Reactive update: Heatmap data source
+  useEffect(() => {
+    if (!mapLoadedRef.current || !mapRef.current) return
+    const source = mapRef.current.getSource('waste-reports-source')
+    if (source) {
+      source.setData(wasteReportsToGeoJSON(wasteReports))
+    }
+  }, [wasteReports])
+
+  // Reactive update: Waste report markers
+  useEffect(() => {
+    if (!mapLoadedRef.current || !mapRef.current) return
+    if (reportsVisible) {
+      updateWasteMarkers(mapRef.current, wasteReports)
+    } else {
+      clearWasteMarkers()
+    }
+  }, [wasteReports, reportsVisible])
+
+  // Reactive update: Bank Sampah markers
+  useEffect(() => {
+    if (!mapLoadedRef.current || !mapRef.current) return
+    if (bankSampahVisible) {
+      updateBankMarkers(mapRef.current, bankSampah)
+    } else {
+      clearBankMarkers()
+    }
+  }, [bankSampah, bankSampahVisible])
+
+  // Reactive update: Geolocation flyTo
+  useEffect(() => {
+    if (!mapRef.current || !flyToCoords) return
+    mapRef.current.flyTo({
+      center: flyToCoords,
+      zoom: 14,
+      essential: true,
+    })
+  }, [flyToCoords])
 
   useEffect(() => {
     if (!mapContainerRef.current || !maptilerKey) return
@@ -32,6 +275,7 @@ function WasteMap() {
     if (mapRef.current) {
       mapRef.current.remove()
       mapRef.current = null
+      mapLoadedRef.current = false
     }
 
     // Initialize MapLibre GL Map with MapTiler Dataviz (soft, subdued basemap)
@@ -57,11 +301,20 @@ function WasteMap() {
 
     map.on('load', () => {
       if (!isMounted) return
+      mapLoadedRef.current = true
+
+      const {
+        wasteReports: initialWasteReports,
+        bankSampah: initialBankSampah,
+        heatmapVisible: initialHeatmapVisible,
+        reportsVisible: initialReportsVisible,
+        bankSampahVisible: initialBankVisible,
+      } = stateRef.current
 
       // =========================================================================
       // STEP 4: NATIVE MAPLIBRE HEATMAP LAYER
       // =========================================================================
-      const geojsonData = wasteReportsToGeoJSON(WASTE_REPORTS)
+      const geojsonData = wasteReportsToGeoJSON(initialWasteReports)
 
       // Add single deterministic GeoJSON source
       if (!map.getSource('waste-reports-source')) {
@@ -91,6 +344,9 @@ function WasteMap() {
             type: 'heatmap',
             source: 'waste-reports-source',
             maxzoom: 17,
+            layout: {
+              visibility: initialHeatmapVisible ? 'visible' : 'none',
+            },
             paint: {
               // Increase weight based on report severity (rendah: 0.5, sedang: 1.0, tinggi: 1.5)
               'heatmap-weight': [
@@ -101,7 +357,7 @@ function WasteMap() {
                 1.0, 1.0,
                 1.5, 1.5,
               ],
-              // Smooth intensity scaling tuned for 25-point dataset
+              // Smooth intensity scaling tuned for Jabodetabek dataset
               'heatmap-intensity': [
                 'interpolate',
                 ['linear'],
@@ -112,7 +368,6 @@ function WasteMap() {
                 15, 3.2,
               ],
               // Tuned AksiLestari environmental palette with balanced alpha
-              // Transparent -> soft sage green -> primary forest green -> warm amber -> terracotta -> deep warm focal tone
               'heatmap-color': [
                 'interpolate',
                 ['linear'],
@@ -151,89 +406,23 @@ function WasteMap() {
         )
       }
 
-      // =========================================================================
-      // STEP 3: WASTE REPORT MARKERS
-      // =========================================================================
-      // Clean up any existing markers before rendering
-      markersRef.current.forEach((marker) => marker.remove())
-      markersRef.current = []
-
-      WASTE_REPORTS.forEach((report) => {
-        const markerEl = document.createElement('div')
-        markerEl.className = 'group relative cursor-pointer'
-        markerEl.setAttribute('role', 'button')
-        markerEl.setAttribute(
-          'aria-label',
-          `${report.title} (${report.category}, Tingkat: ${report.severity})`
-        )
-        markerEl.setAttribute(
-          'title',
-          `${report.title}\n${report.category} · Tingkat: ${report.severity}\n${report.address}`
-        )
-
-        // Marker color matching AksiLestari design system
-        const bgColor =
-          report.severity === 'tinggi'
-            ? '#FFA938' // Accent warm amber
-            : report.severity === 'sedang'
-              ? '#7AAB2B' // Secondary green
-              : '#22603B' // Primary forest green
-
-        markerEl.innerHTML = `
-          <div style="
-            width: 26px;
-            height: 26px;
-            background-color: ${bgColor};
-            border: 2.5px solid #FFFFFF;
-            border-radius: 9999px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.18s ease-out, box-shadow 0.18s ease-out;
-          ">
-            <div style="
-              width: 8px;
-              height: 8px;
-              background-color: #FFFFFF;
-              border-radius: 9999px;
-            "></div>
-          </div>
-        `
-
-        // Add subtle hover effect via DOM styling
-        const innerBadge = markerEl.firstElementChild
-        markerEl.addEventListener('mouseenter', () => {
-          if (innerBadge) {
-            innerBadge.style.transform = 'scale(1.2)'
-            innerBadge.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)'
-          }
-        })
-        markerEl.addEventListener('mouseleave', () => {
-          if (innerBadge) {
-            innerBadge.style.transform = 'scale(1)'
-            innerBadge.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.22)'
-          }
-        })
-
-        const marker = new Marker({
-          element: markerEl,
-          anchor: 'center',
-        })
-          .setLngLat([report.longitude, report.latitude])
-          .addTo(map)
-
-        markersRef.current.push(marker)
-      })
+      // Initial marker renders based on layer visibility
+      if (initialReportsVisible) {
+        updateWasteMarkers(map, initialWasteReports)
+      }
+      if (initialBankVisible) {
+        updateBankMarkers(map, initialBankSampah)
+      }
     })
 
     return () => {
       isMounted = false
-      markersRef.current.forEach((marker) => marker.remove())
-      markersRef.current = []
+      clearWasteMarkers()
+      clearBankMarkers()
       if (mapRef.current) {
         mapRef.current.remove()
         mapRef.current = null
+        mapLoadedRef.current = false
       }
     }
   }, [maptilerKey])
@@ -261,7 +450,7 @@ function WasteMap() {
               />
             </svg>
           </div>
-          <h3 className="font-display font-bold text-primary text-lg mb-2">
+          <h3 className="font-display font-semibold text-primary text-base mb-1">
             Konfigurasi Peta Diperlukan
           </h3>
           <p className="font-body text-stone-600 text-sm leading-relaxed mb-4">
