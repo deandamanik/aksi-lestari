@@ -1,0 +1,102 @@
+import { useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useLapor } from '../../context/LaporContext'
+import { getIdentificationData } from '../../data/lapor/identificationData'
+import LaporStepHeader from './components/shared/LaporStepHeader'
+import EvidenceSummaryCard from './components/kenali/EvidenceSummaryCard'
+import IdentificationCard from './components/kenali/IdentificationCard'
+import { ArrowLeftIcon, ArrowRightIcon } from '../../components/common/Icons'
+
+/**
+ * LaporKenaliPage — Step 02: Kenali (/lapor/kenali)
+ *
+ * Second main stage of the 4-step Lapor reporting workflow.
+ * Connects evidence from Step 01 to educational & actionable understanding:
+ *
+ *   TEMUKAN (Evidence & location)
+ *   → KENALI (Identification, characteristics, impact, safety, recommendations)
+ *   → PILIH AKSI (Decision: report vs handle)
+ *   → SELESAI (Confirmation)
+ *
+ * Identification content is retrieved from static data so future ML services
+ * can be integrated without modifying the presentation architecture.
+ */
+function LaporKenaliPage() {
+  const navigate = useNavigate()
+  const { reportData, updateReport } = useLapor()
+
+  const photo = reportData.temukan.photo
+  const categoryKey = reportData.kenali.category || 'plastik'
+  const identification = getIdentificationData(categoryKey)
+
+  const handleContinue = useCallback(() => {
+    // Commit the active identification into LaporContext before continuing
+    updateReport({
+      kenali: {
+        category: categoryKey,
+        label: identification.label,
+      },
+    })
+    navigate('/lapor/aksi')
+  }, [categoryKey, identification.label, navigate, updateReport])
+
+  const handleBack = useCallback(() => {
+    navigate('/lapor/temukan')
+  }, [navigate])
+
+  return (
+    <main
+      className="min-h-[100svh] bg-[#F9F8F3] pt-24 sm:pt-28 pb-14 sm:pb-18"
+      style={{ backgroundColor: '#F9F8F3' }}
+      aria-label="Lapor Sampah — Langkah 2: Kenali Temuanmu"
+    >
+      <div className="max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Step Header */}
+        <LaporStepHeader
+          step={2}
+          title="Kenali Temuanmu"
+          subtitle="Pahami jenis sampah, tingkat perhatian lingkungan, dan tata cara penanganan yang aman."
+          className="pt-2 pb-2"
+        />
+
+        {/* Main 2-column layout */}
+        <div className="mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+          {/* Left Column: Evidence Photo Summary */}
+          <div className="lg:col-span-5">
+            <EvidenceSummaryCard photo={photo} />
+          </div>
+
+          {/* Right Column: Identification & Action Guidance */}
+          <div className="lg:col-span-7">
+            <IdentificationCard data={identification} />
+          </div>
+        </div>
+
+        {/* Bottom Navigation */}
+        <div className="mt-8 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+          <button
+            type="button"
+            onClick={handleBack}
+            className="inline-flex items-center justify-center gap-2 h-11 px-6 sm:px-7 rounded-full font-semibold text-sm text-primary bg-white border border-primary/25 hover:bg-primary/[0.04] hover:border-primary/45 transition-colors shadow-xs active:scale-[0.98] cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 select-none w-full sm:w-auto"
+            aria-label="Kembali ke langkah Temukan"
+          >
+            <ArrowLeftIcon className="w-4 h-4 text-primary" strokeWidth={2.25} />
+            <span>Kembali</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleContinue}
+            className="inline-flex items-center justify-center gap-2 h-11 px-7 sm:px-8 rounded-full font-semibold text-sm bg-primary hover:bg-primary/90 text-white cursor-pointer shadow-xs active:scale-[0.99] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 select-none w-full sm:w-auto"
+            aria-label="Lanjutkan ke Langkah 3 (Pilih Aksi)"
+          >
+            <span>Lanjutkan ke Langkah 3 (Pilih Aksi)</span>
+            <ArrowRightIcon className="w-4.5 h-4.5" strokeWidth={2.25} />
+          </button>
+        </div>
+      </div>
+    </main>
+  )
+}
+
+export default LaporKenaliPage
