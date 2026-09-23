@@ -5,12 +5,23 @@ import { SALDO_APRESIASI } from '../../../data/profil/saldoRedeemData'
  *
  * Dominant balance number, status dot, description, 3 stat blocks.
  * Typography-driven — no gradient, no glow, no colored background.
+ *
+ * Props (reactive from ProfilSaldoPage):
+ * - balance: current available balance (number)
+ * - totalRedeemed: total amount redeemed so far (number)
+ *
+ * Static from data module:
+ * - totalEarned, recentAddition (don't change during a redeem session)
  */
-function SaldoBalanceCard() {
+
+function formatRupiah(n) {
+  return 'Rp' + n.toLocaleString('id-ID')
+}
+
+function SaldoBalanceCard({ balance, totalRedeemed }) {
   const {
-    formattedBalance,
+    totalEarned,
     formattedTotalEarned,
-    formattedTotalRedeemed,
     recentAddition,
   } = SALDO_APRESIASI
 
@@ -29,7 +40,7 @@ function SaldoBalanceCard() {
           </span>
           <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary select-none">
             <span className="w-2 h-2 rounded-full bg-primary shrink-0" aria-hidden="true" />
-            Aktif &amp; Siap Digunakan
+            {balance > 0 ? 'Aktif & Siap Digunakan' : 'Saldo Habis'}
           </span>
         </div>
 
@@ -38,7 +49,7 @@ function SaldoBalanceCard() {
           id="saldo-balance-heading"
           className="font-display text-4xl sm:text-5xl lg:text-[3.5rem] font-bold text-stone-900 tracking-tight leading-none"
         >
-          {formattedBalance}
+          {formatRupiah(balance)}
         </h2>
 
         {/* Description */}
@@ -66,7 +77,7 @@ function SaldoBalanceCard() {
               Total Digunakan
             </span>
             <span className="font-display text-xl sm:text-2xl font-bold text-stone-700 tracking-tight tabular-nums">
-              -{formattedTotalRedeemed}
+              -{formatRupiah(totalRedeemed)}
             </span>
           </div>
 

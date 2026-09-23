@@ -1,5 +1,4 @@
 import { WalletIcon, AwardIcon } from '../../../components/common/Icons'
-import { SALDO_APRESIASI } from '../../../data/profil/saldoRedeemData'
 
 /**
  * SaldoRedemptionHistory — Past Transactions List
@@ -7,11 +6,12 @@ import { SALDO_APRESIASI } from '../../../data/profil/saldoRedeemData'
  * Single container with dividers between transactions.
  * WalletIcon for wallet, AwardIcon for voucher.
  * Status shown as dot + text. No separate cards per transaction.
+ *
+ * Props (reactive from ProfilSaldoPage):
+ * - history: array of transaction objects (newest first)
  */
-function SaldoRedemptionHistory() {
-  const { redemptionHistory } = SALDO_APRESIASI
-
-  if (!redemptionHistory || redemptionHistory.length === 0) return null
+function SaldoRedemptionHistory({ history }) {
+  if (!history || history.length === 0) return null
 
   return (
     <section
@@ -33,7 +33,7 @@ function SaldoRedemptionHistory() {
 
       {/* Transactions list */}
       <div className="bg-white rounded-2xl border border-[#E8E5DC] divide-y divide-[#E8E5DC]/60 overflow-hidden">
-        {redemptionHistory.map((tx) => {
+        {history.map((tx) => {
           const isWallet = tx.type === 'wallet'
           const IconComponent = isWallet ? WalletIcon : AwardIcon
 

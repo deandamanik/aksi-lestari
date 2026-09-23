@@ -12,13 +12,15 @@
 
 export const SALDO_APRESIASI = {
   // Nilai moneter dalam Rupiah
-  availableBalance: 38500,
+  // Invariant: availableBalance === totalEarned - totalRedeemed
+  // Invariant: totalRedeemed === sum(redemptionHistory[].amountRupiah)
+  availableBalance: 12500,
   totalEarned: 52500,
-  totalRedeemed: 14000,
+  totalRedeemed: 40000,
   currency: 'IDR',
-  formattedBalance: 'Rp38.500',
+  formattedBalance: 'Rp12.500',
   formattedTotalEarned: 'Rp52.500',
-  formattedTotalRedeemed: 'Rp14.000',
+  formattedTotalRedeemed: 'Rp40.000',
 
   // Penambahan saldo terbaru dari aksi nyata yang terverifikasi
   recentAddition: {
@@ -124,7 +126,7 @@ export const SALDO_APRESIASI = {
       id: 'red-03',
       type: 'wallet',
       methodTitle: 'Penarikan Saldo ke GoPay',
-      target: 'Nomor: Rp10.000 — 0812-3456-7890',
+      target: '0812-3456-7890',
       amountRupiah: 10000,
       formattedAmount: '-Rp10.000',
       date: '14 Agustus 2026, 16:45 WIB',

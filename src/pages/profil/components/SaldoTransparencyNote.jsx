@@ -15,7 +15,7 @@ function SaldoTransparencyNote() {
           Catatan Keterbukaan
         </span>
         <p className="text-xs sm:text-sm text-stone-500 leading-relaxed">
-          Saldo Apresiasi berasal dari perolehan XP atas kontribusi nyata yang terverifikasi. Setiap konversi ke saldo riil bersifat transparan dan teraudit. Saldo ini terpisah mutlak dari XP dan hanya dapat digunakan dalam jalur pemanfaatan yang tersedia.
+          Saldo Apresiasi diperoleh dari kontribusi nyata yang terverifikasi oleh sistem dan petugas wilayah. Saldo ini terpisah mutlak dari XP (yang digunakan untuk progression level) dan hanya dapat digunakan dalam jalur pemanfaatan yang tersedia.
         </p>
       </div>
     </div>

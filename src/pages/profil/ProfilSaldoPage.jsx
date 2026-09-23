@@ -1,5 +1,7 @@
+import { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeftIcon } from '../../components/common/Icons'
+import { SALDO_APRESIASI } from '../../data/profil/saldoRedeemData'
 import SaldoBalanceCard from './components/SaldoBalanceCard'
 import SaldoTransparencyNote from './components/SaldoTransparencyNote'
 import SaldoContributionSources from './components/SaldoContributionSources'
@@ -20,10 +22,64 @@ import SaldoGovernanceInfo from './components/SaldoGovernanceInfo'
  * 7. Redemption history — past transactions
  * 8. Governance info — closing section
  *
+ * State architecture:
+ * Reactive saldo state is lifted here so that SaldoBalanceCard,
+ * SaldoRedeemSection, and SaldoRedemptionHistory all read from
+ * and write to the same source of truth. Static reference data
+ * (providers, voucher catalog, contribution sources) remains
+ * imported from the data module.
+ *
  * Design: civic-tech, trustworthy, editorial, functional.
  * Consistent with ProfilMisiPage patterns.
  */
+
+function formatRupiah(n) {
+  return 'Rp' + n.toLocaleString('id-ID')
+}
+
 function ProfilSaldoPage() {
+  // ── Reactive state (mutable during redeem flow) ──
+  const [balance, setBalance] = useState(SALDO_APRESIASI.availableBalance)
+  const [totalRedeemed, setTotalRedeemed] = useState(SALDO_APRESIASI.totalRedeemed)
+  const [history, setHistory] = useState(SALDO_APRESIASI.redemptionHistory)
+
+  /**
+   * handleRedeem — callback invoked after a successful mock redeem.
+   * Deducts balance, increases totalRedeemed, prepends a new history entry.
+   *
+   * @param {{ amount: number, type: 'wallet'|'voucher', methodTitle: string, target: string }} tx
+   */
+  const handleRedeem = useCallback((tx) => {
+    setBalance((prev) => Math.max(0, prev - tx.amount))
+    setTotalRedeemed((prev) => prev + tx.amount)
+
+    const now = new Date()
+    const dateStr = now.toLocaleDateString('id-ID', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }) + ', ' + now.toLocaleTimeString('id-ID', {
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZoneName: 'short',
+    })
+
+    setHistory((prev) => [
+      {
+        id: `red-${Date.now()}`,
+        type: tx.type,
+        methodTitle: tx.methodTitle,
+        target: tx.target,
+        amountRupiah: tx.amount,
+        formattedAmount: '-' + formatRupiah(tx.amount),
+        date: dateStr,
+        status: 'completed',
+        statusLabel: 'Berhasil',
+      },
+      ...prev,
+    ])
+  }, [])
+
   return (
     <main
       className="min-h-[100svh] bg-[#FAF9F4] pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8"
@@ -72,9 +128,9 @@ function ProfilSaldoPage() {
           </p>
         </div>
 
-        {/* 3. Balance card */}
+        {/* 3. Balance card — reactive */}
         <div className="profil-enter profil-enter-delay-2">
-          <SaldoBalanceCard />
+          <SaldoBalanceCard balance={balance} totalRedeemed={totalRedeemed} />
         </div>
 
         {/* 4. Transparency note */}
@@ -87,14 +143,14 @@ function ProfilSaldoPage() {
           <SaldoContributionSources />
         </div>
 
-        {/* 6. Redeem section */}
+        {/* 6. Redeem section — reactive */}
         <div className="profil-enter profil-enter-delay-4">
-          <SaldoRedeemSection />
+          <SaldoRedeemSection balance={balance} onRedeem={handleRedeem} />
         </div>
 
-        {/* 7. Redemption history */}
+        {/* 7. Redemption history — reactive */}
         <div className="profil-enter profil-enter-delay-5">
-          <SaldoRedemptionHistory />
+          <SaldoRedemptionHistory history={history} />
         </div>
 
         {/* 8. Governance info */}

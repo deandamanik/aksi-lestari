@@ -80,7 +80,7 @@ function Footer() {
                   to="/profil/saldo"
                   className="text-stone-600 hover:text-primary transition-colors focus:outline-hidden focus-visible:ring-1 focus-visible:ring-primary rounded"
                 >
-                  Poin &amp; Apresiasi
+                  Saldo &amp; Apresiasi
                 </Link>
               </li>
               <li>
