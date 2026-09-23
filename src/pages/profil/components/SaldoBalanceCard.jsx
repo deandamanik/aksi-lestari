@@ -20,7 +20,6 @@ function formatRupiah(n) {
 
 function SaldoBalanceCard({ balance, totalRedeemed }) {
   const {
-    totalEarned,
     formattedTotalEarned,
     recentAddition,
   } = SALDO_APRESIASI

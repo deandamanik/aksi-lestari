@@ -4,7 +4,6 @@ import {
   ClockIcon,
   WalletIcon,
   SettingsIcon,
-  ArrowRightIcon,
 } from '../../../components/common/Icons'
 import { SALDO_APRESIASI } from '../../../data/profil/saldoRedeemData'
 import { CONTRIBUTION_HISTORY } from '../../../data/profil/contributionHistoryData'
@@ -12,9 +11,9 @@ import { CONTRIBUTION_HISTORY } from '../../../data/profil/contributionHistoryDa
 /**
  * ProfileShortcutsGrid — Navigation System
  *
- * Feels like elegant navigation links, NOT dashboard statistic cards.
- * Each item has: icon (subtle) → title → metadata → description → arrow.
- * Interactions: warm hover background, arrow slides, title greens.
+ * Feels like elegant navigation links with dedicated, accessible CTAs.
+ * Each item has: icon (subtle) → title → metadata → description → clear CTA.
+ * Uses stretched-link pattern to ensure full card clickability without nested <a> tags.
  * 2-column on desktop for visual balance, single column on mobile.
  */
 function ProfileShortcutsGrid() {
@@ -27,6 +26,8 @@ function ProfileShortcutsGrid() {
       metadata: '1 tersedia',
       metadataColor: 'text-primary',
       description: 'Lihat target tantangan dan misi mingguan',
+      ctaText: 'Lihat misi mingguan',
+      ctaAriaLabel: 'Buka dan lihat misi mingguan',
       path: '/profil/misi',
       icon: ZapIcon,
     },
@@ -36,6 +37,8 @@ function ProfileShortcutsGrid() {
       metadata: `${verifiedCount} aksi tervalidasi`,
       metadataColor: 'text-stone-500',
       description: 'Lihat aktivitas dan kontribusi yang sudah tercatat',
+      ctaText: 'Lihat riwayat kontribusi',
+      ctaAriaLabel: 'Buka riwayat dan kontribusi',
       path: '/profil/riwayat',
       icon: ClockIcon,
     },
@@ -45,6 +48,8 @@ function ProfileShortcutsGrid() {
       metadata: SALDO_APRESIASI.formattedBalance,
       metadataColor: 'text-primary',
       description: 'Kelola saldo apresiasi dan katalog reward',
+      ctaText: 'Kelola & tukarkan saldo',
+      ctaAriaLabel: 'Kelola dan tukarkan saldo apresiasi',
       path: '/profil/saldo',
       icon: WalletIcon,
     },
@@ -54,6 +59,8 @@ function ProfileShortcutsGrid() {
       metadata: null,
       metadataColor: '',
       description: 'Informasi profil dan preferensi akun',
+      ctaText: 'Kelola pengaturan akun',
+      ctaAriaLabel: 'Buka pengaturan akun',
       path: '/profil/pengaturan',
       icon: SettingsIcon,
     },
@@ -78,21 +85,20 @@ function ProfileShortcutsGrid() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-[#E8E5DC] rounded-2xl overflow-hidden border border-[#E8E5DC]">
         {SHORTCUTS.map((item) => {
           const Icon = item.icon
+
           return (
-            <Link
+            <div
               key={item.id}
-              to={item.path}
-              className="group bg-white p-5 sm:p-6 flex items-center justify-between gap-4 transition-all duration-200 select-none hover:bg-[#FAF9F4]/80 active:scale-[0.99] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
-              aria-label={`Buka ${item.title}`}
+              className="group relative bg-white p-5 sm:p-6 flex items-start justify-between gap-4 transition-all duration-200 select-none hover:bg-[#FAF9F4]/80 active:scale-[0.99] cursor-pointer"
             >
-              {/* Left: Icon + Text */}
-              <div className="flex items-start gap-4 min-w-0">
+              {/* Left: Icon + Text + Dedicated CTA */}
+              <div className="flex items-start gap-4 min-w-0 w-full">
                 <Icon
                   className="w-5 h-5 text-stone-400 shrink-0 mt-0.5 transition-colors duration-200 group-hover:text-primary"
                   strokeWidth={1.8}
                 />
 
-                <div className="flex flex-col min-w-0">
+                <div className="flex flex-col min-w-0 flex-1">
                   <div className="flex items-baseline gap-2 flex-wrap">
                     <span className="font-bold text-base text-stone-900 transition-colors duration-200 group-hover:text-primary">
                       {item.title}
@@ -106,14 +112,31 @@ function ProfileShortcutsGrid() {
                   <p className="text-xs sm:text-sm text-stone-400 leading-relaxed mt-0.5">
                     {item.description}
                   </p>
+
+                  {/* Navigation CTA */}
+                  <div className="pt-2 sm:pt-2.5">
+                    <Link
+                      id={item.id === 'saldo' ? 'cta-saldo-redeem' : `cta-shortcut-${item.id}`}
+                      to={item.path}
+                      className="group/cta inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary/90 transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm after:absolute after:inset-0"
+                      aria-label={item.ctaAriaLabel}
+                    >
+                      <span className="inline-flex items-center gap-1.5 transition-transform duration-150 group-hover:-translate-y-[0.5px]">
+                        <span className="underline-offset-4 group-hover/cta:underline">
+                          {item.ctaText}
+                        </span>
+                        <span
+                          aria-hidden="true"
+                          className="inline-block transition-transform duration-200 group-hover/cta:translate-x-0.5"
+                        >
+                          →
+                        </span>
+                      </span>
+                    </Link>
+                  </div>
                 </div>
               </div>
-
-              {/* Right: Arrow — slides on hover */}
-              <div className="text-stone-300 group-hover:text-primary shrink-0 transition-colors duration-200" aria-hidden="true">
-                <ArrowRightIcon className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" strokeWidth={2} />
-              </div>
-            </Link>
+            </div>
           )
         })}
       </div>
