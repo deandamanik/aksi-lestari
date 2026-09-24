@@ -20,6 +20,11 @@ import ModuleQuizPage from '../pages/aksipedia/ModuleQuizPage'
 import KomunitasPage from '../pages/komunitas/KomunitasPage'
 import CommunityLeaderboardPage from '../pages/komunitas/leaderboard/CommunityLeaderboardPage'
 import ProfilPage from '../pages/profil/ProfilPage'
+import ProfilMisiPage from '../pages/profil/ProfilMisiPage'
+import ProfilSaldoPage from '../pages/profil/ProfilSaldoPage'
+import ProfilRiwayatPage from '../pages/profil/ProfilRiwayatPage'
+import ProfilPengaturanPage from '../pages/profil/ProfilPengaturanPage'
+import ProfileWorkspaceLayout from '../pages/profil/ProfileWorkspaceLayout'
 import LoginPage from '../pages/auth/LoginPage'
 import RegisterPage from '../pages/auth/RegisterPage'
 import ScrollToTop from '../components/common/ScrollToTop'
@@ -39,7 +44,15 @@ function AppRoutes() {
           <Route path="/aksipedia/modul/:moduleId/quiz" element={<ModuleQuizPage />} />
           <Route path="/komunitas" element={<KomunitasPage />} />
           <Route path="/komunitas/leaderboard" element={<CommunityLeaderboardPage />} />
-          <Route path="/profil" element={<ProfilPage />} />
+
+          {/* Profil Workspace routes */}
+          <Route element={<ProfileWorkspaceLayout />}>
+            <Route path="/profil" element={<ProfilPage />} />
+            <Route path="/profil/misi" element={<ProfilMisiPage />} />
+            <Route path="/profil/saldo" element={<ProfilSaldoPage />} />
+            <Route path="/profil/riwayat" element={<ProfilRiwayatPage />} />
+            <Route path="/profil/pengaturan" element={<ProfilPengaturanPage />} />
+          </Route>
 
           {/* Lapor flow — LaporLayout scopes LaporContext to these routes only.
               Context resets automatically when the user navigates away. */}
