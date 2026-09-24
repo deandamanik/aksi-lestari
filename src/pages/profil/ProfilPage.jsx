@@ -1,54 +1,45 @@
-import ProfileHeader from './components/ProfileHeader'
-import ProfileSummaryCards from './components/ProfileSummaryCards'
 import ProfileActiveMission from './components/ProfileActiveMission'
-import ProfileShortcutsGrid from './components/ProfileShortcutsGrid'
 import ProfileRecentActivity from './components/ProfileRecentActivity'
+import ProfileRecentAchievements from './components/ProfileRecentAchievements'
 
 /**
- * ProfilPage — Personal Civic Participation Dashboard
+ * ProfilPage — Personal Overview Workspace Content
  *
- * Visual hierarchy (top → bottom):
- * 1. Profile Header   — primary visual anchor (identity + XP progression)
- * 2. Summary          — secondary metric composition (XP focal + streak + badges)
- * 3. Active Mission   — second visual anchor (prominent CTA)
- * 4. Shortcuts        — elegant navigation list (not dashboard cards)
- * 5. Recent Activity  — timeline feel
- *
- * Design direction: editorial civic dashboard, calm, premium, interactive.
+ * Rendered within the right workspace area under the "Ringkasan" tab.
+ * Information hierarchy:
+ * 1. Editorial Header      — "Perjalanan Kontribusimu"
+ * 2. Featured Active Mission — Primary focal point with progress & CTA
+ * 3. Recent Activity Stream  — Open timeline of recent contributions
+ * 4. Recent Achievements     — Lightweight civic badges
  */
 function ProfilPage() {
   return (
-    <main
-      className="min-h-[100svh] bg-[#FAF9F4] pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8"
-      aria-label="Profil Pengguna AksiLestari"
-    >
-      <div className="max-w-4xl mx-auto flex flex-col gap-6 sm:gap-8">
-        {/* A. Profile Header — Primary Visual Anchor */}
-        <div className="profil-enter">
-          <ProfileHeader />
-        </div>
-
-        {/* B. Summary Metrics — XP focal point */}
-        <div className="profil-enter profil-enter-delay-1">
-          <ProfileSummaryCards />
-        </div>
-
-        {/* C. Misi Mingguan Aktif — Second Visual Anchor */}
-        <div className="profil-enter profil-enter-delay-2">
-          <ProfileActiveMission />
-        </div>
-
-        {/* D. Aktivitas & Apresiasi — Navigation System */}
-        <div className="profil-enter profil-enter-delay-3">
-          <ProfileShortcutsGrid />
-        </div>
-
-        {/* E. Aktivitas Terakhir — Timeline */}
-        <div className="profil-enter profil-enter-delay-4">
-          <ProfileRecentActivity />
-        </div>
+    <div className="flex flex-col gap-8 sm:gap-10">
+      {/* 1. Page Intro / Editorial Header */}
+      <div className="profil-enter flex flex-col gap-1.5">
+        <h1 className="font-display text-2xl sm:text-3xl text-stone-900 font-bold tracking-tight leading-tight">
+          Perjalanan Kontribusimu
+        </h1>
+        <p className="text-sm sm:text-base text-stone-500 leading-relaxed max-w-xl">
+          Lihat progres, aksi terbaru, dan hal yang bisa kamu lanjutkan hari ini.
+        </p>
       </div>
-    </main>
+
+      {/* 2. Featured Active Mission — Primary Workspace Action Point */}
+      <div className="profil-enter profil-enter-delay-1">
+        <ProfileActiveMission />
+      </div>
+
+      {/* 3. Recent Activity Stream — Open Timeline */}
+      <div className="profil-enter profil-enter-delay-2">
+        <ProfileRecentActivity />
+      </div>
+
+      {/* 4. Recent Achievements — Lightweight Civic Badges */}
+      <div className="profil-enter profil-enter-delay-3">
+        <ProfileRecentAchievements />
+      </div>
+    </div>
   )
 }
 

@@ -47,10 +47,10 @@ function PengaturanPreferensi() {
     <section
       id="preferensi"
       aria-labelledby="heading-preferensi"
-      className="bg-white rounded-2xl border border-[#E8E5DC] p-6 sm:p-8 flex flex-col gap-5 shadow-2xs"
+      className="bg-white rounded-2xl border border-border-warm p-6 sm:p-8 flex flex-col gap-5 shadow-2xs"
     >
       {/* Header section */}
-      <div className="flex flex-col gap-1 border-b border-[#E8E5DC]/80 pb-5">
+      <div className="flex flex-col gap-1 border-b border-border-warm/80 pb-5">
         <h2
           id="heading-preferensi"
           className="font-display text-xl sm:text-2xl font-bold text-stone-900 tracking-tight"
@@ -63,7 +63,7 @@ function PengaturanPreferensi() {
       </div>
 
       {/* Rows */}
-      <div className="flex flex-col divide-y divide-[#E8E5DC]/70">
+      <div className="flex flex-col divide-y divide-border-warm/70">
         <PreferenceToggleRow
           id="toggle-misi"
           title="Notifikasi Misi"

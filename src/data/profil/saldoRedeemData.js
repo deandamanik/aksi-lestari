@@ -35,6 +35,7 @@ export const SALDO_APRESIASI = {
     {
       id: 'gopay',
       name: 'GoPay',
+      logo: '/images/wallet-logo/gopay_logo.webp',
       minRedeem: 10000,
       fee: 0,
       description: 'Transfer saldo instan ke akun GoPay terdaftar',
@@ -42,6 +43,7 @@ export const SALDO_APRESIASI = {
     {
       id: 'dana',
       name: 'DANA',
+      logo: '/images/wallet-logo/dana_logo.webp',
       minRedeem: 10000,
       fee: 0,
       description: 'Transfer langsung ke dompet DANA',
@@ -49,6 +51,7 @@ export const SALDO_APRESIASI = {
     {
       id: 'ovo',
       name: 'OVO',
+      logo: '/images/wallet-logo/ovo_logo.webp',
       minRedeem: 10000,
       fee: 0,
       description: 'Transfer saldo OVO Cash',
@@ -56,6 +59,7 @@ export const SALDO_APRESIASI = {
     {
       id: 'shopeepay',
       name: 'ShopeePay',
+      logo: '/images/wallet-logo/shopee_logo.webp',
       minRedeem: 10000,
       fee: 0,
       description: 'Transfer ke saldo ShopeePay',

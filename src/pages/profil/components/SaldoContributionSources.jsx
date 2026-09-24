@@ -18,51 +18,51 @@ function SaldoContributionSources() {
   return (
     <section
       aria-labelledby="saldo-sources-heading"
-      className="flex flex-col gap-4"
+      className="flex flex-col gap-3.5"
     >
       {/* Section header */}
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-1">
         <h2
           id="saldo-sources-heading"
           className="font-display text-xl sm:text-2xl font-bold text-stone-900 tracking-tight"
         >
-          Saldo Bertambah Dari Kontribusi Nyata
+          Sumber Saldo Apresiasi
         </h2>
-        <p className="text-sm text-stone-500 leading-relaxed max-w-lg">
-          Platform mengalokasikan saldo apresiasi sebagai bentuk penghargaan terhadap kontribusi warga.
+        <p className="text-sm text-stone-500 leading-relaxed max-w-xl">
+          Alokasi apresiasi dari setiap kategori aksi lingkungan yang tervalidasi.
         </p>
       </div>
 
-      {/* Source cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {/* Compact table-like editorial list */}
+      <div className="bg-white rounded-xl border border-border-warm divide-y divide-border-warm/70 overflow-hidden shadow-2xs">
         {SALDO_SOURCES.map((source) => {
           const IconComponent = ICON_MAP[source.icon] || CameraIcon
           return (
             <div
               key={source.id}
-              className="bg-white rounded-2xl border border-[#E8E5DC] p-5 flex flex-col gap-3 transition-colors duration-200 hover:border-stone-300"
+              className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-6 transition-colors duration-150 hover:bg-neutral/40"
             >
-              {/* Icon */}
-              <div className="text-primary/60" aria-hidden="true">
-                <IconComponent className="w-5 h-5" strokeWidth={1.8} />
+              <div className="flex items-center gap-3.5 min-w-0">
+                <IconComponent
+                  className="w-5 h-5 text-primary shrink-0"
+                  strokeWidth={1.8}
+                  aria-hidden="true"
+                />
+                <div className="flex flex-col min-w-0">
+                  <h3 className="text-sm font-bold text-stone-900 leading-snug">
+                    {source.title}
+                  </h3>
+                  <p className="text-xs text-stone-500 leading-relaxed">
+                    {source.description}
+                  </p>
+                </div>
               </div>
 
-              {/* Title + description */}
-              <div className="flex flex-col gap-1 flex-1">
-                <h3 className="text-sm font-bold text-stone-800 leading-snug">
-                  {source.title}
-                </h3>
-                <p className="text-xs text-stone-500 leading-relaxed">
-                  {source.description}
-                </p>
-              </div>
-
-              {/* Amount */}
-              <div className="flex flex-col gap-0.5 pt-1">
+              <div className="flex items-baseline sm:flex-col sm:items-end gap-1.5 sm:gap-0.5 shrink-0 pl-11 sm:pl-0">
                 <span className="text-sm font-bold text-primary tabular-nums">
                   {source.amount}
                 </span>
-                <span className="text-[10px] text-stone-400 font-medium">
+                <span className="text-[11px] text-stone-500 font-medium">
                   {source.amountSuffix}
                 </span>
               </div>

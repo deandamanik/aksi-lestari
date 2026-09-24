@@ -1,5 +1,5 @@
 import MisiCard from './MisiCard'
-import { WEEKLY_MISSIONS, CURRENT_WEEK_METADATA } from '../../../data/profil/weeklyMissionsData'
+import { CURRENT_WEEK_METADATA } from '../../../data/profil/weeklyMissionsData'
 import { CalendarIcon } from '../../../components/common/Icons'
 
 /**
@@ -9,37 +9,39 @@ import { CalendarIcon } from '../../../components/common/Icons'
  * Section heading: "Misi Minggu Ini" + subtitle + period label.
  * Data from weeklyMissionsData — no hardcoded duplicates.
  */
-function MisiList() {
+function MisiList({ missions = [] }) {
+  if (!missions || missions.length === 0) return null
+
   return (
     <section
       aria-labelledby="misi-list-heading"
-      className="flex flex-col gap-5"
+      className="flex flex-col gap-4"
     >
       {/* Section header */}
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-        <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+        <div className="flex flex-col gap-1">
           <h2
             id="misi-list-heading"
             className="font-display text-xl sm:text-2xl font-bold text-stone-900 tracking-tight"
           >
-            Misi Minggu Ini
+            Misi Lainnya
           </h2>
           <p className="text-sm text-stone-500 leading-relaxed max-w-lg">
-            Tantangan berjangka yang memberi ruang lebih luas untuk aksi nyata yang terpadu.
+            Tantangan pendukung yang dapat kamu selesaikan untuk kontribusi yang lebih luas.
           </p>
         </div>
 
         {/* Period label */}
-        <div className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-stone-400 shrink-0 select-none">
+        <div className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-stone-500 shrink-0 select-none">
           <CalendarIcon className="w-3.5 h-3.5 opacity-60" strokeWidth={1.8} />
           <span>Periode: {CURRENT_WEEK_METADATA.cycleRange}</span>
         </div>
       </div>
 
-      {/* Mission cards — 2-column grid on lg, single column below */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {WEEKLY_MISSIONS.map((mission, i) => (
-          <MisiCard key={mission.id} mission={mission} index={i} />
+      {/* Supporting Mission cards — clean single column or grid */}
+      <div className="flex flex-col gap-4">
+        {missions.map((mission, i) => (
+          <MisiCard key={mission.id} mission={mission} isFeatured={false} index={i + 1} />
         ))}
       </div>
     </section>

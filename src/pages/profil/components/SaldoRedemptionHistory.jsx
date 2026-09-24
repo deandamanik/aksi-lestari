@@ -32,7 +32,7 @@ function SaldoRedemptionHistory({ history }) {
       </div>
 
       {/* Transactions list */}
-      <div className="bg-white rounded-2xl border border-[#E8E5DC] divide-y divide-[#E8E5DC]/60 overflow-hidden">
+      <div className="bg-white rounded-xl border border-border-warm divide-y divide-border-warm/70 overflow-hidden shadow-2xs">
         {history.map((tx) => {
           const isWallet = tx.type === 'wallet'
           const IconComponent = isWallet ? WalletIcon : AwardIcon
@@ -40,39 +40,36 @@ function SaldoRedemptionHistory({ history }) {
           return (
             <div
               key={tx.id}
-              className="flex items-start gap-4 p-5 sm:p-6 transition-colors duration-200 hover:bg-[#FDFCF9]"
+              className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-6 transition-colors duration-150 hover:bg-neutral/40"
             >
-              {/* Icon */}
-              <div className="shrink-0 mt-0.5 text-stone-400" aria-hidden="true">
-                <IconComponent className="w-5 h-5" strokeWidth={1.8} />
-              </div>
-
-              {/* Content */}
-              <div className="flex-1 min-w-0 flex flex-col gap-1">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-bold text-stone-800 leading-snug">
-                      {tx.methodTitle}
-                    </h3>
-                    <p className="text-xs text-stone-400 mt-0.5">
-                      {tx.date}
-                    </p>
-                    <p className="text-xs text-stone-400 mt-0.5 font-medium">
-                      {tx.target}
-                    </p>
-                  </div>
-
-                  {/* Amount + status */}
-                  <div className="flex flex-col items-end gap-1 shrink-0">
-                    <span className="text-sm font-bold text-stone-700 tabular-nums">
-                      {tx.formattedAmount}
-                    </span>
-                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-primary select-none">
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" aria-hidden="true" />
-                      {tx.statusLabel}
-                    </span>
+              {/* Left: Icon + Method & Metadata */}
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <IconComponent
+                  className="w-5 h-5 text-stone-500 shrink-0"
+                  strokeWidth={1.8}
+                  aria-hidden="true"
+                />
+                <div className="flex flex-col min-w-0">
+                  <span className="text-sm font-bold text-stone-900 truncate">
+                    {tx.methodTitle}
+                  </span>
+                  <div className="flex items-center gap-2 text-xs text-stone-500 mt-0.5">
+                    <span>{tx.date}</span>
+                    <span className="text-stone-300" aria-hidden="true">·</span>
+                    <span className="font-mono text-[11px] truncate max-w-[180px]">{tx.target}</span>
                   </div>
                 </div>
+              </div>
+
+              {/* Right: Amount + Status */}
+              <div className="flex items-center sm:flex-col sm:items-end justify-between sm:justify-start gap-1 shrink-0 pl-11 sm:pl-0">
+                <span className="text-sm font-bold text-stone-800 tabular-nums">
+                  {tx.formattedAmount}
+                </span>
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary select-none">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" aria-hidden="true" />
+                  {tx.statusLabel}
+                </span>
               </div>
             </div>
           )

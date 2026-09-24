@@ -4,6 +4,7 @@ import RiwayatSummary from './components/RiwayatSummary'
 import RiwayatFilterBar from './components/RiwayatFilterBar'
 import RiwayatActivityCard from './components/RiwayatActivityCard'
 import RiwayatTransparencyNote from './components/RiwayatTransparencyNote'
+import { ArrowRightIcon } from '../../components/common/Icons'
 import {
   CONTRIBUTION_HISTORY,
   getValidatedContributionsCount,
@@ -76,93 +77,82 @@ function ProfilRiwayatPage() {
   const totalXP = useMemo(() => getTotalContributionXP(), [])
 
   return (
-    <main
-      className="min-h-[100svh] bg-[#FAF9F4] pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8"
-      aria-label="Halaman Kontribusi dan Riwayat AksiLestari"
-    >
-      <div className="max-w-5xl mx-auto flex flex-col gap-8 sm:gap-10">
-        {/* 1. Page Header */}
-        <div className="profil-enter">
-          <RiwayatHeader />
-        </div>
-
-        {/* 2. Summary Area */}
-        <div className="profil-enter profil-enter-delay-1">
-          <RiwayatSummary totalCount={totalVerifiedCount} totalXP={totalXP} />
-        </div>
-
-        {/* 3. Filter & Sort Bar */}
-        <div className="profil-enter profil-enter-delay-2">
-          <RiwayatFilterBar
-            categories={categories}
-            activeCategory={activeCategory}
-            onSelectCategory={(catId) => {
-              setActiveCategory(catId)
-              setDisplayLimit(6)
-            }}
-            sortOrder={sortOrder}
-            onChangeSortOrder={setSortOrder}
-          />
-        </div>
-
-        {/* 4. Riwayat Terkini — Activity List */}
-        <section
-          aria-labelledby="riwayat-terkini-heading"
-          className="profil-enter profil-enter-delay-3 flex flex-col gap-4 sm:gap-5"
-        >
-          {/* Section Heading & Subtitle */}
-          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-            <h2
-              id="riwayat-terkini-heading"
-              className="font-display text-xl sm:text-2xl font-bold text-stone-900 tracking-tight"
-            >
-              Riwayat Terkini
-            </h2>
-            <span className="text-xs text-stone-400 font-medium">
-              Menampilkan {visibleItems.length} rekam jejak kontribusi
-            </span>
-          </div>
-
-          {/* Activity Cards List */}
-          <div className="flex flex-col gap-3 sm:gap-4">
-            {visibleItems.map((item) => (
-              <RiwayatActivityCard key={item.id} item={item} />
-            ))}
-
-            {visibleItems.length === 0 && (
-              <div className="bg-white rounded-2xl border border-[#E8E5DC] p-10 text-center text-stone-400 text-sm">
-                Belum ada aktivitas dalam kategori ini.
-              </div>
-            )}
-          </div>
-
-          {/* Load More Control */}
-          {hasMore ? (
-            <div className="flex flex-col items-center justify-center gap-2 pt-4">
-              <button
-                type="button"
-                onClick={() => setDisplayLimit((prev) => prev + 6)}
-                className="inline-flex items-center justify-center px-6 py-2.5 rounded-full border border-[#E8E5DC] bg-white hover:bg-[#FAF9F4] text-stone-800 text-xs sm:text-sm font-semibold transition-all duration-200 shadow-2xs hover:border-stone-300 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary cursor-pointer active:scale-[0.98]"
-              >
-                Lihat Lebih Banyak ({remainingCount} Kontribusi Lainnya)
-              </button>
-              <p className="text-xs text-stone-400 select-none text-center">
-                Arsip kontribusi disimpan secara permanen sebagai rekam jejak sipil lingkungan hidup.
-              </p>
-            </div>
-          ) : (
-            <p className="text-xs text-stone-400 select-none text-center pt-2">
-              Arsip kontribusi disimpan secara permanen sebagai rekam jejak sipil lingkungan hidup.
-            </p>
-          )}
-        </section>
-
-        {/* 5. Transparency Note */}
-        <div className="profil-enter profil-enter-delay-4">
-          <RiwayatTransparencyNote />
-        </div>
+    <div className="flex flex-col gap-6 sm:gap-8">
+      {/* 1. Page Header */}
+      <div className="profil-enter">
+        <RiwayatHeader />
       </div>
-    </main>
+
+      {/* 2. Summary Area */}
+      <div className="profil-enter profil-enter-delay-1">
+        <RiwayatSummary totalCount={totalVerifiedCount} totalXP={totalXP} />
+      </div>
+
+      {/* 3. Filter & Sort Bar */}
+      <div className="profil-enter profil-enter-delay-2">
+        <RiwayatFilterBar
+          categories={categories}
+          activeCategory={activeCategory}
+          onSelectCategory={(catId) => {
+            setActiveCategory(catId)
+            setDisplayLimit(6)
+          }}
+          sortOrder={sortOrder}
+          onChangeSortOrder={setSortOrder}
+        />
+      </div>
+
+      {/* 4. Riwayat Terkini — Activity List */}
+      <section
+        aria-labelledby="riwayat-terkini-heading"
+        className="profil-enter profil-enter-delay-3 flex flex-col gap-4 sm:gap-5"
+      >
+        {/* Section Heading & Subtitle */}
+        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+          <h2
+            id="riwayat-terkini-heading"
+            className="font-display text-xl sm:text-2xl font-bold text-stone-900 tracking-tight"
+          >
+            Riwayat Terkini
+          </h2>
+          <span className="text-xs text-stone-500 font-medium">
+            Menampilkan {visibleItems.length} rekam jejak kontribusi
+          </span>
+        </div>
+
+        {/* Activity Rows List */}
+        <div className="flex flex-col">
+          {visibleItems.map((item) => (
+            <RiwayatActivityCard key={item.id} item={item} />
+          ))}
+
+          {visibleItems.length === 0 && (
+            <div className="py-12 text-center text-stone-500 text-xs sm:text-sm">
+              Belum ada aktivitas dalam kategori ini.
+            </div>
+          )}
+        </div>
+
+        {/* Load More Action */}
+        {hasMore && (
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={() => setDisplayLimit((prev) => prev + 6)}
+              className="group inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-primary hover:underline select-none cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary rounded-sm"
+            >
+              <span>Lihat Lebih Banyak ({remainingCount} Kontribusi Lainnya)</span>
+              <ArrowRightIcon className="w-3.5 h-3.5 transition-transform duration-150 group-hover:translate-x-0.5" strokeWidth={2} />
+            </button>
+          </div>
+        )}
+      </section>
+
+      {/* 5. Transparency Note */}
+      <div className="profil-enter profil-enter-delay-4">
+        <RiwayatTransparencyNote />
+      </div>
+    </div>
   )
 }
 

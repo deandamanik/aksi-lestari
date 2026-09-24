@@ -8,9 +8,11 @@
  * - Saldo Apresiasi dikelola terpisah di saldoRedeemData.js dalam mata uang Rupiah.
  */
 
+import { getValidatedContributionsCount } from './contributionHistoryData'
+
 export const USER_PROFILE = {
   id: 'usr-001',
-  name: 'Deann',
+  name: 'Invention 2026',
   username: 'deann.lestari',
   email: 'deann@aksilestari.id',
   phone: '0812-3456-7890',
@@ -18,8 +20,8 @@ export const USER_PROFILE = {
   city: 'Kota Bandung',
   province: 'Jawa Barat',
   joinDate: 'Januari 2026',
-  avatar: null, // fallback initial 'D'
-  initials: 'D',
+  avatar: null, // fallback initial 'I'
+  initials: 'I',
   bio: 'Terus bergerak dan bangun kebiasaan baik untuk kelestarian lingkungan sekitar.',
 
   // Platform Progression (Level & XP)
@@ -47,9 +49,52 @@ export const USER_PROFILE = {
   // Ringkasan metrik dampak nyata (Civic Impact Metrics)
   impactMetrics: {
     totalReportsSubmitted: 6,
-    verifiedReportsCount: 11,
+    // Source of truth: tervalidasi dari daftar riwayat kontribusi sipil
+    verifiedReportsCount: getValidatedContributionsCount(),
     totalWasteManagedKg: 38.5,
     communityEventsAttended: 2,
     weeklyMissionsCompleted: 5,
   },
+}
+
+/**
+ * Browser session persistence for User Profile.
+ * Keeps Profile Identity Area, Profile Settings, and other consuming components
+ * synchronized when the user modifies their name, email, phone, bio, or avatar.
+ */
+const PROFILE_SESSION_KEY = 'aksilestari_profile_session'
+
+export function getUserProfileSession() {
+  if (typeof window === 'undefined') {
+    return USER_PROFILE
+  }
+
+  try {
+    const raw = sessionStorage.getItem(PROFILE_SESSION_KEY)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (parsed && typeof parsed === 'object' && parsed.id) {
+        return {
+          ...USER_PROFILE,
+          ...parsed,
+        }
+      }
+    }
+  } catch {
+    // fallback if parse fails or storage restricted
+  }
+
+  return USER_PROFILE
+}
+
+export function saveUserProfileSession(state) {
+  if (typeof window === 'undefined') return
+  try {
+    sessionStorage.setItem(PROFILE_SESSION_KEY, JSON.stringify(state))
+    // Also mutate in-memory USER_PROFILE object so static references see updated properties
+    Object.assign(USER_PROFILE, state)
+    window.dispatchEvent(new CustomEvent('profile-session-updated', { detail: state }))
+  } catch {
+    // ignore
+  }
 }

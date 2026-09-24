@@ -10,7 +10,7 @@ function RiwayatTransparencyNote() {
   return (
     <aside
       aria-label="Catatan Transparansi Data Kontribusi"
-      className="bg-[#FAF9F4] rounded-xl border border-[#E8E5DC] p-4 sm:p-5 flex items-start gap-3.5 text-stone-600"
+      className="bg-neutral rounded-xl border border-border-warm p-4 sm:p-5 flex items-start gap-3.5 text-stone-600"
     >
       <div
         className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center shrink-0 mt-0.5 text-primary"

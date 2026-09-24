@@ -1,37 +1,23 @@
 import { useState, useCallback } from 'react'
-import { Link } from 'react-router-dom'
-import { ArrowLeftIcon } from '../../components/common/Icons'
 import {
   getSaldoSession,
   saveSaldoSession,
 } from '../../data/profil/saldoRedeemData'
 import SaldoBalanceCard from './components/SaldoBalanceCard'
-import SaldoTransparencyNote from './components/SaldoTransparencyNote'
 import SaldoContributionSources from './components/SaldoContributionSources'
 import SaldoRedeemSection from './components/SaldoRedeemSection'
 import SaldoRedemptionHistory from './components/SaldoRedemptionHistory'
-import SaldoGovernanceInfo from './components/SaldoGovernanceInfo'
 
 /**
  * ProfilSaldoPage — Saldo & Redeem Hub
  *
- * Section order (following reference layout):
- * 1. Back navigation + Breadcrumb
- * 2. Page heading — "Saldo & Redeem" + subtitle + contextual label
- * 3. Balance card — primary focal point
- * 4. Transparency note — informational
- * 5. Contribution sources — how balance grows
- * 6. Redeem section — interactive E-Wallet / Voucher
- * 7. Redemption history — past transactions
- * 8. Governance info — closing section
- *
- * State architecture:
- * Reactive saldo state is initialized from session storage (getSaldoSession)
- * so that mock redemptions persist during subpage navigation.
- * Static reference data remains imported from the data module.
- *
- * Design: civic-tech, trustworthy, editorial, functional.
- * Consistent with ProfilMisiPage patterns.
+ * Rendered within the right workspace area under the "Saldo & Redeem" tab.
+ * Content:
+ * 1. Page heading — Eyebrow + "Saldo & Redeem" + subtitle
+ * 2. Balance card — primary focal point (reactive)
+ * 3. Contribution sources — how balance grows
+ * 4. Redeem section — interactive E-Wallet / Voucher
+ * 5. Redemption history — past transactions
  */
 
 function formatRupiah(n) {
@@ -46,138 +32,87 @@ function ProfilSaldoPage() {
 
   /**
    * handleRedeem — callback invoked after a successful mock redeem.
-   * Deducts balance, increases totalRedeemed, prepends a new history entry,
-   * and saves updated state to session storage.
-   *
-   * @param {{ amount: number, type: 'wallet'|'voucher', methodTitle: string, target: string }} tx
+   * Flattens state mutations outside pure functional updaters.
    */
   const handleRedeem = useCallback((tx) => {
-    setBalance((prevBalance) => {
-      const nextBalance = Math.max(0, prevBalance - tx.amount)
-      setTotalRedeemed((prevRedeemed) => {
-        const nextTotalRedeemed = prevRedeemed + tx.amount
-        setHistory((prevHistory) => {
-          const now = new Date()
-          const dateStr =
-            now.toLocaleDateString('id-ID', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-            }) +
-            ', ' +
-            now.toLocaleTimeString('id-ID', {
-              hour: '2-digit',
-              minute: '2-digit',
-            }) +
-            ' WIB'
+    const currentSession = getSaldoSession()
+    const nextBalance = Math.max(0, currentSession.balance - tx.amount)
+    const nextTotalRedeemed = currentSession.totalRedeemed + tx.amount
 
-          const newTx = {
-            id: `red-${Date.now()}`,
-            type: tx.type,
-            methodTitle: tx.methodTitle,
-            target: tx.target,
-            amountRupiah: tx.amount,
-            formattedAmount: '-' + formatRupiah(tx.amount),
-            date: dateStr,
-            status: 'completed',
-            statusLabel: 'Berhasil',
-          }
+    const now = new Date()
+    const dateStr =
+      now.toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      }) +
+      ', ' +
+      now.toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit',
+      }) +
+      ' WIB'
 
-          const nextHistory = [newTx, ...prevHistory]
+    const newTx = {
+      id: `red-${Date.now()}`,
+      type: tx.type,
+      methodTitle: tx.methodTitle,
+      target: tx.target,
+      amountRupiah: tx.amount,
+      formattedAmount: '-' + formatRupiah(tx.amount),
+      date: dateStr,
+      status: 'completed',
+      statusLabel: 'Berhasil',
+    }
 
-          saveSaldoSession({
-            balance: nextBalance,
-            totalRedeemed: nextTotalRedeemed,
-            history: nextHistory,
-          })
+    const nextHistory = [newTx, ...currentSession.history]
 
-          return nextHistory
-        })
-        return nextTotalRedeemed
-      })
-      return nextBalance
+    saveSaldoSession({
+      balance: nextBalance,
+      totalRedeemed: nextTotalRedeemed,
+      history: nextHistory,
     })
+
+    setBalance(nextBalance)
+    setTotalRedeemed(nextTotalRedeemed)
+    setHistory(nextHistory)
   }, [])
 
   return (
-    <main
-      className="min-h-[100svh] bg-[#FAF9F4] pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8"
-      aria-label="Halaman Saldo dan Redeem AksiLestari"
-    >
-      <div className="max-w-5xl mx-auto flex flex-col gap-8 sm:gap-10">
-        {/* 1. Back navigation + Breadcrumb */}
-        <div className="profil-enter flex items-center justify-between gap-4">
-          <Link
-            to="/profil"
-            className="group inline-flex items-center gap-2 text-sm font-semibold text-stone-500 hover:text-primary transition-colors duration-200 w-fit focus:outline-hidden focus-visible:underline"
-          >
-            <ArrowLeftIcon
-              className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-0.5"
-              strokeWidth={2}
-            />
-            <span>Kembali ke Profil</span>
-          </Link>
-
-          {/* Breadcrumb — desktop only */}
-          <nav
-            aria-label="Breadcrumb"
-            className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-stone-400 select-none"
-          >
-            <span>PROFIL</span>
-            <span aria-hidden="true">/</span>
-            <span className="text-stone-500">SALDO &amp; REDEEM</span>
-          </nav>
-        </div>
-
-        {/* 2. Page heading */}
-        <div className="profil-enter profil-enter-delay-1 flex flex-col gap-2">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="text-[11px] font-bold text-stone-400 uppercase tracking-widest select-none">
-              Profil
-            </span>
-            <span className="text-[10px] font-bold text-primary/70 bg-primary/5 px-2.5 py-1 rounded-md uppercase tracking-widest select-none">
-              Apresiasi Warga
-            </span>
-          </div>
-          <h1 className="font-display text-3xl sm:text-4xl lg:text-[2.75rem] text-stone-900 font-bold tracking-tight leading-tight">
-            Saldo &amp; Redeem
-          </h1>
-          <p className="text-sm sm:text-base text-stone-500 leading-relaxed max-w-xl mt-1">
-            Kelola apresiasi yang kamu kumpulkan dari setiap kontribusi nyata untuk lingkungan dan tata kelola bersama.
-          </p>
-        </div>
-
-        {/* 3. Balance card — reactive */}
-        <div className="profil-enter profil-enter-delay-2">
-          <SaldoBalanceCard balance={balance} totalRedeemed={totalRedeemed} />
-        </div>
-
-        {/* 4. Transparency note */}
-        <div className="profil-enter profil-enter-delay-2">
-          <SaldoTransparencyNote />
-        </div>
-
-        {/* 5. Contribution sources */}
-        <div className="profil-enter profil-enter-delay-3">
-          <SaldoContributionSources />
-        </div>
-
-        {/* 6. Redeem section — reactive */}
-        <div className="profil-enter profil-enter-delay-4">
-          <SaldoRedeemSection balance={balance} onRedeem={handleRedeem} />
-        </div>
-
-        {/* 7. Redemption history — reactive */}
-        <div className="profil-enter profil-enter-delay-5">
-          <SaldoRedemptionHistory history={history} />
-        </div>
-
-        {/* 8. Governance info */}
-        <div className="profil-enter profil-enter-delay-6">
-          <SaldoGovernanceInfo />
-        </div>
+    <div className="flex flex-col gap-8 sm:gap-10">
+      {/* 1. Page heading */}
+      <div className="profil-enter flex flex-col gap-1.5">
+        <span className="text-xs font-semibold text-primary select-none">
+          Saldo Apresiasi
+        </span>
+        <h1 className="font-display text-2xl sm:text-3xl text-stone-900 font-bold tracking-tight leading-tight">
+          Saldo &amp; Redeem
+        </h1>
+        <p className="text-sm sm:text-base text-stone-500 leading-relaxed max-w-xl">
+          Kelola apresiasi yang kamu kumpulkan dari setiap kontribusi nyata untuk lingkungan dan tata kelola bersama.
+        </p>
       </div>
-    </main>
+
+      {/* 2. Balance card — reactive */}
+      <div className="profil-enter profil-enter-delay-1">
+        <SaldoBalanceCard balance={balance} totalRedeemed={totalRedeemed} />
+      </div>
+
+      {/* 3. Contribution sources */}
+      <div className="profil-enter profil-enter-delay-2">
+        <SaldoContributionSources />
+      </div>
+
+      {/* 4. Redeem section — reactive */}
+      <div className="profil-enter profil-enter-delay-3">
+        <SaldoRedeemSection balance={balance} onRedeem={handleRedeem} />
+      </div>
+
+      {/* 5. Redemption history — reactive */}
+      <div className="profil-enter profil-enter-delay-4">
+        <SaldoRedemptionHistory history={history} />
+      </div>
+    </div>
   )
 }
 

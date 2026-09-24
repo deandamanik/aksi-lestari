@@ -1,9 +1,9 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { CameraIcon, CheckIcon } from '../../../components/common/Icons'
 
 function PengaturanInformasiAkun({ profile, onSaveProfile }) {
   const [formData, setFormData] = useState({
-    name: profile.name || 'Deann',
+    name: profile.name || 'Invention 2026',
     email: profile.email || 'deann@aksilestari.id',
     phone: profile.phone || '0812-3456-7890',
     bio: profile.bio || 'Terus bergerak dan bangun kebiasaan baik untuk kelestarian lingkungan sekitar.',
@@ -12,6 +12,16 @@ function PengaturanInformasiAkun({ profile, onSaveProfile }) {
   const [isSaving, setIsSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState(false)
   const fileInputRef = useRef(null)
+  const saveTimerRef = useRef(null)
+  const successTimerRef = useRef(null)
+
+  // Clean up any pending timers on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
+      if (successTimerRef.current) clearTimeout(successTimerRef.current)
+    }
+  }, [])
 
   const isDirty =
     formData.name !== profile.name ||
@@ -44,12 +54,15 @@ function PengaturanInformasiAkun({ profile, onSaveProfile }) {
     setIsSaving(true)
     setSaveSuccess(false)
 
-    // Simulate save flow
-    setTimeout(() => {
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
+    if (successTimerRef.current) clearTimeout(successTimerRef.current)
+
+    // Simulate save flow with unmount safety
+    saveTimerRef.current = setTimeout(() => {
       setIsSaving(false)
       setSaveSuccess(true)
       onSaveProfile(formData)
-      setTimeout(() => setSaveSuccess(false), 3500)
+      successTimerRef.current = setTimeout(() => setSaveSuccess(false), 3500)
     }, 600)
   }
 
@@ -57,10 +70,10 @@ function PengaturanInformasiAkun({ profile, onSaveProfile }) {
     <section
       id="informasi"
       aria-labelledby="heading-informasi-akun"
-      className="bg-white rounded-2xl border border-[#E8E5DC] p-6 sm:p-8 flex flex-col gap-6 shadow-2xs"
+      className="bg-white rounded-2xl border border-border-warm p-6 sm:p-8 flex flex-col gap-6 shadow-2xs"
     >
       {/* Header section */}
-      <div className="flex flex-col gap-1 border-b border-[#E8E5DC]/80 pb-5">
+      <div className="flex flex-col gap-1 border-b border-border-warm/80 pb-5">
         <h2
           id="heading-informasi-akun"
           className="font-display text-xl sm:text-2xl font-bold text-stone-900 tracking-tight"
@@ -75,7 +88,7 @@ function PengaturanInformasiAkun({ profile, onSaveProfile }) {
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         {/* Avatar Row */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 pb-2">
-          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#FAF9F4] border-[2.5px] border-primary/20 text-primary flex items-center justify-center font-display text-2xl sm:text-3xl font-bold select-none shrink-0 overflow-hidden">
+          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-neutral border-[2.5px] border-primary/20 text-primary flex items-center justify-center font-display text-2xl sm:text-3xl font-bold select-none shrink-0 overflow-hidden">
             {avatarPreview ? (
               <img src={avatarPreview} alt={formData.name} className="w-full h-full object-cover" />
             ) : (
@@ -88,7 +101,7 @@ function PengaturanInformasiAkun({ profile, onSaveProfile }) {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-[#E8E5DC] hover:border-stone-300 hover:bg-[#FAF9F4] text-stone-800 text-xs sm:text-sm font-semibold transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary cursor-pointer active:scale-[0.98]"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-border-warm hover:border-stone-300 hover:bg-neutral text-stone-800 text-xs sm:text-sm font-semibold transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary cursor-pointer active:scale-[0.98]"
               >
                 <CameraIcon className="w-3.5 h-3.5 text-stone-500" strokeWidth={2} />
                 <span>Ubah Foto</span>
@@ -98,14 +111,14 @@ function PengaturanInformasiAkun({ profile, onSaveProfile }) {
                 <button
                   type="button"
                   onClick={() => setAvatarPreview(null)}
-                  className="text-xs text-stone-400 hover:text-stone-700 transition-colors font-medium underline-offset-4 hover:underline cursor-pointer"
+                  className="text-xs text-stone-500 hover:text-stone-700 transition-colors font-medium underline-offset-4 hover:underline cursor-pointer"
                 >
                   Hapus
                 </button>
               )}
             </div>
 
-            <p className="text-[11px] text-stone-400">
+            <p className="text-[11px] text-stone-500">
               Format JPG, PNG, atau WEBP. Maksimal 2 MB.
             </p>
             <input
@@ -132,7 +145,7 @@ function PengaturanInformasiAkun({ profile, onSaveProfile }) {
               required
               value={formData.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E5DC] bg-white text-stone-900 text-sm font-medium hover:border-stone-300 focus:border-primary focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/20 transition-all duration-150"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-border-warm bg-white text-stone-900 text-sm font-medium hover:border-stone-300 focus:border-primary focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/20 transition-all duration-150"
               placeholder="Masukkan nama lengkap"
             />
           </div>
@@ -154,7 +167,7 @@ function PengaturanInformasiAkun({ profile, onSaveProfile }) {
               required
               value={formData.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E5DC] bg-white text-stone-900 text-sm font-medium hover:border-stone-300 focus:border-primary focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/20 transition-all duration-150"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-border-warm bg-white text-stone-900 text-sm font-medium hover:border-stone-300 focus:border-primary focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/20 transition-all duration-150"
               placeholder="nama@email.com"
             />
           </div>
@@ -176,7 +189,7 @@ function PengaturanInformasiAkun({ profile, onSaveProfile }) {
               required
               value={formData.phone}
               onChange={(e) => handleInputChange('phone', e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E5DC] bg-white text-stone-900 text-sm font-medium hover:border-stone-300 focus:border-primary focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/20 transition-all duration-150"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-border-warm bg-white text-stone-900 text-sm font-medium hover:border-stone-300 focus:border-primary focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/20 transition-all duration-150"
               placeholder="0812-xxxx-xxxx"
             />
           </div>
@@ -187,7 +200,7 @@ function PengaturanInformasiAkun({ profile, onSaveProfile }) {
               <label htmlFor="input-bio" className="text-xs font-bold text-stone-700 select-none">
                 Bio Singkat
               </label>
-              <span className="text-[11px] text-stone-400 tabular-nums">
+              <span className="text-[11px] text-stone-500 tabular-nums">
                 {formData.bio.length} / 200 karakter
               </span>
             </div>
@@ -197,14 +210,14 @@ function PengaturanInformasiAkun({ profile, onSaveProfile }) {
               maxLength={200}
               value={formData.bio}
               onChange={(e) => handleInputChange('bio', e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E5DC] bg-white text-stone-900 text-sm font-medium hover:border-stone-300 focus:border-primary focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/20 transition-all duration-150 resize-none leading-relaxed"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-border-warm bg-white text-stone-900 text-sm font-medium hover:border-stone-300 focus:border-primary focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/20 transition-all duration-150 resize-none leading-relaxed"
               placeholder="Tuliskan pernyataan singkat tentang motivasi kontribusimu..."
             />
           </div>
         </div>
 
         {/* Action Row & Feedback */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2 border-t border-[#E8E5DC]/80">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2 border-t border-border-warm/80">
           <div>
             {saveSuccess && (
               <div
@@ -220,7 +233,7 @@ function PengaturanInformasiAkun({ profile, onSaveProfile }) {
           <button
             type="submit"
             disabled={!isDirty || isSaving}
-            className={`inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
+            className={`inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
               isDirty && !isSaving
                 ? 'bg-primary hover:bg-primary/90 text-white cursor-pointer shadow-xs active:scale-[0.98]'
                 : 'bg-stone-200 text-stone-400 cursor-not-allowed'

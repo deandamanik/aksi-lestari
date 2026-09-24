@@ -27,68 +27,47 @@ function SaldoBalanceCard({ balance, totalRedeemed }) {
   return (
     <section
       aria-labelledby="saldo-balance-heading"
-      className="bg-white rounded-2xl border border-[#E8E5DC] overflow-hidden"
+      className="bg-white rounded-2xl border border-border-warm p-6 sm:p-7 flex flex-col gap-5 shadow-2xs"
     >
-      {/* Top: balance + status */}
-      <div className="p-6 sm:p-8">
-        {/* Eyebrow + status */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
-          <span className="text-[11px] font-bold text-stone-400 uppercase tracking-widest select-none flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" aria-hidden="true" />
-            Saldo Apresiasi Tersedia
+      {/* Top: status + balance */}
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xs font-semibold text-stone-600 select-none">
+            Saldo Apresiasi Warga
           </span>
           <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary select-none">
-            <span className="w-2 h-2 rounded-full bg-primary shrink-0" aria-hidden="true" />
-            {balance > 0 ? 'Aktif & Siap Digunakan' : 'Saldo Habis'}
+            <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" aria-hidden="true" />
+            {balance > 0 ? 'Siap Digunakan' : 'Saldo Habis'}
           </span>
         </div>
 
-        {/* Balance — dominant number */}
+        {/* Balance — restrained focal number */}
         <h2
           id="saldo-balance-heading"
-          className="font-display text-4xl sm:text-5xl lg:text-[3.5rem] font-bold text-stone-900 tracking-tight leading-none"
+          className="font-display text-3xl sm:text-4xl font-bold text-stone-900 tracking-tight leading-tight tabular-nums"
         >
           {formatRupiah(balance)}
         </h2>
 
         {/* Description */}
-        <p className="text-sm text-stone-500 leading-relaxed max-w-lg mt-3">
-          Saldo apresiasi hasil dari verifikasi aksi pelaporan dan partisipasi lingkungan.
+        <p className="text-xs sm:text-sm text-stone-500 leading-relaxed max-w-lg">
+          Apresiasi nyata atas aksi pelaporan dan partisipasi lingkungan yang telah diverifikasi.
         </p>
       </div>
 
-      {/* Bottom: 3 stat blocks */}
-      <div className="px-6 sm:px-8 py-5 sm:py-6 bg-[#FAF9F4]/50 border-t border-[#E8E5DC]/50">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-          {/* Total Diperoleh */}
-          <div className="flex flex-col gap-1">
-            <span className="text-[11px] font-bold text-stone-400 uppercase tracking-widest select-none">
-              Total Diperoleh
-            </span>
-            <span className="font-display text-xl sm:text-2xl font-bold text-stone-900 tracking-tight tabular-nums">
-              {formattedTotalEarned}
-            </span>
-          </div>
-
-          {/* Total Digunakan */}
-          <div className="flex flex-col gap-1">
-            <span className="text-[11px] font-bold text-stone-400 uppercase tracking-widest select-none">
-              Total Digunakan
-            </span>
-            <span className="font-display text-xl sm:text-2xl font-bold text-stone-700 tracking-tight tabular-nums">
-              -{formatRupiah(totalRedeemed)}
-            </span>
-          </div>
-
-          {/* Penambahan Terakhir */}
-          <div className="flex flex-col gap-1">
-            <span className="text-[11px] font-bold text-stone-400 uppercase tracking-widest select-none">
-              Penambahan Terakhir
-            </span>
-            <span className="font-display text-xl sm:text-2xl font-bold text-primary tracking-tight tabular-nums">
-              {recentAddition.formattedAmount}
-            </span>
-          </div>
+      {/* Supporting context — calm horizontal metadata row */}
+      <div className="pt-4 border-t border-border-warm/70 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-xs">
+        <div className="flex items-baseline justify-between sm:flex-col sm:items-start gap-0.5">
+          <span className="text-stone-500 font-medium">Total Diperoleh</span>
+          <span className="font-semibold text-stone-900 tabular-nums">{formattedTotalEarned}</span>
+        </div>
+        <div className="flex items-baseline justify-between sm:flex-col sm:items-start gap-0.5">
+          <span className="text-stone-500 font-medium">Total Digunakan</span>
+          <span className="font-semibold text-stone-700 tabular-nums">-{formatRupiah(totalRedeemed)}</span>
+        </div>
+        <div className="flex items-baseline justify-between sm:flex-col sm:items-start gap-0.5">
+          <span className="text-stone-500 font-medium">Penambahan Terakhir</span>
+          <span className="font-semibold text-primary tabular-nums">{recentAddition.formattedAmount}</span>
         </div>
       </div>
     </section>

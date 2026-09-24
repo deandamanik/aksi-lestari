@@ -5,10 +5,10 @@ function PengaturanPrivasiData({ onOpenDeleteModal, onDownloadData }) {
     <section
       id="privasi"
       aria-labelledby="heading-privasi"
-      className="bg-white rounded-2xl border border-[#E8E5DC] p-6 sm:p-8 flex flex-col gap-5 shadow-2xs"
+      className="bg-white rounded-2xl border border-border-warm p-6 sm:p-8 flex flex-col gap-5 shadow-2xs"
     >
       {/* Header section */}
-      <div className="flex flex-col gap-1 border-b border-[#E8E5DC]/80 pb-5">
+      <div className="flex flex-col gap-1 border-b border-border-warm/80 pb-5">
         <h2
           id="heading-privasi"
           className="font-display text-xl sm:text-2xl font-bold text-stone-900 tracking-tight"
@@ -21,9 +21,9 @@ function PengaturanPrivasiData({ onOpenDeleteModal, onDownloadData }) {
       </div>
 
       {/* Rows */}
-      <div className="flex flex-col divide-y divide-[#E8E5DC]/70">
+      <div className="flex flex-col divide-y divide-border-warm/70">
         {/* Row 1: Pengaturan Privasi */}
-        <div className="flex items-center justify-between gap-4 py-4 -mx-3 px-3 rounded-xl transition-colors hover:bg-[#FAF9F4]/60">
+        <div className="flex items-center justify-between gap-4 py-4 -mx-3 px-3 rounded-xl transition-colors hover:bg-neutral/60">
           <div className="flex flex-col gap-0.5 min-w-0">
             <span className="text-sm font-bold text-stone-900">
               Pengaturan Privasi Profil
@@ -41,7 +41,7 @@ function PengaturanPrivasiData({ onOpenDeleteModal, onDownloadData }) {
         <button
           type="button"
           onClick={onDownloadData}
-          className="group flex items-center justify-between gap-4 py-4 text-left transition-colors hover:bg-[#FAF9F4]/60 -mx-3 px-3 rounded-xl cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+          className="group flex items-center justify-between gap-4 py-4 text-left transition-colors hover:bg-neutral/60 -mx-3 px-3 rounded-xl cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
         >
           <div className="flex flex-col gap-0.5 min-w-0">
             <span className="text-sm font-bold text-stone-900 group-hover:text-primary transition-colors">

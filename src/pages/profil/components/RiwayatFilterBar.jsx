@@ -18,7 +18,7 @@ function RiwayatFilterBar({
   onChangeSortOrder,
 }) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E8E5DC] pb-px">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-warm pb-px">
       {/* Segmented text navigation filter */}
       <nav
         aria-label="Filter Kategori Riwayat"
@@ -41,7 +41,7 @@ function RiwayatFilterBar({
               <span>{cat.label}</span>
               <span
                 className={`text-[11px] tabular-nums ${
-                  isActive ? 'text-primary font-bold' : 'text-stone-400'
+                  isActive ? 'text-primary font-bold' : 'text-stone-500'
                 }`}
               >
                 ({cat.count})
@@ -55,7 +55,7 @@ function RiwayatFilterBar({
       <div className="flex items-center gap-2 self-end sm:self-auto shrink-0 pb-2 sm:pb-0">
         <label
           htmlFor="riwayat-sort-select"
-          className="text-xs font-medium text-stone-400 select-none"
+          className="text-xs font-medium text-stone-500 select-none"
         >
           Urutan:
         </label>
@@ -64,14 +64,14 @@ function RiwayatFilterBar({
             id="riwayat-sort-select"
             value={sortOrder}
             onChange={(e) => onChangeSortOrder(e.target.value)}
-            className="appearance-none bg-white border border-[#E8E5DC] rounded-lg px-3 py-1.5 pr-7 text-xs font-semibold text-stone-700 hover:border-stone-300 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary cursor-pointer transition-colors shadow-2xs"
+            className="appearance-none bg-white border border-border-warm rounded-lg px-3 py-1.5 pr-7 text-xs font-semibold text-stone-700 hover:border-stone-300 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary cursor-pointer transition-colors shadow-2xs"
           >
             <option value="terbaru">Terbaru</option>
             <option value="terlama">Terlama</option>
             <option value="xp-tinggi">XP Tertinggi</option>
           </select>
           <ChevronDownIcon
-            className="w-3.5 h-3.5 text-stone-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
+            className="w-3.5 h-3.5 text-stone-500 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
             aria-hidden="true"
           />
         </div>

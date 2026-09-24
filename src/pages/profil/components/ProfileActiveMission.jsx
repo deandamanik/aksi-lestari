@@ -3,40 +3,37 @@ import { ArrowRightIcon } from '../../../components/common/Icons'
 import { ACTIVE_WEEKLY_MISSION } from '../../../data/profil/weeklyMissionsData'
 
 /**
- * ProfileActiveMission — Second Visual Anchor
+ * ProfileActiveMission — Featured Active Mission
  *
- * More prominent than shortcuts: thicker progress bar, larger CTA.
- * Reads as an actionable card, not a statistic card.
- * Mission is WEEKLY only — no daily anything.
+ * The primary focal block of the Overview workspace.
+ * Displays the current active weekly challenge with editorial typography,
+ * clear progress indicator, XP reward, and a dedicated primary CTA.
  */
 function ProfileActiveMission() {
   const {
-    eyebrow,
     resetCountdown,
     title,
     description,
-    progressLabel,
+    progressCurrent,
+    progressTarget,
     progressPercent,
     rewardXP,
-    ctaLabel,
     ctaPath,
   } = ACTIVE_WEEKLY_MISSION
 
   return (
     <section
       aria-labelledby="active-mission-heading"
-      className="bg-white rounded-2xl border border-[#E8E5DC] p-6 sm:p-8 flex flex-col gap-5"
+      className="bg-white rounded-2xl border border-border-warm p-6 sm:p-7 flex flex-col gap-5 shadow-2xs"
     >
-      {/* Eyebrow + countdown */}
-      <div className="flex items-center gap-2 text-xs select-none flex-wrap">
-        <span className="font-bold text-primary tracking-widest uppercase text-[11px]">
-          {eyebrow}
-        </span>
-        <span className="text-stone-300">·</span>
-        <span className="text-stone-400 font-medium text-[11px]">{resetCountdown}</span>
+      {/* Label & Reset Indicator */}
+      <div className="flex items-center gap-2 select-none flex-wrap text-xs text-stone-500 font-medium">
+        <span className="font-semibold text-primary">Tantangan Minggu Ini</span>
+        <span className="text-stone-300" aria-hidden="true">·</span>
+        <span>{resetCountdown}</span>
       </div>
 
-      {/* Title — editorial heading weight */}
+      {/* Main Title & Description */}
       <div className="flex flex-col gap-2">
         <h2
           id="active-mission-heading"
@@ -49,24 +46,30 @@ function ProfileActiveMission() {
         </p>
       </div>
 
-      {/* Progress + Reward — integrated layout */}
-      <div className="flex flex-col gap-3 pt-1">
-        <div className="flex items-center justify-between gap-4 text-sm">
-          <span className="font-bold text-stone-800">{progressLabel}</span>
+      {/* Progress & Target Section */}
+      <div className="flex flex-col gap-2.5 pt-1">
+        <div className="flex items-center justify-between text-xs sm:text-sm font-semibold">
+          <span className="text-stone-700">
+            {progressCurrent} dari {progressTarget} target
+          </span>
           <div className="flex items-center gap-3">
-            <span className="font-semibold text-primary text-sm">{progressPercent}%</span>
-            <span className="text-xs font-bold text-amber-700 tabular-nums">+{rewardXP} XP</span>
+            <span className="text-xs text-stone-500 font-medium tabular-nums">
+              {progressPercent}% selesai
+            </span>
+            <span className="text-xs sm:text-sm font-bold text-stone-900 tabular-nums">
+              +{rewardXP} XP
+            </span>
           </div>
         </div>
 
-        {/* Progress bar — thicker than header bar for visual distinction */}
+        {/* Progress Bar */}
         <div
-          className="w-full h-3 rounded-full bg-stone-100 overflow-hidden"
+          className="w-full h-2 rounded-full bg-stone-100 overflow-hidden"
           role="progressbar"
           aria-valuenow={progressPercent}
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-label={`Progres misi: ${progressPercent}%`}
+          aria-label={`Progres misi: ${progressCurrent} dari ${progressTarget} target (${progressPercent}%)`}
         >
           <div
             className="h-full rounded-full bg-primary progress-fill-animate"
@@ -75,14 +78,14 @@ function ProfileActiveMission() {
         </div>
       </div>
 
-      {/* CTA — primary interaction */}
+      {/* Primary Workspace CTA */}
       <div className="flex justify-end pt-1">
         <Link
           to={ctaPath}
-          className="group inline-flex items-center justify-center gap-2.5 h-11 sm:h-12 px-7 sm:px-8 rounded-full bg-primary hover:bg-primary/90 active:scale-[0.97] text-white text-sm sm:text-base font-semibold transition-all duration-200 select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          className="group inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-primary hover:bg-primary/90 active:scale-[0.98] text-white text-xs sm:text-sm font-semibold transition-all duration-150 select-none shadow-2xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
-          <span>{ctaLabel}</span>
-          <ArrowRightIcon className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" strokeWidth={2.2} />
+          <span>Lanjutkan Misi</span>
+          <ArrowRightIcon className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" strokeWidth={2} />
         </Link>
       </div>
     </section>

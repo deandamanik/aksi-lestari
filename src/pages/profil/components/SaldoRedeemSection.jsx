@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { WalletIcon, AwardIcon, CheckIcon, ArrowRightIcon, AlertCircleIcon, CheckCircle2Icon } from '../../../components/common/Icons'
 import { SALDO_APRESIASI } from '../../../data/profil/saldoRedeemData'
 import { USER_PROFILE } from '../../../data/profil/userProfileData'
@@ -15,7 +15,7 @@ import { USER_PROFILE } from '../../../data/profil/userProfileData'
  * - onRedeem: callback({ amount, type, methodTitle, target }) after successful mock redeem
  *
  * All processing is mock (setTimeout). No API calls.
- * Double-submit protection via isProcessing guard.
+ * Double-submit protection via isProcessing guard and timeout cleanup.
  */
 
 const QUICK_AMOUNTS = [10000, 20000, 30000]
@@ -38,10 +38,20 @@ function SaldoRedeemSection({ balance, onRedeem }) {
   const [isProcessing, setIsProcessing] = useState(false)
   const [successData, setSuccessData] = useState(null) // { amount, methodTitle, target, newBalance }
   const processingRef = useRef(false) // extra guard against React batching edge case
+  const redeemTimeoutRef = useRef(null)
 
   // Voucher flow state
   const [selectedVoucher, setSelectedVoucher] = useState(null)
   const [voucherConfirm, setVoucherConfirm] = useState(false)
+
+  // Unmount cleanup
+  useEffect(() => {
+    return () => {
+      if (redeemTimeoutRef.current) {
+        clearTimeout(redeemTimeoutRef.current)
+      }
+    }
+  }, [])
 
   // ── Derived values ──
   const numericAmount = typeof amount === 'number' ? amount : (parseInt(String(amount).replace(/\D/g, ''), 10) || 0)
@@ -81,7 +91,8 @@ function SaldoRedeemSection({ balance, onRedeem }) {
     const providerName = selectedProviderData?.name || selectedProvider
     const txAmount = numericAmount
 
-    setTimeout(() => {
+    if (redeemTimeoutRef.current) clearTimeout(redeemTimeoutRef.current)
+    redeemTimeoutRef.current = setTimeout(() => {
       onRedeem({
         amount: txAmount,
         type: 'wallet',
@@ -104,7 +115,8 @@ function SaldoRedeemSection({ balance, onRedeem }) {
     processingRef.current = true
     setIsProcessing(true)
 
-    setTimeout(() => {
+    if (redeemTimeoutRef.current) clearTimeout(redeemTimeoutRef.current)
+    redeemTimeoutRef.current = setTimeout(() => {
       onRedeem({
         amount: voucher.costRupiah,
         type: 'voucher',
@@ -136,7 +148,7 @@ function SaldoRedeemSection({ balance, onRedeem }) {
     return (
       <section aria-labelledby="saldo-redeem-heading" className="flex flex-col gap-5">
         <SectionHeader balance={balance} />
-        <div className="bg-white rounded-2xl border border-[#E8E5DC] p-6 sm:p-8 flex flex-col items-center gap-5 text-center">
+        <div className="bg-white rounded-2xl border border-border-warm p-6 sm:p-8 flex flex-col items-center gap-5 text-center">
           {/* Success icon */}
           <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
             <CheckCircle2Icon className="w-7 h-7 text-primary" strokeWidth={1.8} />
@@ -152,7 +164,7 @@ function SaldoRedeemSection({ balance, onRedeem }) {
           </div>
 
           {/* Transaction summary */}
-          <div className="w-full max-w-sm bg-[#FAF9F4] rounded-xl p-4 flex flex-col gap-2.5 text-left">
+          <div className="w-full max-w-sm bg-neutral rounded-xl p-4 flex flex-col gap-2.5 text-left">
             <div className="flex items-center justify-between text-sm">
               <span className="text-stone-500">Nominal</span>
               <span className="font-bold text-stone-900 tabular-nums">{formatRupiah(successData.amount)}</span>
@@ -165,14 +177,14 @@ function SaldoRedeemSection({ balance, onRedeem }) {
               <span className="text-stone-500">Tujuan</span>
               <span className="font-medium text-stone-600 truncate max-w-[180px]">{successData.target}</span>
             </div>
-            <div className="border-t border-[#E8E5DC]/60 pt-2 flex items-center justify-between text-sm">
+            <div className="border-t border-border-warm/60 pt-2 flex items-center justify-between text-sm">
               <span className="text-stone-500">Sisa Saldo</span>
               <span className="font-bold text-primary tabular-nums">{formatRupiah(successData.newBalance)}</span>
             </div>
           </div>
 
           {/* Prototype disclaimer */}
-          <p className="text-[11px] text-stone-400 leading-relaxed max-w-xs">
+          <p className="text-[11px] text-stone-500 leading-relaxed max-w-xs">
             Ini adalah simulasi prototype. Tidak ada transaksi finansial nyata yang diproses.
           </p>
 
@@ -196,66 +208,34 @@ function SaldoRedeemSection({ balance, onRedeem }) {
     >
       <SectionHeader balance={balance} />
 
-      {/* Method tabs */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* E-Wallet tab */}
+      {/* Clean Utility Method Switcher */}
+      <div className="flex items-center gap-2 border-b border-border-warm pb-px">
         <button
           type="button"
           onClick={() => { setRedeemMethod('ewallet'); setSelectedVoucher(null); setVoucherConfirm(false) }}
-          className={`group text-left rounded-2xl border-2 p-5 transition-all duration-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
+          className={`inline-flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-semibold border-b-2 -mb-px transition-colors cursor-pointer select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary rounded-t-sm ${
             redeemMethod === 'ewallet'
-              ? 'border-primary bg-white'
-              : 'border-[#E8E5DC] bg-white hover:border-stone-300'
+              ? 'text-primary border-primary font-bold'
+              : 'text-stone-500 hover:text-stone-800 border-transparent hover:border-stone-300'
           }`}
           aria-pressed={redeemMethod === 'ewallet'}
         >
-          <div className="flex items-start gap-3">
-            <WalletIcon className={`w-5 h-5 shrink-0 mt-0.5 ${redeemMethod === 'ewallet' ? 'text-primary' : 'text-stone-400'}`} strokeWidth={1.8} />
-            <div className="flex flex-col gap-1">
-              <span className={`text-sm font-bold ${redeemMethod === 'ewallet' ? 'text-stone-900' : 'text-stone-700'}`}>
-                E-Wallet
-              </span>
-              <span className="text-xs text-stone-500 leading-relaxed">
-                Transfer saldo ke e-wallet pilihanmu. Mendukung GoPay, DANA, OVO, ShopeePay.
-              </span>
-              {redeemMethod === 'ewallet' && (
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-primary mt-1 select-none">
-                  <CheckIcon className="w-3 h-3" strokeWidth={2.5} />
-                  Terpilih
-                </span>
-              )}
-            </div>
-          </div>
+          <WalletIcon className="w-4 h-4 shrink-0" strokeWidth={1.8} />
+          <span>E-Wallet</span>
         </button>
 
-        {/* Voucher tab */}
         <button
           type="button"
           onClick={() => setRedeemMethod('voucher')}
-          className={`group text-left rounded-2xl border-2 p-5 transition-all duration-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
+          className={`inline-flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-semibold border-b-2 -mb-px transition-colors cursor-pointer select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary rounded-t-sm ${
             redeemMethod === 'voucher'
-              ? 'border-primary bg-white'
-              : 'border-[#E8E5DC] bg-white hover:border-stone-300'
+              ? 'text-primary border-primary font-bold'
+              : 'text-stone-500 hover:text-stone-800 border-transparent hover:border-stone-300'
           }`}
           aria-pressed={redeemMethod === 'voucher'}
         >
-          <div className="flex items-start gap-3">
-            <AwardIcon className={`w-5 h-5 shrink-0 mt-0.5 ${redeemMethod === 'voucher' ? 'text-primary' : 'text-stone-400'}`} strokeWidth={1.8} />
-            <div className="flex flex-col gap-1">
-              <span className={`text-sm font-bold ${redeemMethod === 'voucher' ? 'text-stone-900' : 'text-stone-700'}`}>
-                Voucher Digital
-              </span>
-              <span className="text-xs text-stone-500 leading-relaxed">
-                Tukarkan saldo dengan voucher: pulsa, token listrik, belanja, dan lainnya.
-              </span>
-              {redeemMethod === 'voucher' && (
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-primary mt-1 select-none">
-                  <CheckIcon className="w-3 h-3" strokeWidth={2.5} />
-                  Terpilih
-                </span>
-              )}
-            </div>
-          </div>
+          <AwardIcon className="w-4 h-4 shrink-0" strokeWidth={1.8} />
+          <span>Voucher Digital</span>
         </button>
       </div>
 
@@ -344,7 +324,7 @@ function EWalletForm({
   onSubmit,
 }) {
   return (
-    <div className="bg-white rounded-2xl border border-[#E8E5DC] p-6 sm:p-8 flex flex-col gap-7">
+    <div className="bg-white rounded-2xl border border-border-warm p-6 sm:p-8 flex flex-col gap-7">
       {/* Form header */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div className="flex flex-col gap-1">
@@ -366,32 +346,54 @@ function EWalletForm({
           1. Pilih Penyedia E-Wallet
         </span>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {walletProviders.map((provider) => (
-            <button
-              key={provider.id}
-              type="button"
-              onClick={() => setSelectedProvider(provider.id)}
-              className={`group flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
-                selectedProvider === provider.id
-                  ? 'border-primary bg-primary/5'
-                  : 'border-[#E8E5DC] bg-white hover:border-stone-300'
-              }`}
-              aria-pressed={selectedProvider === provider.id}
-            >
-              <WalletIcon
-                className={`w-5 h-5 ${selectedProvider === provider.id ? 'text-primary' : 'text-stone-400'}`}
-                strokeWidth={1.8}
-              />
-              <span className={`text-xs font-bold ${selectedProvider === provider.id ? 'text-primary' : 'text-stone-600'}`}>
-                {provider.name}
-              </span>
-              {selectedProvider === provider.id && (
-                <span className="text-[10px] text-primary/60 font-medium">
-                  Tanpa biaya
+          {walletProviders.map((provider) => {
+            const logoPath = provider.logo || (
+              provider.id === 'gopay' ? '/images/wallet-logo/gopay_logo.webp' :
+              provider.id === 'dana' ? '/images/wallet-logo/dana_logo.webp' :
+              provider.id === 'ovo' ? '/images/wallet-logo/ovo_logo.webp' :
+              provider.id === 'shopeepay' ? '/images/wallet-logo/shopee_logo.webp' : null
+            )
+
+            return (
+              <button
+                key={provider.id}
+                type="button"
+                onClick={() => setSelectedProvider(provider.id)}
+                className={`group flex flex-col items-center justify-center gap-2 p-3.5 sm:p-4 rounded-xl border-2 transition-all duration-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
+                  selectedProvider === provider.id
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border-warm bg-white hover:border-stone-300'
+                }`}
+                aria-pressed={selectedProvider === provider.id}
+              >
+                <div className="h-5 flex items-center justify-center">
+                  {logoPath ? (
+                    <img
+                      src={logoPath}
+                      alt=""
+                      aria-hidden="true"
+                      className="h-4 sm:h-5 w-auto max-w-[70px] object-contain transition-opacity duration-150"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <WalletIcon
+                      className={`w-5 h-5 ${selectedProvider === provider.id ? 'text-primary' : 'text-stone-400'}`}
+                      strokeWidth={1.8}
+                      aria-hidden="true"
+                    />
+                  )}
+                </div>
+                <span className={`text-xs font-bold ${selectedProvider === provider.id ? 'text-primary' : 'text-stone-700'}`}>
+                  {provider.name}
                 </span>
-              )}
-            </button>
-          ))}
+                {selectedProvider === provider.id && (
+                  <span className="text-[10px] text-primary/70 font-medium">
+                    Tanpa biaya
+                  </span>
+                )}
+              </button>
+            )
+          })}
         </div>
       </div>
 
@@ -416,8 +418,8 @@ function EWalletForm({
                   isSelected
                     ? 'border-primary bg-primary/5'
                     : canAfford
-                      ? 'border-[#E8E5DC] bg-white hover:border-stone-300'
-                      : 'border-[#E8E5DC]/50 bg-stone-50 opacity-50 cursor-not-allowed'
+                      ? 'border-border-warm bg-white hover:border-stone-300'
+                      : 'border-border-warm/50 bg-stone-50 opacity-50 cursor-not-allowed'
                 }`}
                 aria-pressed={isSelected}
               >
@@ -428,7 +430,7 @@ function EWalletForm({
                   <span className="text-[10px] font-semibold text-primary/60">Terpilih</span>
                 )}
                 {!canAfford && (
-                  <span className="text-[10px] font-medium text-stone-400">Saldo kurang</span>
+                  <span className="text-[10px] font-medium text-stone-500">Saldo kurang</span>
                 )}
               </button>
             )
@@ -451,7 +453,7 @@ function EWalletForm({
               value={amount === '' ? '' : numericAmount.toLocaleString('id-ID')}
               onChange={handleAmountChange}
               className={`w-full pl-10 pr-4 py-3 text-sm font-semibold text-stone-900 bg-white border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200 tabular-nums ${
-                amountErrors.length > 0 ? 'border-red-300' : 'border-[#E8E5DC]'
+                amountErrors.length > 0 ? 'border-red-300' : 'border-border-warm'
               }`}
               placeholder="0"
               aria-label="Nominal penarikan"
@@ -473,10 +475,10 @@ function EWalletForm({
         </div>
 
         {/* Balance info */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-xs text-stone-400 font-medium">
-          <span>Saldo tersedia: <span className="text-stone-600 font-semibold tabular-nums">{formatRupiah(balance)}</span></span>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-xs text-stone-500 font-medium">
+          <span>Saldo tersedia: <span className="text-stone-700 font-semibold tabular-nums">{formatRupiah(balance)}</span></span>
           {isValidAmount && (
-            <span>Sisa saldo setelah penarikan: <span className="text-stone-600 font-semibold tabular-nums">{formatRupiah(remainingBalance)}</span></span>
+            <span>Sisa saldo setelah penarikan: <span className="text-stone-700 font-semibold tabular-nums">{formatRupiah(remainingBalance)}</span></span>
           )}
         </div>
       </div>
@@ -493,7 +495,7 @@ function EWalletForm({
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
             className={`w-full px-4 py-3 text-sm font-semibold text-stone-900 bg-white border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200 ${
-              phoneNumber.length > 0 && !isPhoneValid ? 'border-red-300' : 'border-[#E8E5DC]'
+              phoneNumber.length > 0 && !isPhoneValid ? 'border-red-300' : 'border-border-warm'
             }`}
             placeholder="0812-3456-7890"
             aria-label="Nomor ponsel tujuan"
@@ -515,7 +517,7 @@ function EWalletForm({
       </div>
 
       {/* Security note */}
-      <div className="flex items-center gap-2 text-xs text-stone-400 font-medium">
+      <div className="flex items-center gap-2 text-xs text-stone-500 font-medium">
         <span className="text-primary/50" aria-hidden="true">🔒</span>
         <span>Penarikan aman tanpa biaya transfer pihak ketiga.</span>
       </div>
@@ -579,13 +581,13 @@ function VoucherGrid({
                 isSelected
                   ? 'border-primary bg-primary/[0.02]'
                   : canAfford
-                    ? 'border-[#E8E5DC] hover:border-stone-300'
-                    : 'border-[#E8E5DC]/50 opacity-60'
+                    ? 'border-border-warm hover:border-stone-300'
+                    : 'border-border-warm/50 opacity-60'
               }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex flex-col gap-1 flex-1">
-                  <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest select-none">
+                  <span className="text-[10px] font-bold text-stone-500 uppercase tracking-widest select-none">
                     {voucher.category}
                   </span>
                   <h4 className="text-sm font-bold text-stone-800">
@@ -611,7 +613,7 @@ function VoucherGrid({
                       type="button"
                       disabled={isThisProcessing}
                       onClick={() => onSubmitVoucher(voucher)}
-                      className="flex-1 flex items-center justify-center gap-1.5 text-xs font-bold text-white bg-primary hover:bg-primary/90 disabled:bg-stone-300 disabled:cursor-not-allowed px-4 py-2.5 rounded-lg transition-all duration-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                      className="flex-1 flex items-center justify-center gap-1.5 text-xs font-bold text-white bg-primary hover:bg-primary/90 disabled:bg-stone-300 disabled:cursor-not-allowed px-4 py-2.5 rounded-xl transition-all duration-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                     >
                       {isThisProcessing ? (
                         <>
@@ -626,7 +628,7 @@ function VoucherGrid({
                       type="button"
                       disabled={isThisProcessing}
                       onClick={() => { setVoucherConfirm(false); setSelectedVoucher(null) }}
-                      className="flex-1 text-xs font-bold text-stone-500 border border-stone-200 hover:bg-stone-50 disabled:opacity-50 px-4 py-2.5 rounded-lg transition-all duration-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                      className="flex-1 text-xs font-bold text-stone-500 border border-stone-200 hover:bg-stone-50 disabled:opacity-50 px-4 py-2.5 rounded-xl transition-all duration-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                     >
                       Batal
                     </button>
@@ -641,7 +643,7 @@ function VoucherGrid({
                     setSelectedVoucher(voucher)
                     setVoucherConfirm(true)
                   }}
-                  className={`flex items-center justify-center gap-1.5 w-full text-xs font-bold px-4 py-2.5 rounded-lg transition-all duration-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
+                  className={`flex items-center justify-center gap-1.5 w-full text-xs font-bold px-4 py-2.5 rounded-xl transition-all duration-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
                     canAfford
                       ? 'text-primary border border-primary/30 hover:bg-primary/5'
                       : 'text-stone-400 border border-stone-200 cursor-not-allowed'

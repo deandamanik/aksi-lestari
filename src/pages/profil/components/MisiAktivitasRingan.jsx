@@ -37,15 +37,15 @@ function MisiAktivitasRingan() {
           id="aktivitas-ringan-heading"
           className="font-display text-xl sm:text-2xl font-bold text-stone-900 tracking-tight"
         >
-          Aktivitas Kontribusi
+          Aktivitas yang Membantu Menyelesaikan Misi
         </h2>
-        <p className="text-sm text-stone-500 leading-relaxed max-w-lg">
-          Beberapa langkah kecil yang dapat kamu selesaikan untuk mendukung kontribusi lingkungan.
+        <p className="text-sm text-stone-500 leading-relaxed max-w-xl">
+          Langkah nyata yang dapat kamu selesaikan untuk mendukung pencapaian target pekan ini.
         </p>
       </div>
 
       {/* Activity rows */}
-      <div className="bg-white rounded-2xl border border-[#E8E5DC] divide-y divide-[#E8E5DC]/60 overflow-hidden">
+      <div className="bg-white rounded-2xl border border-border-warm divide-y divide-border-warm/60 overflow-hidden">
         {LIGHT_ACTIVITIES.map((activity) => {
           const IconComponent = ICON_MAP[activity.icon] || RecycleIcon
           const isCompleted = activity.status === 'completed'
@@ -55,8 +55,8 @@ function MisiAktivitasRingan() {
               key={activity.id}
               className={`flex items-start gap-4 p-5 sm:p-6 transition-colors duration-200 ${
                 isCompleted
-                  ? 'bg-[#FAFAF8]'
-                  : 'hover:bg-[#FDFCF9]'
+                  ? 'bg-neutral/40'
+                  : 'hover:bg-neutral/30'
               }`}
             >
               {/* Icon */}
@@ -122,7 +122,7 @@ function MisiAktivitasRingan() {
                     ) : (
                       <Link
                         to={activity.ctaPath || '#'}
-                        className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-white bg-primary hover:bg-primary/90 px-4 py-1.5 rounded-lg transition-colors duration-200 whitespace-nowrap focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                        className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-white bg-primary hover:bg-primary/90 px-4 py-1.5 rounded-xl transition-colors duration-200 whitespace-nowrap focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                       >
                         {activity.ctaLabel}
                         <ArrowRightIcon className="w-3 h-3" strokeWidth={2.2} />
@@ -155,7 +155,7 @@ function MisiAktivitasRingan() {
                     ) : (
                       <Link
                         to={activity.ctaPath || '#'}
-                        className="inline-flex items-center gap-1 text-xs font-bold text-white bg-primary hover:bg-primary/90 px-3 py-1.5 rounded-lg transition-colors duration-200 whitespace-nowrap focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+                        className="inline-flex items-center gap-1 text-xs font-bold text-white bg-primary hover:bg-primary/90 px-3 py-1.5 rounded-xl transition-colors duration-200 whitespace-nowrap focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
                       >
                         {activity.ctaLabel}
                         <ArrowRightIcon className="w-3 h-3" strokeWidth={2.2} />

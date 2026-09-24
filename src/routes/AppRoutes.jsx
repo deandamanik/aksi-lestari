@@ -20,6 +20,7 @@ import ProfilMisiPage from '../pages/profil/ProfilMisiPage'
 import ProfilSaldoPage from '../pages/profil/ProfilSaldoPage'
 import ProfilRiwayatPage from '../pages/profil/ProfilRiwayatPage'
 import ProfilPengaturanPage from '../pages/profil/ProfilPengaturanPage'
+import ProfileWorkspaceLayout from '../pages/profil/ProfileWorkspaceLayout'
 import ScrollToTop from '../components/common/ScrollToTop'
 
 function AppRoutes() {
@@ -34,12 +35,14 @@ function AppRoutes() {
           <Route path="/aksipedia" element={<AksiPediaPage />} />
           <Route path="/komunitas" element={<KomunitasPage />} />
           
-          {/* Profil routes */}
-          <Route path="/profil" element={<ProfilPage />} />
-          <Route path="/profil/misi" element={<ProfilMisiPage />} />
-          <Route path="/profil/saldo" element={<ProfilSaldoPage />} />
-          <Route path="/profil/riwayat" element={<ProfilRiwayatPage />} />
-          <Route path="/profil/pengaturan" element={<ProfilPengaturanPage />} />
+          {/* Profil Workspace routes */}
+          <Route element={<ProfileWorkspaceLayout />}>
+            <Route path="/profil" element={<ProfilPage />} />
+            <Route path="/profil/misi" element={<ProfilMisiPage />} />
+            <Route path="/profil/saldo" element={<ProfilSaldoPage />} />
+            <Route path="/profil/riwayat" element={<ProfilRiwayatPage />} />
+            <Route path="/profil/pengaturan" element={<ProfilPengaturanPage />} />
+          </Route>
         </Route>
 
         {/* Lapor flow — LaporLayout scopes LaporContext to these routes only.

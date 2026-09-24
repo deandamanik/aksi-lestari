@@ -273,7 +273,7 @@ export const CONTRIBUTION_HISTORY = [
 
 /**
  * Shared helper: calculates count of validated (verified + completed) civic contributions.
- * Consistently used by Profile Overview, ProfileShortcutsGrid, and RiwayatSummary.
+ * Consistently used by Profile Overview and RiwayatSummary.
  */
 export const getValidatedContributionsCount = (items = CONTRIBUTION_HISTORY) =>
   items.filter((c) => c.status === 'verified' || c.status === 'completed').length
