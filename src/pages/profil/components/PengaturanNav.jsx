@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import {
   UserIcon,
   BellIcon,
@@ -15,6 +16,23 @@ const SETTINGS_SECTIONS = [
 ]
 
 function PengaturanNav({ activeSection, onSelectSection }) {
+  const activeBtnRef = useRef(null)
+
+  // Ensure active tab stays visible in mobile horizontal scrollbar
+  useEffect(() => {
+    if (activeBtnRef.current) {
+      const prefersReducedMotion =
+        typeof window !== 'undefined' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+      activeBtnRef.current.scrollIntoView({
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        block: 'nearest',
+        inline: 'nearest',
+      })
+    }
+  }, [activeSection])
+
   return (
     <nav
       aria-label="Navigasi Pengaturan Akun"
@@ -29,6 +47,7 @@ function PengaturanNav({ activeSection, onSelectSection }) {
           return (
             <button
               key={sec.id}
+              ref={isActive ? activeBtnRef : null}
               type="button"
               onClick={() => onSelectSection(sec.id)}
               className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-150 whitespace-nowrap text-left focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary cursor-pointer select-none ${
