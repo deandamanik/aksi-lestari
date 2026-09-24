@@ -25,6 +25,8 @@ import ProfilSaldoPage from '../pages/profil/ProfilSaldoPage'
 import ProfilRiwayatPage from '../pages/profil/ProfilRiwayatPage'
 import ProfilPengaturanPage from '../pages/profil/ProfilPengaturanPage'
 import ProfileWorkspaceLayout from '../pages/profil/ProfileWorkspaceLayout'
+import LoginPage from '../pages/auth/LoginPage'
+import RegisterPage from '../pages/auth/RegisterPage'
 import ScrollToTop from '../components/common/ScrollToTop'
 
 function AppRoutes() {
@@ -86,6 +88,10 @@ function AppRoutes() {
             <Route path="/lapor/tracking" element={<LaporTrackingPage />} />
           </Route>
         </Route>
+
+        {/* Auth routes — Standalone full-screen with dedicated interactive card */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </>
   )
