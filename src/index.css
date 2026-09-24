@@ -219,6 +219,103 @@ select {
 .stagger-3 { animation-delay: 130ms; }
 .stagger-4 { animation-delay: 150ms; }
 
+/* ==========================================================================
+   Auth Component Animations (Spinning Rings & Smooth Floating Badges)
+   ========================================================================== */
+
+@keyframes authSpinClockwise {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes authSpinCounterClockwise {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes authFloatA {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes authFloatB {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-11px);
+  }
+}
+
+@keyframes authFloatC {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+@keyframes authFloatD {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes authGlowPulse {
+  0%, 100% {
+    opacity: 0.45;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.04);
+  }
+}
+
+.animate-auth-spin-slow {
+  animation: authSpinClockwise 26s linear infinite;
+}
+
+.animate-auth-spin-reverse {
+  animation: authSpinCounterClockwise 34s linear infinite;
+}
+
+.animate-auth-float-1 {
+  animation: authFloatA 4.8s ease-in-out infinite;
+}
+
+.animate-auth-float-2 {
+  animation: authFloatB 5.6s ease-in-out infinite 0.9s;
+}
+
+.animate-auth-float-3 {
+  animation: authFloatC 5.2s ease-in-out infinite 1.8s;
+}
+
+.animate-auth-float-card {
+  animation: authFloatD 6s ease-in-out infinite 1.2s;
+}
+
+.animate-auth-glow {
+  animation: authGlowPulse 4s ease-in-out infinite;
+}
+
 /* Global Reduced Motion Overrides */
 @media (prefers-reduced-motion: reduce) {
   *,

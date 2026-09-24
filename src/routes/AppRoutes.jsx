@@ -20,6 +20,8 @@ import ModuleQuizPage from '../pages/aksipedia/ModuleQuizPage'
 import KomunitasPage from '../pages/komunitas/KomunitasPage'
 import CommunityLeaderboardPage from '../pages/komunitas/leaderboard/CommunityLeaderboardPage'
 import ProfilPage from '../pages/profil/ProfilPage'
+import LoginPage from '../pages/auth/LoginPage'
+import RegisterPage from '../pages/auth/RegisterPage'
 import ScrollToTop from '../components/common/ScrollToTop'
 
 function AppRoutes() {
@@ -73,6 +75,10 @@ function AppRoutes() {
             <Route path="/lapor/tracking" element={<LaporTrackingPage />} />
           </Route>
         </Route>
+
+        {/* Auth routes — Standalone full-screen with dedicated interactive card */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </>
   )
