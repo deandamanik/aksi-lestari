@@ -17,30 +17,6 @@ export const CURRENT_WEEK_METADATA = {
   status: 'active',
 }
 
-/**
- * ACTIVE_WEEKLY_MISSION — used by ProfileActiveMission on Profile Overview.
- * Derived from the primary weekly mission data below.
- */
-export const ACTIVE_WEEKLY_MISSION = {
-  id: 'wm-active',
-  eyebrow: 'TANTANGAN AKTIF',
-  resetCountdown: 'Reset dalam 3 hari',
-  title: 'Misi Mingguan: Penjaga Kebersihan Wilayah',
-  description:
-    'Tuntaskan 1 pelaporan timbulan sampah liar dan ikuti 1 kegiatan pilah sampah organik untuk klaim bonus +60 XP serta lencana kontribusi.',
-  category: 'Aksi Lapangan',
-  progressCurrent: 2,
-  progressTarget: 3,
-  progressLabel: '2 dari 3 Target',
-  progressPercent: 66,
-  rewardXP: 60,
-  badgeReward: 'Lencana: Penjaga Wilayah',
-  status: 'in_progress',
-  ctaLabel: 'Lanjutkan Misi',
-  ctaPath: '/profil/misi',
-}
-
-
 export const WEEKLY_MISSIONS = [
   {
     id: 'wm-01',
@@ -51,7 +27,8 @@ export const WEEKLY_MISSIONS = [
     category: 'Aksi Lapangan',
     progressCurrent: 2,
     progressTarget: 3,
-    rewardXP: 60,
+    rewardXP: 100,
+    badgeReward: 'Lencana: Penjaga Wilayah',
     status: 'in_progress',
     ctaLabel: 'Lanjutkan Aksi Terakhir',
     ctaPath: '/lapor',
@@ -70,7 +47,7 @@ export const WEEKLY_MISSIONS = [
     category: 'AksiPedia',
     progressCurrent: 1,
     progressTarget: 2,
-    rewardXP: 80,
+    rewardXP: 100,
     status: 'in_progress',
     ctaLabel: 'Lihat Kegiatan Komunitas',
     ctaPath: '/komunitas',
@@ -80,6 +57,23 @@ export const WEEKLY_MISSIONS = [
     ],
   },
 ]
+
+/**
+ * ACTIVE_WEEKLY_MISSION — used by ProfileActiveMission on Profile Overview.
+ * Derived directly from WEEKLY_MISSIONS[0] as the single source of truth.
+ */
+export const ACTIVE_WEEKLY_MISSION = {
+  ...WEEKLY_MISSIONS[0],
+  id: 'wm-active',
+  eyebrow: 'TANTANGAN AKTIF',
+  resetCountdown: CURRENT_WEEK_METADATA.resetCountdown,
+  progressLabel: `${WEEKLY_MISSIONS[0].progressCurrent} dari ${WEEKLY_MISSIONS[0].progressTarget} Target`,
+  progressPercent: Math.round(
+    (WEEKLY_MISSIONS[0].progressCurrent / WEEKLY_MISSIONS[0].progressTarget) * 100
+  ),
+  ctaLabel: 'Lanjutkan Misi',
+  ctaPath: '/profil/misi',
+}
 
 /**
  * Aktivitas Kontribusi Ringan
@@ -96,7 +90,7 @@ export const LIGHT_ACTIVITIES = [
     description: 'Temukan dan kirimkan satu foto temuan timbulan sampah liar di area sekitarmu melalui fitur Lapor.',
     progressCurrent: 0,
     progressTarget: 1,
-    rewardXP: 20,
+    rewardXP: 30,
     status: 'not_started',
     ctaLabel: 'Mulai Lapor',
     ctaPath: '/lapor',
@@ -108,7 +102,7 @@ export const LIGHT_ACTIVITIES = [
     description: 'Pelajari panduan pilah sampah anorganik rumah tangga dan tuntaskan kuis evaluasinya.',
     progressCurrent: 0,
     progressTarget: 1,
-    rewardXP: 15,
+    rewardXP: 25,
     status: 'not_started',
     ctaLabel: 'Buka Modul',
     ctaPath: '/aksipedia',
@@ -120,7 +114,7 @@ export const LIGHT_ACTIVITIES = [
     description: 'Baca tips pengelolaan sampah sachet dan kemasan multilayer berstandar daur ulang.',
     progressCurrent: 1,
     progressTarget: 1,
-    rewardXP: 10,
+    rewardXP: 15,
     status: 'completed',
     ctaLabel: 'Selesai',
     ctaPath: null,

@@ -75,7 +75,7 @@ function MisiWeeklySummary() {
 
       {/* XP earned — amber accent, quiet */}
       <div className="flex items-center gap-1.5 text-sm">
-        <span className="font-bold text-amber-600 tabular-nums">+{totalXPEarned} XP</span>
+        <span className="font-bold text-amber-700 tabular-nums">+{totalXPEarned} XP</span>
         <span className="text-stone-400 font-medium">siap diklaim setelah target terakhir tuntas</span>
       </div>
     </section>

@@ -108,7 +108,7 @@ function MisiAktivitasRingan() {
                     {/* XP */}
                     <span
                       className={`text-xs font-bold tabular-nums whitespace-nowrap ${
-                        isCompleted ? 'text-amber-500/60' : 'text-amber-600'
+                        isCompleted ? 'text-amber-500/60' : 'text-amber-700'
                       }`}
                     >
                       +{activity.rewardXP} XP
@@ -142,7 +142,7 @@ function MisiAktivitasRingan() {
                   </span>
                   <span
                     className={`text-xs font-bold tabular-nums ${
-                      isCompleted ? 'text-amber-500/60' : 'text-amber-600'
+                      isCompleted ? 'text-amber-500/60' : 'text-amber-700'
                     }`}
                   >
                     +{activity.rewardXP} XP

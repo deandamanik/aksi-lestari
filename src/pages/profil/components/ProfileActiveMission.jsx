@@ -55,7 +55,7 @@ function ProfileActiveMission() {
           <span className="font-bold text-stone-800">{progressLabel}</span>
           <div className="flex items-center gap-3">
             <span className="font-semibold text-primary text-sm">{progressPercent}%</span>
-            <span className="text-xs font-bold text-amber-600 tabular-nums">+{rewardXP} XP</span>
+            <span className="text-xs font-bold text-amber-700 tabular-nums">+{rewardXP} XP</span>
           </div>
         </div>
 

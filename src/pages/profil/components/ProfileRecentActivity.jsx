@@ -87,7 +87,7 @@ function ProfileRecentActivity() {
 
               {/* Right: XP + secondary note */}
               <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 shrink-0 sm:pt-0.5">
-                <span className="font-bold text-sm text-amber-600 tabular-nums tracking-tight">
+                <span className="font-bold text-sm text-amber-700 tabular-nums tracking-tight">
                   +{item.xp} XP
                 </span>
                 {(item.badgeEarned || item.organizer) && (

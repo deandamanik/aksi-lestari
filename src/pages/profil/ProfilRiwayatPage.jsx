@@ -4,7 +4,11 @@ import RiwayatSummary from './components/RiwayatSummary'
 import RiwayatFilterBar from './components/RiwayatFilterBar'
 import RiwayatActivityCard from './components/RiwayatActivityCard'
 import RiwayatTransparencyNote from './components/RiwayatTransparencyNote'
-import { CONTRIBUTION_HISTORY } from '../../data/profil/contributionHistoryData'
+import {
+  CONTRIBUTION_HISTORY,
+  getValidatedContributionsCount,
+  getTotalContributionXP,
+} from '../../data/profil/contributionHistoryData'
 
 /**
  * ProfilRiwayatPage — Kontribusi & Riwayat Hub
@@ -67,18 +71,9 @@ function ProfilRiwayatPage() {
   const hasMore = visibleItems.length < sortedItems.length
   const remainingCount = sortedItems.length - visibleItems.length
 
-  // Calculate summary metrics
-  const totalVerifiedCount = useMemo(() => {
-    return CONTRIBUTION_HISTORY.filter((c) => c.status === 'verified' || c.status === 'completed').length
-  }, [])
-
-  const totalXP = useMemo(() => {
-    return CONTRIBUTION_HISTORY.reduce((acc, curr) => {
-      // Pending actions don't count towards current confirmed XP
-      if (curr.status === 'pending') return acc
-      return acc + curr.xp
-    }, 0)
-  }, [])
+  // Calculate summary metrics using shared single source of truth
+  const totalVerifiedCount = useMemo(() => getValidatedContributionsCount(), [])
+  const totalXP = useMemo(() => getTotalContributionXP(), [])
 
   return (
     <main
@@ -124,7 +119,7 @@ function ProfilRiwayatPage() {
               Riwayat Terkini
             </h2>
             <span className="text-xs text-stone-400 font-medium">
-              Menampilkan {visibleItems.length} aktivitas dalam 30 hari terakhir
+              Menampilkan {visibleItems.length} rekam jejak kontribusi
             </span>
           </div>
 

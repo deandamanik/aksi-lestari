@@ -1,14 +1,19 @@
+import { CONTRIBUTION_SUMMARY } from '../../../data/profil/contributionHistoryData'
+
 /**
  * RiwayatSummary — Single Horizontal Information Section
  *
  * Clean, calm composition:
- * - Total Kontribusi Tercatat (12 Aksi Terverifikasi)
- * - Total XP Kontribusi (240 XP Akumulatif)
+ * - Total Kontribusi Tercatat (Aksi Terverifikasi)
+ * - XP dari Kontribusi (XP Akumulatif)
  * - Validasi (kredibilitas sistem/komunitas)
  *
  * No colorful boxes or AI-slop; typography and thin vertical separators lead.
  */
-function RiwayatSummary({ totalCount = 12, totalXP = 240 }) {
+function RiwayatSummary({
+  totalCount = CONTRIBUTION_SUMMARY.verifiedCount,
+  totalXP = CONTRIBUTION_SUMMARY.totalXP,
+}) {
   return (
     <section
       aria-label="Ringkasan Metrik Kontribusi"
@@ -36,7 +41,7 @@ function RiwayatSummary({ totalCount = 12, totalXP = 240 }) {
         {/* Metric 2: Total XP Kontribusi */}
         <div className="flex flex-col gap-1.5 pt-5 md:pt-0 md:pl-8">
           <span className="text-[11px] font-bold text-stone-400 uppercase tracking-widest select-none">
-            Total XP Kontribusi
+            XP dari Kontribusi
           </span>
           <div className="flex items-baseline gap-2 mt-0.5">
             <span className="font-display text-3xl sm:text-4xl font-bold text-stone-900 tracking-tight tabular-nums">
@@ -47,7 +52,7 @@ function RiwayatSummary({ totalCount = 12, totalXP = 240 }) {
             </span>
           </div>
           <p className="text-xs text-stone-400 leading-relaxed mt-0.5">
-            Poin progres relawan dari seluruh aksi yang telah terselesaikan.
+            Poin dari aksi kontribusi tervalidasi dalam rekam jejak sipil.
           </p>
         </div>
 

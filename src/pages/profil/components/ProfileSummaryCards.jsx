@@ -87,7 +87,7 @@ function ProfileSummaryCards() {
           to="/profil/riwayat"
           className="group/link inline-flex items-center gap-1.5 text-xs font-semibold text-stone-400 hover:text-primary transition-colors duration-200 mt-auto focus:outline-hidden focus-visible:underline w-fit"
         >
-          <span>Lihat semua</span>
+          <span>Lihat rekam jejak</span>
           <ArrowRightIcon
             className="w-3 h-3 transition-transform duration-200 group-hover/link:translate-x-0.5"
             strokeWidth={2.2}

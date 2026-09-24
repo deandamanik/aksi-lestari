@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   ZapIcon,
@@ -5,8 +6,8 @@ import {
   WalletIcon,
   SettingsIcon,
 } from '../../../components/common/Icons'
-import { SALDO_APRESIASI } from '../../../data/profil/saldoRedeemData'
-import { CONTRIBUTION_HISTORY } from '../../../data/profil/contributionHistoryData'
+import { getSaldoSession } from '../../../data/profil/saldoRedeemData'
+import { getValidatedContributionsCount } from '../../../data/profil/contributionHistoryData'
 
 /**
  * ProfileShortcutsGrid — Navigation System
@@ -17,7 +18,22 @@ import { CONTRIBUTION_HISTORY } from '../../../data/profil/contributionHistoryDa
  * 2-column on desktop for visual balance, single column on mobile.
  */
 function ProfileShortcutsGrid() {
-  const verifiedCount = CONTRIBUTION_HISTORY.filter((c) => c.status === 'verified').length
+  const verifiedCount = getValidatedContributionsCount()
+  const [saldo, setSaldo] = useState(() => getSaldoSession().balance)
+
+  useEffect(() => {
+    const handleSaldoUpdate = (e) => {
+      if (e?.detail?.balance !== undefined) {
+        setSaldo(e.detail.balance)
+      } else {
+        setSaldo(getSaldoSession().balance)
+      }
+    }
+    window.addEventListener('saldo-session-updated', handleSaldoUpdate)
+    return () => window.removeEventListener('saldo-session-updated', handleSaldoUpdate)
+  }, [])
+
+  const formattedSaldo = 'Rp' + saldo.toLocaleString('id-ID')
 
   const SHORTCUTS = [
     {
@@ -45,7 +61,7 @@ function ProfileShortcutsGrid() {
     {
       id: 'saldo',
       title: 'Saldo & Redeem',
-      metadata: SALDO_APRESIASI.formattedBalance,
+      metadata: formattedSaldo,
       metadataColor: 'text-primary',
       description: 'Kelola saldo apresiasi dan katalog reward',
       ctaText: 'Kelola & tukarkan saldo',

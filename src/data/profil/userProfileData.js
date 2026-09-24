@@ -47,7 +47,7 @@ export const USER_PROFILE = {
   // Ringkasan metrik dampak nyata (Civic Impact Metrics)
   impactMetrics: {
     totalReportsSubmitted: 6,
-    verifiedReportsCount: 6,
+    verifiedReportsCount: 11,
     totalWasteManagedKg: 38.5,
     communityEventsAttended: 2,
     weeklyMissionsCompleted: 5,

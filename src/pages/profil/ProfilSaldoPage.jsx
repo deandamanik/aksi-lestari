@@ -1,7 +1,10 @@
 import { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeftIcon } from '../../components/common/Icons'
-import { SALDO_APRESIASI } from '../../data/profil/saldoRedeemData'
+import {
+  getSaldoSession,
+  saveSaldoSession,
+} from '../../data/profil/saldoRedeemData'
 import SaldoBalanceCard from './components/SaldoBalanceCard'
 import SaldoTransparencyNote from './components/SaldoTransparencyNote'
 import SaldoContributionSources from './components/SaldoContributionSources'
@@ -23,11 +26,9 @@ import SaldoGovernanceInfo from './components/SaldoGovernanceInfo'
  * 8. Governance info — closing section
  *
  * State architecture:
- * Reactive saldo state is lifted here so that SaldoBalanceCard,
- * SaldoRedeemSection, and SaldoRedemptionHistory all read from
- * and write to the same source of truth. Static reference data
- * (providers, voucher catalog, contribution sources) remains
- * imported from the data module.
+ * Reactive saldo state is initialized from session storage (getSaldoSession)
+ * so that mock redemptions persist during subpage navigation.
+ * Static reference data remains imported from the data module.
  *
  * Design: civic-tech, trustworthy, editorial, functional.
  * Consistent with ProfilMisiPage patterns.
@@ -38,46 +39,64 @@ function formatRupiah(n) {
 }
 
 function ProfilSaldoPage() {
-  // ── Reactive state (mutable during redeem flow) ──
-  const [balance, setBalance] = useState(SALDO_APRESIASI.availableBalance)
-  const [totalRedeemed, setTotalRedeemed] = useState(SALDO_APRESIASI.totalRedeemed)
-  const [history, setHistory] = useState(SALDO_APRESIASI.redemptionHistory)
+  // ── Reactive state (persisted across session navigation) ──
+  const [balance, setBalance] = useState(() => getSaldoSession().balance)
+  const [totalRedeemed, setTotalRedeemed] = useState(() => getSaldoSession().totalRedeemed)
+  const [history, setHistory] = useState(() => getSaldoSession().history)
 
   /**
    * handleRedeem — callback invoked after a successful mock redeem.
-   * Deducts balance, increases totalRedeemed, prepends a new history entry.
+   * Deducts balance, increases totalRedeemed, prepends a new history entry,
+   * and saves updated state to session storage.
    *
    * @param {{ amount: number, type: 'wallet'|'voucher', methodTitle: string, target: string }} tx
    */
   const handleRedeem = useCallback((tx) => {
-    setBalance((prev) => Math.max(0, prev - tx.amount))
-    setTotalRedeemed((prev) => prev + tx.amount)
+    setBalance((prevBalance) => {
+      const nextBalance = Math.max(0, prevBalance - tx.amount)
+      setTotalRedeemed((prevRedeemed) => {
+        const nextTotalRedeemed = prevRedeemed + tx.amount
+        setHistory((prevHistory) => {
+          const now = new Date()
+          const dateStr =
+            now.toLocaleDateString('id-ID', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            }) +
+            ', ' +
+            now.toLocaleTimeString('id-ID', {
+              hour: '2-digit',
+              minute: '2-digit',
+            }) +
+            ' WIB'
 
-    const now = new Date()
-    const dateStr = now.toLocaleDateString('id-ID', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    }) + ', ' + now.toLocaleTimeString('id-ID', {
-      hour: '2-digit',
-      minute: '2-digit',
-      timeZoneName: 'short',
+          const newTx = {
+            id: `red-${Date.now()}`,
+            type: tx.type,
+            methodTitle: tx.methodTitle,
+            target: tx.target,
+            amountRupiah: tx.amount,
+            formattedAmount: '-' + formatRupiah(tx.amount),
+            date: dateStr,
+            status: 'completed',
+            statusLabel: 'Berhasil',
+          }
+
+          const nextHistory = [newTx, ...prevHistory]
+
+          saveSaldoSession({
+            balance: nextBalance,
+            totalRedeemed: nextTotalRedeemed,
+            history: nextHistory,
+          })
+
+          return nextHistory
+        })
+        return nextTotalRedeemed
+      })
+      return nextBalance
     })
-
-    setHistory((prev) => [
-      {
-        id: `red-${Date.now()}`,
-        type: tx.type,
-        methodTitle: tx.methodTitle,
-        target: tx.target,
-        amountRupiah: tx.amount,
-        formattedAmount: '-' + formatRupiah(tx.amount),
-        date: dateStr,
-        status: 'completed',
-        statusLabel: 'Berhasil',
-      },
-      ...prev,
-    ])
   }, [])
 
   return (

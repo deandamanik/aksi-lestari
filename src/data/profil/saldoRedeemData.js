@@ -107,7 +107,7 @@ export const SALDO_APRESIASI = {
       target: 'ID: #TRX-9821-PL',
       amountRupiah: 10000,
       formattedAmount: '-Rp10.000',
-      date: '12 September 2026, 14:20 WITA',
+      date: '12 September 2026, 14:20 WIB',
       status: 'completed',
       statusLabel: 'Berhasil',
     },
@@ -166,3 +166,53 @@ export const SALDO_SOURCES = [
     amountSuffix: 'sesuai berat & jenis',
   },
 ]
+
+/**
+ * Browser session mock persistence for Saldo & Redemption
+ * Ensures that changes made in the redeem flow persist across subpage navigation
+ * without claiming backend/database persistence.
+ */
+const SALDO_SESSION_KEY = 'aksilestari_saldo_session'
+
+export function getSaldoSession() {
+  if (typeof window === 'undefined') {
+    return {
+      balance: SALDO_APRESIASI.availableBalance,
+      totalRedeemed: SALDO_APRESIASI.totalRedeemed,
+      history: SALDO_APRESIASI.redemptionHistory,
+    }
+  }
+
+  try {
+    const raw = sessionStorage.getItem(SALDO_SESSION_KEY)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (
+        typeof parsed.balance === 'number' &&
+        typeof parsed.totalRedeemed === 'number' &&
+        Array.isArray(parsed.history)
+      ) {
+        return parsed
+      }
+    }
+  } catch {
+    // fallback if parse fails or storage restricted
+  }
+
+  return {
+    balance: SALDO_APRESIASI.availableBalance,
+    totalRedeemed: SALDO_APRESIASI.totalRedeemed,
+    history: SALDO_APRESIASI.redemptionHistory,
+  }
+}
+
+export function saveSaldoSession(state) {
+  if (typeof window === 'undefined') return
+  try {
+    sessionStorage.setItem(SALDO_SESSION_KEY, JSON.stringify(state))
+    window.dispatchEvent(new CustomEvent('saldo-session-updated', { detail: state }))
+  } catch {
+    // ignore
+  }
+}
+
