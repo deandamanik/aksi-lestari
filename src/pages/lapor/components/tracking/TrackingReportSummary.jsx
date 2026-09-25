@@ -11,6 +11,7 @@ import {
 } from '../../../../components/common/Icons'
 import { formatFileSize, formatDateTime } from '../../../../utils/formatters'
 import { useObjectURL } from '../../../../hooks/useObjectURL'
+import { formatAddressBreakdown } from '../../../../utils/mapUtils'
 
 function TrackingReportSummary({ temukan, kenali, createdAt }) {
   const [failedFile, setFailedFile] = useState(null)
@@ -25,9 +26,10 @@ function TrackingReportSummary({ temukan, kenali, createdAt }) {
   const activeUrl = useObjectURL(photo?.file)
   const hasError = Boolean(photo?.file && failedFile === photo?.file)
 
-  const parts = location?.address ? location.address.split(',').map((p) => p.trim()) : []
-  const primaryAddress = parts.slice(0, 2).join(', ') || location?.address || 'Lokasi belum ditentukan'
-  const secondaryAddress = parts.slice(2, 4).join(', ')
+  const { primary: primaryAddress, secondary: secondaryAddress } = formatAddressBreakdown(
+    location?.address,
+    'Lokasi belum ditentukan'
+  )
 
   return (
     <div className="rounded-2xl bg-white border border-border-warm shadow-xs p-5 sm:p-6 flex flex-col gap-4.5">

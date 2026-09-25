@@ -1,14 +1,23 @@
 import { useState } from 'react'
-import TemukanMapPicker from './TemukanMapPicker'
-import { DEFAULT_MAP_PIN } from '../../../../utils/mapUtils'
+import {
+  MapPinIcon,
+  CheckIcon,
+  LocateIcon,
+  MapIcon,
+  CheckCircle2Icon,
+} from '../../../../components/common/Icons'
+import ReportMapPicker from '../shared/ReportMapPicker'
+import {
+  DEFAULT_COORDINATES,
+  formatAddressBreakdown,
+  reverseGeocodeNominatim,
+} from '../../../../utils/mapUtils'
 
 /**
  * AddressSummary — Presentational component displaying reverse-geocoded or coordinate address.
  */
 function AddressSummary({ location }) {
-  const parts = location.address ? location.address.split(',').map((p) => p.trim()) : []
-  const primary = parts.slice(0, 2).join(', ') || location.address
-  const secondary = parts.slice(2, 4).join(', ')
+  const { primary, secondary } = formatAddressBreakdown(location?.address)
 
   return (
     <div className="rounded-xl border border-border-warm bg-stone-50/70 p-3">
@@ -21,10 +30,7 @@ function AddressSummary({ location }) {
         </span>
       </div>
       <div className="flex items-start gap-2.5 mt-2">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-primary shrink-0 mt-0.5" aria-hidden="true">
-          <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/>
-          <circle cx="12" cy="10" r="3"/>
-        </svg>
+        <MapPinIcon className="w-4 h-4 text-primary shrink-0 mt-0.5" strokeWidth={2} />
         <div className="min-w-0 flex-1">
           <p className="text-sm font-bold text-stone-800 leading-snug break-words">{primary}</p>
           {secondary && (
@@ -47,46 +53,79 @@ function AddressSummary({ location }) {
  * - GPS trigger & status badge
  * - Interactive picker mode activation & confirmation
  * - Address summary display
- * - Map preview via TemukanMapPicker
+ * - Real geographic map preview & picker via ReportMapPicker
  *
  * @param {object} props
  * @param {{ lat: number|null, lng: number|null, address?: string, source?: string }} props.location
  * @param {string} props.gpsStatus
  * @param {string} props.gpsMessage
- * @param {{ x: number, y: number }} props.mapPin
  * @param {() => void} props.onGPS
- * @param {({ x: number, y: number }) => void} props.onSaveMapLocation
+ * @param {({ lat: number, lng: number, address?: string, source?: string }) => void} props.onSaveMapLocation
  */
 export default function TemukanLocationCard({
   location,
   gpsStatus,
   gpsMessage,
-  mapPin,
   onGPS,
   onSaveMapLocation,
 }) {
   const hasLocation = location.lat !== null && location.lat !== undefined
   const [isPickerMode, setIsPickerMode] = useState(false)
-  const [tempPin, setTempPin] = useState(mapPin)
+  const [tempLocation, setTempLocation] = useState(null)
 
   const handleStartPicker = () => {
     setIsPickerMode(true)
-    setTempPin(hasLocation ? mapPin : DEFAULT_MAP_PIN)
+    const initial = hasLocation
+      ? { ...location }
+      : {
+          lat: DEFAULT_COORDINATES.lat,
+          lng: DEFAULT_COORDINATES.lng,
+          address: `${DEFAULT_COORDINATES.lat.toFixed(5)}, ${DEFAULT_COORDINATES.lng.toFixed(5)}`,
+          source: 'map',
+        }
+    setTempLocation(initial)
+
+    // Reverse-geocode initial coordinates if no address yet
+    if (!hasLocation) {
+      reverseGeocodeNominatim(DEFAULT_COORDINATES.lat, DEFAULT_COORDINATES.lng)
+        .then((addr) => {
+          if (addr) {
+            setTempLocation((prev) => (prev ? { ...prev, address: addr } : prev))
+          }
+        })
+        .catch(() => {})
+    }
   }
 
   const handleCancelPicker = () => {
     setIsPickerMode(false)
-    setTempPin(mapPin)
+    setTempLocation(null)
   }
 
   const handleConfirmPicker = () => {
-    onSaveMapLocation(tempPin)
+    if (tempLocation) {
+      onSaveMapLocation(tempLocation)
+    }
     setIsPickerMode(false)
   }
 
-  const handleMapClick = (coords) => {
+  const handleLocationSelect = ({ lat, lng }) => {
     if (!isPickerMode) return
-    setTempPin(coords)
+    setTempLocation((prev) => ({
+      ...prev,
+      lat,
+      lng,
+      address: `${lat.toFixed(5)}, ${lng.toFixed(5)}`,
+      source: 'map',
+    }))
+
+    reverseGeocodeNominatim(lat, lng)
+      .then((displayName) => {
+        if (displayName) {
+          setTempLocation((prev) => (prev ? { ...prev, address: displayName } : prev))
+        }
+      })
+      .catch(() => {})
   }
 
   const renderStatusBadge = () => {
@@ -110,9 +149,7 @@ export default function TemukanLocationCard({
     if (location.source === 'gps') {
       return (
         <span className="inline-flex items-center gap-1 text-[11px] font-bold text-secondary">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3" aria-hidden="true">
-            <path d="M20 6 9 17l-5-5"/>
-          </svg>
+          <CheckIcon className="w-3 h-3" strokeWidth={2.5} />
           GPS Terdeteksi
         </span>
       )
@@ -120,9 +157,7 @@ export default function TemukanLocationCard({
 
     return (
       <span className="inline-flex items-center gap-1 text-[11px] font-bold text-primary">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3" aria-hidden="true">
-          <path d="M20 6 9 17l-5-5"/>
-        </svg>
+        <CheckIcon className="w-3 h-3" strokeWidth={2.5} />
         Lokasi Dipilih
       </span>
     )
@@ -133,10 +168,7 @@ export default function TemukanLocationCard({
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-stone-100">
         <div className="flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-primary" aria-hidden="true">
-            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/>
-            <circle cx="12" cy="10" r="3"/>
-          </svg>
+          <MapPinIcon className="w-4 h-4 text-primary" strokeWidth={1.75} />
           <span className="font-bold text-sm text-primary">Lokasi Temuan</span>
         </div>
         {renderStatusBadge()}
@@ -156,10 +188,7 @@ export default function TemukanLocationCard({
               }`}
               aria-label="Gunakan lokasi GPS saat ini"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 shrink-0" aria-hidden="true">
-                <line x1="2" x2="5" y1="12" y2="12"/><line x1="19" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="5"/><line x1="12" x2="12" y1="19" y2="22"/>
-                <circle cx="12" cy="12" r="4"/>
-              </svg>
+              <LocateIcon className="w-4 h-4 shrink-0" strokeWidth={2} />
               <span>{gpsStatus === 'loading' ? 'Mendeteksi GPS…' : 'Gunakan Lokasi Saya'}</span>
             </button>
 
@@ -169,10 +198,7 @@ export default function TemukanLocationCard({
               className="flex-1 inline-flex items-center justify-center gap-2 min-h-[44px] py-2.5 lg:py-0 lg:min-h-0 lg:h-[42px] px-4 sm:px-5 rounded-full font-semibold text-sm leading-normal lg:leading-none whitespace-nowrap text-primary bg-white hover:bg-primary/[0.04] border border-primary/25 hover:border-primary/45 transition-colors shadow-xs cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98]"
               aria-label="Atur lokasi titik sampah di peta"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-primary shrink-0" aria-hidden="true">
-                <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
-                <line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/>
-              </svg>
+              <MapIcon className="w-4 h-4 text-primary shrink-0" strokeWidth={2} />
               <span>Atur Lokasi di Peta</span>
             </button>
           </div>
@@ -197,9 +223,7 @@ export default function TemukanLocationCard({
                 className="flex-1 inline-flex items-center justify-center gap-1.5 h-10 px-4 rounded-full font-semibold text-sm bg-primary hover:bg-primary/90 text-white transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
                 aria-label="Simpan titik lokasi yang dipilih"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5" aria-hidden="true">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
+                <CheckIcon className="w-3.5 h-3.5" strokeWidth={2.5} />
                 Simpan Lokasi
               </button>
               <button
@@ -216,37 +240,29 @@ export default function TemukanLocationCard({
 
         {gpsMessage && !isPickerMode && (
           <div className="rounded-xl bg-stone-50 border border-stone-200/80 px-3 py-2 text-xs text-stone-600 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 text-primary shrink-0" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
-            </svg>
+            <CheckCircle2Icon className="w-3.5 h-3.5 text-primary shrink-0" strokeWidth={2} />
             <span className="leading-snug">{gpsMessage}</span>
           </div>
+        )}
+
+        {isPickerMode && tempLocation && (
+          <AddressSummary location={tempLocation} />
         )}
 
         {hasLocation && !isPickerMode && (
           <AddressSummary location={location} />
         )}
 
-        <div
-          className={`w-full rounded-xl overflow-hidden border transition-all duration-200 ${
-            isPickerMode
-              ? 'border-primary ring-2 ring-primary/20 cursor-crosshair shadow-sm'
-              : 'border-border-warm'
-          }`}
-          aria-label={isPickerMode ? 'Peta interaktif: klik untuk memilih titik lokasi' : 'Pratinjau peta lokasi temuan'}
-        >
-          <TemukanMapPicker
-            isPickerMode={isPickerMode}
-            pin={isPickerMode ? tempPin : mapPin}
-            hasPin={hasLocation || isPickerMode}
-            onMapClick={handleMapClick}
-          />
-        </div>
+        <ReportMapPicker
+          location={isPickerMode ? tempLocation : location}
+          isPickerMode={isPickerMode}
+          onLocationSelect={handleLocationSelect}
+        />
 
         <p className="text-[11px] text-stone-400 leading-snug">
           {isPickerMode
-            ? '* Titik pin dapat digeser kapan saja dengan mengklik area jalan atau blok peta.'
-            : '* Peta di atas berfungsi sebagai konfirmasi titik koordinat laporan warga.'}
+            ? '* Titik pin dapat dipindahkan dengan mengklik area peta atau menggeser pin.'
+            : '* Peta di atas menampilkan titik koordinat lokasi laporan.'}
         </p>
       </div>
     </div>

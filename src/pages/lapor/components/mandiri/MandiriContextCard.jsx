@@ -10,6 +10,7 @@ import {
 } from '../../../../components/common/Icons'
 import { formatFileSize } from '../../../../utils/formatters'
 import { useObjectURL } from '../../../../hooks/useObjectURL'
+import { formatAddressBreakdown } from '../../../../utils/mapUtils'
 
 function MandiriContextCard({ temukan, kenali, guidance }) {
   const categoryKey = kenali?.category || 'plastik'
@@ -23,9 +24,7 @@ function MandiriContextCard({ temukan, kenali, guidance }) {
   const hasError = Boolean(photo?.file && failedFile === photo?.file)
 
   // Format brief address (first 2 segments)
-  const locationText = location?.address
-    ? location.address.split(',').slice(0, 2).join(', ').trim()
-    : null
+  const locationText = formatAddressBreakdown(location?.address).primary || null
 
   const wasteName = kenali?.label || ident.label || 'Botol Plastik Kemasan'
   const wasteCategory = ident.categoryLabel || 'Plastik'

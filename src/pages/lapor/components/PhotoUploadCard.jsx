@@ -162,7 +162,7 @@ function PhotoUploadCard({
       : 'border-2 border-dashed border-stone-300 hover:border-primary/40 shadow-[0_4px_24px_rgba(0,0,0,0.02)]'
 
   return (
-    <div className={`w-full ${className}`}>
+    <div className={`w-full self-start ${className}`.trim()}>
       {/* Hidden Native File & Camera Inputs (when not readOnly) */}
       {!readOnly && (
         <>

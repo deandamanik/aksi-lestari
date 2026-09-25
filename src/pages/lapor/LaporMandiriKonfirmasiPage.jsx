@@ -2,8 +2,8 @@ import { useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLapor } from '../../context/LaporContext'
 import LaporStepHeader from './components/shared/LaporStepHeader'
-import ReportPhotoSummary from './components/selesai/ReportPhotoSummary'
-import MandiriReviewSummary from './components/mandiri/MandiriReviewSummary'
+import ReportPhotoSummary from './components/shared/ReportPhotoSummary'
+import ReportReviewSummary from './components/shared/ReportReviewSummary'
 import MandiriSafetyCard from './components/mandiri/MandiriSafetyCard'
 import { ArrowLeftIcon, ArrowRightIcon } from '../../components/common/Icons'
 
@@ -62,7 +62,7 @@ function LaporMandiriKonfirmasiPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-5 items-start">
           <ReportPhotoSummary photo={reportData.temukan?.photo} />
 
-          <MandiriReviewSummary
+          <ReportReviewSummary
             temukan={reportData.temukan}
             kenali={reportData.kenali}
             onSaveLocation={handleSaveLocation}

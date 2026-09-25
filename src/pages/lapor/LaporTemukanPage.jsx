@@ -9,7 +9,9 @@ import {
   DEFAULT_MAP_PIN,
   latLngToMapCoords,
   mapCoordsToLatLng,
+  reverseGeocodeNominatim,
 } from '../../utils/mapUtils'
+import { ArrowLeftIcon, ArrowRightIcon } from '../../components/common/Icons'
 
 const MAX_DESC = 300
 
@@ -110,17 +112,13 @@ function LaporTemukanPage() {
         setGpsMessage('Lokasi saat ini berhasil digunakan.')
 
         // Attempt reverse geocoding via Nominatim
-        fetch(
-          `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=id`,
-          { headers: { 'Accept-Language': 'id' } }
-        )
-          .then((r) => r.json())
-          .then((data) => {
+        reverseGeocodeNominatim(lat, lng)
+          .then((displayName) => {
             if (!isMountedRef.current) return
-            if (data?.display_name) {
+            if (displayName) {
               updateReport({
                 temukan: {
-                  location: { lat, lng, address: data.display_name, source: 'gps' },
+                  location: { lat, lng, address: displayName, source: 'gps' },
                 },
               })
             }
@@ -154,21 +152,46 @@ function LaporTemukanPage() {
 
   // Save manual location from map picker
   const handleSaveMapLocation = useCallback(
-    (pinCoords) => {
-      const { lat, lng } = mapCoordsToLatLng(pinCoords.x, pinCoords.y)
-      setMapPin(pinCoords)
+    (chosenLocation) => {
+      const lat =
+        typeof chosenLocation?.lat === 'number'
+          ? chosenLocation.lat
+          : mapCoordsToLatLng(chosenLocation.x, chosenLocation.y).lat
+      const lng =
+        typeof chosenLocation?.lng === 'number'
+          ? chosenLocation.lng
+          : mapCoordsToLatLng(chosenLocation.x, chosenLocation.y).lng
+      const address =
+        chosenLocation?.address || 'Lokasi dipilih secara manual di peta'
+
       updateReport({
         temukan: {
           location: {
             lat,
             lng,
-            address: 'Lokasi dipilih secara manual di peta',
+            address,
             source: 'map',
           },
         },
       })
       setGpsStatus('map-selected')
       setGpsMessage('Lokasi titik temuan sampah berhasil disimpan dari peta.')
+
+      // Background reverse-geocoding if address wasn't resolved yet
+      if (!chosenLocation?.address || chosenLocation.address.includes(`${lat.toFixed(5)}`)) {
+        reverseGeocodeNominatim(lat, lng)
+          .then((displayName) => {
+            if (!isMountedRef.current) return
+            if (displayName) {
+              updateReport({
+                temukan: {
+                  location: { lat, lng, address: displayName, source: 'map' },
+                },
+              })
+            }
+          })
+          .catch(() => {})
+      }
     },
     [updateReport]
   )
@@ -203,6 +226,7 @@ function LaporTemukanPage() {
             onReplace={() => navigate('/lapor')}
             statusText="Terekam"
             size="default"
+            className="self-start"
           />
 
           <div className="flex flex-col gap-4">
@@ -229,9 +253,7 @@ function LaporTemukanPage() {
             className="inline-flex items-center justify-center gap-2 h-11 px-6 sm:px-7 rounded-full font-semibold text-sm text-primary bg-white border border-primary/25 hover:bg-primary/[0.04] hover:border-primary/45 transition-colors shadow-xs active:scale-[0.98] cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 select-none w-full sm:w-auto"
             aria-label="Kembali ke halaman foto"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.25} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-primary" aria-hidden="true">
-              <path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>
-            </svg>
+            <ArrowLeftIcon className="w-4 h-4 text-primary" strokeWidth={2.25} />
             <span>Kembali</span>
           </button>
 
@@ -248,9 +270,7 @@ function LaporTemukanPage() {
             aria-disabled={!canContinue}
           >
             <span>Lanjutkan ke Kenali</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.25} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4" aria-hidden="true">
-              <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
-            </svg>
+            <ArrowRightIcon className="w-4 h-4" strokeWidth={2.25} />
           </button>
         </div>
 

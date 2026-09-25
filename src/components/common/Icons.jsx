@@ -151,6 +151,31 @@ export function MapPinIcon({
   )
 }
 
+export function MapIcon({
+  className = 'w-4 h-4',
+  strokeWidth = 2,
+  ...props
+}) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+      {...props}
+    >
+      <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
+      <line x1="9" x2="9" y1="3" y2="18" />
+      <line x1="15" x2="15" y1="6" y2="21" />
+    </svg>
+  )
+}
+
 export function ZapIcon({
   className = 'w-4 h-4',
   strokeWidth = 2,

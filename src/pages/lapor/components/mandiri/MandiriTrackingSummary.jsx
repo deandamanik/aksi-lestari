@@ -11,6 +11,7 @@ import {
 } from '../../../../components/common/Icons'
 import { formatFileSize, formatDateTime } from '../../../../utils/formatters'
 import { useObjectURL } from '../../../../hooks/useObjectURL'
+import { formatAddressBreakdown } from '../../../../utils/mapUtils'
 
 function MandiriTrackingSummary({ temukan, kenali, mandiri }) {
   const [failedBefore, setFailedBefore] = useState(null)
@@ -28,9 +29,10 @@ function MandiriTrackingSummary({ temukan, kenali, mandiri }) {
   const hasBeforeError = Boolean(beforePhoto?.file && failedBefore === beforePhoto?.file)
   const hasAfterError = Boolean(afterPhoto?.file && failedAfter === afterPhoto?.file)
 
-  const parts = location?.address ? location.address.split(',').map((p) => p.trim()) : []
-  const primaryAddress = parts.slice(0, 2).join(', ') || location?.address || 'Lokasi belum ditentukan'
-  const secondaryAddress = parts.slice(2, 4).join(', ')
+  const { primary: primaryAddress, secondary: secondaryAddress } = formatAddressBreakdown(
+    location?.address,
+    'Lokasi belum ditentukan'
+  )
 
   return (
     <div className="rounded-2xl bg-white border border-border-warm shadow-xs p-5 sm:p-6 flex flex-col gap-4.5">

@@ -1,18 +1,12 @@
-import { useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useLapor } from '../../context/LaporContext'
 import TrackingTimeline from './components/tracking/TrackingTimeline'
 import TrackingReportSummary from './components/tracking/TrackingReportSummary'
-import TrackingNextSteps from './components/tracking/TrackingNextSteps'
+import TrackingNextSteps from './components/shared/TrackingNextSteps'
 import { ArrowLeftIcon } from '../../components/common/Icons'
 
 function LaporTrackingPage() {
-  const navigate = useNavigate()
   const { reportData } = useLapor()
-
-  const handleGoHome = useCallback(() => {
-    navigate('/')
-  }, [navigate])
 
   return (
     <main
@@ -51,15 +45,14 @@ function LaporTrackingPage() {
 
         {/* Global Page Action Row — Left-aligned to main content container */}
         <div className="pt-1 sm:pt-2 flex justify-start">
-          <button
-            type="button"
-            onClick={handleGoHome}
+          <Link
+            to="/"
             className="inline-flex items-center justify-center gap-2 h-11 px-6 sm:px-7 rounded-full font-semibold text-sm text-primary bg-white border border-primary/25 hover:bg-primary/[0.04] hover:border-primary/45 transition-colors shadow-xs active:scale-[0.98] cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary select-none"
             aria-label="Kembali ke Beranda"
           >
             <ArrowLeftIcon className="w-4 h-4 text-primary" strokeWidth={2.25} />
             <span>Kembali ke Beranda</span>
-          </button>
+          </Link>
         </div>
       </div>
     </main>

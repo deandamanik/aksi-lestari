@@ -2,8 +2,8 @@ import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLapor } from '../../context/LaporContext'
 import LaporStepHeader from './components/shared/LaporStepHeader'
-import ReportPhotoSummary from './components/selesai/ReportPhotoSummary'
-import ReportReviewSummary from './components/selesai/ReportReviewSummary'
+import ReportPhotoSummary from './components/shared/ReportPhotoSummary'
+import ReportReviewSummary from './components/shared/ReportReviewSummary'
 import { ArrowLeftIcon, CheckIcon, InfoIcon } from '../../components/common/Icons'
 
 function LaporSelesaiPage() {

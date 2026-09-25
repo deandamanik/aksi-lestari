@@ -4,7 +4,6 @@ import { useLapor } from '../../context/LaporContext'
 import LaporStepHeader from './components/shared/LaporStepHeader'
 import IdentifiedWasteSummary from './components/aksi/IdentifiedWasteSummary'
 import PhotoUploadCard from './components/PhotoUploadCard'
-import Button from '../../components/common/Button'
 import { ArrowLeftIcon, ArrowRightIcon } from '../../components/common/Icons'
 
 function LaporMandiriFotoPage() {
@@ -72,28 +71,31 @@ function LaporMandiriFotoPage() {
 
         {/* Bottom Navigation */}
         <div className="mt-2 sm:mt-3 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
-          <Button
-            variant="outline"
-            size="lg"
+          <button
+            type="button"
             onClick={handleBack}
-            className="rounded-full w-full sm:w-auto"
+            className="inline-flex items-center justify-center gap-2 h-11 px-6 sm:px-7 rounded-full font-semibold text-sm text-primary bg-white border border-primary/25 hover:bg-primary/[0.04] hover:border-primary/45 transition-colors shadow-xs active:scale-[0.98] cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 select-none w-full sm:w-auto"
             aria-label="Kembali ke Panduan"
           >
             <ArrowLeftIcon className="w-4 h-4 text-primary" strokeWidth={2.25} />
             <span>Kembali ke Panduan</span>
-          </Button>
+          </button>
 
-          <Button
-            variant="primary"
-            size="lg"
+          <button
+            type="button"
             onClick={handleContinue}
             disabled={!hasPhoto}
-            className="rounded-full w-full sm:w-auto"
+            className={`inline-flex items-center justify-center gap-2 h-11 px-7 sm:px-8 rounded-full font-semibold text-sm transition-colors select-none w-full sm:w-auto ${
+              hasPhoto
+                ? 'bg-primary hover:bg-primary/90 text-white cursor-pointer shadow-xs active:scale-[0.99] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
+                : 'bg-[#C6CFC9] text-white/90 cursor-not-allowed shadow-none'
+            }`}
             aria-label="Lanjut ke Validasi"
+            aria-disabled={!hasPhoto}
           >
             <span>Lanjut ke Validasi</span>
             <ArrowRightIcon className="w-4.5 h-4.5" strokeWidth={2.25} />
-          </Button>
+          </button>
         </div>
       </div>
     </main>

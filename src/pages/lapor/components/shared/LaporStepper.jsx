@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+import { CheckIcon } from '../../../../components/common/Icons'
 import { LAPOR_STEPS } from '../../../../data/lapor/laporSteps'
 
 /**
@@ -51,19 +52,7 @@ function LaporStepper({ currentStep }) {
                   }`}
                 >
                   {isCompleted ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2.5}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="w-4 h-4"
-                      aria-hidden="true"
-                    >
-                      <path d="M20 6 9 17l-5-5" />
-                    </svg>
+                    <CheckIcon className="w-4 h-4" strokeWidth={2.5} />
                   ) : (
                     <span aria-label={`Langkah ${s.step}`}>{s.step < 10 ? `0${s.step}` : s.step}</span>
                   )}
@@ -136,19 +125,7 @@ function LaporStepper({ currentStep }) {
                   }`}
                 >
                   {isCompleted ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2.5}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="w-3.5 h-3.5"
-                      aria-hidden="true"
-                    >
-                      <path d="M20 6 9 17l-5-5" />
-                    </svg>
+                    <CheckIcon className="w-3.5 h-3.5" strokeWidth={2.5} />
                   ) : (
                     <span aria-label={`Langkah ${s.step}`}>{s.step < 10 ? `0${s.step}` : s.step}</span>
                   )}

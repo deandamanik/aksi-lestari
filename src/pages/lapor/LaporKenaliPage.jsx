@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useLapor } from '../../context/LaporContext'
 import { getIdentificationData } from '../../data/lapor/identificationData'
 import LaporStepHeader from './components/shared/LaporStepHeader'
-import EvidenceSummaryCard from './components/kenali/EvidenceSummaryCard'
+import ReportPhotoSummary from './components/shared/ReportPhotoSummary'
 import IdentificationCard from './components/kenali/IdentificationCard'
 import { ArrowLeftIcon, ArrowRightIcon } from '../../components/common/Icons'
 
@@ -62,7 +62,7 @@ function LaporKenaliPage() {
         <div className="mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
           {/* Left Column: Evidence Photo Summary */}
           <div className="lg:col-span-5">
-            <EvidenceSummaryCard photo={photo} />
+            <ReportPhotoSummary photo={photo} />
           </div>
 
           {/* Right Column: Identification & Action Guidance */}

@@ -1,9 +1,10 @@
-import { useState, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useCallback, useLayoutEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { useLapor } from '../../context/LaporContext'
 import PhotoUploadCard from './components/PhotoUploadCard'
 import AuthPromptModal from '../../components/common/AuthPromptModal'
+import { InfoIcon, ArrowRightIcon } from '../../components/common/Icons'
 import {
   LAPOR_DESKTOP_OBJECTS,
   LAPOR_MOBILE_OBJECTS,
@@ -26,9 +27,15 @@ import {
  */
 function LaporPage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { isAuthenticated } = useAuth()
-  const { reportData, updateReport } = useLapor()
+  const { reportData, updateReport, resetReport } = useLapor()
   const [showAuthPrompt, setShowAuthPrompt] = useState(false)
+
+  // Reset report draft when entering /lapor to start a fresh report
+  useLayoutEffect(() => {
+    resetReport()
+  }, [location.key, resetReport])
 
   const photoFile = reportData.temukan.photo.file
 
@@ -126,32 +133,28 @@ function LaporPage() {
         <div className="w-full lapor-enter-actions flex flex-col items-center">
           {/* Photo quality guidance */}
           <div className="mt-4 sm:mt-5 flex items-center justify-center gap-2 text-xs sm:text-sm text-stone-500 max-w-3xl mx-auto text-center px-4 leading-normal">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-stone-400 shrink-0" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
-            </svg>
+            <InfoIcon className="w-4 h-4 text-stone-400 shrink-0" strokeWidth={2} />
             <span className="lg:whitespace-nowrap">
-              Foto lebih mudah diidentifikasi jika objek sampah terlihat utuh, terang, dan tidak tertutup benda lain.
+              Foto lebih mudah dikenali jika objek sampah terlihat utuh, cukup terang, dan tidak tertutup benda lain.
             </span>
           </div>
 
           {/* CTA */}
-          <div className="mt-6 sm:mt-8 flex flex-col items-center justify-center text-center">
+          <div className="mt-6 sm:mt-8 w-full max-w-2xl mx-auto flex flex-col items-center justify-center text-center">
             <button
               type="button"
               disabled={!photoFile}
               onClick={handleContinue}
-              className={`inline-flex items-center justify-center gap-2 h-12 sm:h-13 px-8 sm:px-10 rounded-full font-bold text-sm sm:text-base transition-colors select-none ${
+              className={`inline-flex items-center justify-center gap-2 h-11 sm:h-13 px-7 sm:px-10 rounded-full font-semibold sm:font-bold text-sm sm:text-base transition-colors select-none w-full sm:w-auto ${
                 photoFile
-                  ? 'bg-primary hover:bg-primary/90 text-white cursor-pointer shadow-md hover:shadow-lg active:scale-[0.99] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
+                  ? 'bg-primary hover:bg-primary/90 text-white cursor-pointer shadow-xs sm:shadow-md hover:shadow-lg active:scale-[0.99] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
                   : 'bg-[#C6CFC9] text-white/95 cursor-not-allowed shadow-none'
               }`}
               aria-label="Lanjutkan ke Temuan"
               aria-disabled={!photoFile}
             >
               <span>Lanjutkan ke Temuan</span>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.25} strokeLinecap="round" strokeLinejoin="round" className="w-4.5 h-4.5" aria-hidden="true">
-                <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
-              </svg>
+              <ArrowRightIcon className="w-4 h-4 sm:w-4.5 sm:h-4.5" strokeWidth={2.25} />
             </button>
 
             <p className="text-xs text-stone-500 mt-2.5 font-medium tracking-wide">
