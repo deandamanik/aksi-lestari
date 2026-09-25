@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import AksiPediaHero from './components/AksiPediaHero'
-import ScanFeatureCard from './components/ScanFeatureCard'
 import LearningModulesSection from './components/LearningModulesSection'
 import LearningProgressCard from './components/LearningProgressCard'
-import AksiPediaHubCTA from './components/AksiPediaHubCTA'
 import ScanUploadSection from './components/ScanUploadSection'
 import ScanResultSection from './components/ScanResultSection'
 import HandlingStepsSection from './components/HandlingStepsSection'
@@ -16,6 +14,7 @@ import AuthPromptModal from '../../components/common/AuthPromptModal'
 
 function AksiPediaPage() {
   const { isAuthenticated } = useAuth()
+  const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
   const modeParam = searchParams.get('mode')
 
@@ -26,10 +25,21 @@ function AksiPediaPage() {
   const [isIdentifying, setIsIdentifying] = useState(false)
   const [showScanAuthPrompt, setShowScanAuthPrompt] = useState(false)
 
-  // Scroll to top whenever the view mode changes
+  // Scroll to hash target if provided, otherwise top
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [viewMode])
+    if (viewMode === 'hub' && location.hash) {
+      const targetId = location.hash.replace('#', '')
+      const el = document.getElementById(targetId)
+      if (el) {
+        const timer = setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth' })
+        }, 100)
+        return () => clearTimeout(timer)
+      }
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [viewMode, location.hash])
 
   const handleStartScan = () => {
     if (!isAuthenticated) {
@@ -63,13 +73,12 @@ function AksiPediaPage() {
     <main className="min-h-screen bg-neutral text-primary">
       {viewMode === 'hub' && (
         <div className="animate-in fade-in duration-300">
-          <AksiPediaHero />
-          <ScanFeatureCard onStartScan={handleStartScan} />
-          <div id="modul-belajar-section">
+          <AksiPediaHero onStartScan={handleStartScan} />
+          <div id="modul" className="scroll-mt-16">
+            <div id="modul-belajar-section" className="sr-only" aria-hidden="true" />
             <LearningModulesSection />
+            <LearningProgressCard />
           </div>
-          <LearningProgressCard />
-          <AksiPediaHubCTA onStartScan={handleStartScan} />
         </div>
       )}
 
