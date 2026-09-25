@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import ProtectedModuleLink from './ProtectedModuleLink'
 import { BookOpenIcon, ArrowRightIcon } from '../../../components/common/Icons'
 import { LEARNING_PROGRESS_DATA } from '../../../data/aksipedia/aksipediaHubData'
 
@@ -46,13 +46,13 @@ function LearningProgressCard() {
             </div>
 
             {/* Right: Continue Link */}
-            <Link
+            <ProtectedModuleLink
               to="/aksipedia/modul/memahami-jenis-sampah"
               className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-primary hover:text-secondary transition-colors self-start lg:self-auto shrink-0 group"
             >
               <span>{continueLabel}</span>
               <ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
+            </ProtectedModuleLink>
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import { resolveReturnDestination } from '../../utils/authRedirect'
 import AuthCardWrapper from './components/AuthCardWrapper'
 import AuthInputField from './components/AuthInputField'
 import { ArrowRightIcon, AlertCircleIcon } from './components/AuthIcons'
@@ -24,8 +25,8 @@ export default function LoginPage() {
   const [errors, setErrors] = useState({})
   const [generalError, setGeneralError] = useState('')
 
-  // Read redirect destination if available
-  const from = location.state?.from?.pathname || '/'
+  // Resolve return destination safely (priority: AuthGate returnTo -> intended route -> fallback '/')
+  const destination = resolveReturnDestination(location.state)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -45,14 +46,14 @@ export default function LoginPage() {
 
     try {
       login(formData.email, formData.password)
-      navigate(from, { replace: true })
+      navigate(destination, { replace: true })
     } catch (err) {
       setGeneralError(err.message || 'Terjadi kesalahan saat masuk. Silakan coba lagi.')
     }
   }
 
   return (
-    <AuthCardWrapper type="login">
+    <AuthCardWrapper type="login" hideHeroOnMobile>
       {/* Brand Header */}
       <div className="flex items-center gap-2.5 mb-5 sm:mb-6">
         <img
@@ -122,7 +123,7 @@ export default function LoginPage() {
       </form>
 
       {/* Switch to Register link */}
-      <div className="mt-8 text-center text-xs sm:text-sm text-gray-500">
+      <div className="mt-6 sm:mt-8 text-center text-xs sm:text-sm text-gray-500">
         Belum punya akun?{' '}
         <Link
           to="/register"

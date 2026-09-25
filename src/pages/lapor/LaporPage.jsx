@@ -1,7 +1,9 @@
-import { useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../hooks/useAuth'
 import { useLapor } from '../../context/LaporContext'
 import PhotoUploadCard from './components/PhotoUploadCard'
+import AuthPromptModal from '../../components/common/AuthPromptModal'
 import {
   LAPOR_DESKTOP_OBJECTS,
   LAPOR_MOBILE_OBJECTS,
@@ -24,7 +26,9 @@ import {
  */
 function LaporPage() {
   const navigate = useNavigate()
+  const { isAuthenticated } = useAuth()
   const { reportData, updateReport } = useLapor()
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false)
 
   const photoFile = reportData.temukan.photo.file
 
@@ -51,8 +55,12 @@ function LaporPage() {
   // Enter the actual 4-step reporting flow — Step 01 Temukan
   const handleContinue = useCallback(() => {
     if (!photoFile) return
+    if (!isAuthenticated) {
+      setShowAuthPrompt(true)
+      return
+    }
     navigate('/lapor/temukan')
-  }, [photoFile, navigate])
+  }, [photoFile, isAuthenticated, navigate])
 
   return (
     <main
@@ -253,6 +261,15 @@ function LaporPage() {
           </div>
         </div>
       </div>
+
+      <AuthPromptModal
+        isOpen={showAuthPrompt}
+        onClose={() => setShowAuthPrompt(false)}
+        title="Masuk untuk melanjutkan"
+        description="Masuk untuk melanjutkan laporanmu dan mencatatnya sebagai kontribusi."
+        returnTo={{ pathname: '/lapor/temukan' }}
+        intent={{ type: 'continue-report' }}
+      />
     </main>
   )
 }

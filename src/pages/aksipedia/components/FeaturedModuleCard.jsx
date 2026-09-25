@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import ProtectedModuleLink from './ProtectedModuleLink'
 import { ArrowRightIcon } from '../../../components/common/Icons'
 import { FEATURED_MODULE_DATA } from '../../../data/aksipedia/modulesData'
 
@@ -66,13 +66,13 @@ function FeaturedModuleCard() {
             </div>
 
             {/* CTA Button */}
-            <Link
+            <ProtectedModuleLink
               to={link}
               className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-primary text-white text-xs sm:text-sm font-semibold hover:bg-primary/90 transition-all self-start sm:self-auto group"
             >
               <span>{ctaText}</span>
               <ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
+            </ProtectedModuleLink>
           </div>
         </div>
       </div>

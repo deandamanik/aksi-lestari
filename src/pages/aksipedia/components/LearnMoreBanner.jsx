@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import ProtectedModuleLink from './ProtectedModuleLink'
 import { BookOpenIcon } from '../../../components/common/Icons'
 import { LEARN_MORE_BANNER_DATA } from '../../../data/aksipedia/wasteScanResultData'
 
@@ -24,13 +24,13 @@ function LearnMoreBanner() {
             </div>
           </div>
 
-          <Link
+          <ProtectedModuleLink
             to="/aksipedia/modul/memahami-jenis-sampah"
             className="self-start sm:self-center inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full border border-primary text-primary hover:bg-primary hover:text-white text-xs sm:text-sm font-semibold transition-all duration-200 shrink-0"
           >
             <BookOpenIcon className="w-4 h-4" />
             <span>{ctaText}</span>
-          </Link>
+          </ProtectedModuleLink>
         </div>
       </div>
     </section>

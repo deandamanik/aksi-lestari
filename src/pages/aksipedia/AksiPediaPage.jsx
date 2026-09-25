@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { useAuth } from '../../hooks/useAuth'
 import AksiPediaHero from './components/AksiPediaHero'
 import ScanFeatureCard from './components/ScanFeatureCard'
 import LearningModulesSection from './components/LearningModulesSection'
@@ -11,8 +12,10 @@ import HandlingStepsSection from './components/HandlingStepsSection'
 import ReuseIdeasSection from './components/ReuseIdeasSection'
 import WasteBankSection from './components/WasteBankSection'
 import LearnMoreBanner from './components/LearnMoreBanner'
+import AuthPromptModal from '../../components/common/AuthPromptModal'
 
 function AksiPediaPage() {
+  const { isAuthenticated } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
   const modeParam = searchParams.get('mode')
 
@@ -21,6 +24,7 @@ function AksiPediaPage() {
 
   const [selectedImage, setSelectedImage] = useState(null)
   const [isIdentifying, setIsIdentifying] = useState(false)
+  const [showScanAuthPrompt, setShowScanAuthPrompt] = useState(false)
 
   // Scroll to top whenever the view mode changes
   useEffect(() => {
@@ -28,6 +32,10 @@ function AksiPediaPage() {
   }, [viewMode])
 
   const handleStartScan = () => {
+    if (!isAuthenticated) {
+      setShowScanAuthPrompt(true)
+      return
+    }
     setSearchParams({ mode: 'scan' })
   }
 
@@ -89,6 +97,15 @@ function AksiPediaPage() {
           <LearnMoreBanner />
         </div>
       )}
+
+      <AuthPromptModal
+        isOpen={showScanAuthPrompt}
+        onClose={() => setShowScanAuthPrompt(false)}
+        title="Masuk untuk melanjutkan"
+        description="Masuk untuk menggunakan Scan dan menyimpan aktivitasmu."
+        returnTo={{ pathname: '/aksipedia', search: '?mode=scan', hash: '' }}
+        intent={{ type: 'start-scan' }}
+      />
     </main>
   )
 }
