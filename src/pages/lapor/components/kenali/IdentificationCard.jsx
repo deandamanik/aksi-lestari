@@ -25,7 +25,7 @@ function IdentificationCard({ data }) {
   } = data
 
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E5DC] shadow-xs p-5 sm:p-6 lg:p-7 flex flex-col gap-6">
+    <div className="rounded-2xl bg-white border border-border-warm shadow-xs p-5 sm:p-6 lg:p-7 flex flex-col gap-6">
       {/* 1. Main Identification Result */}
       <div>
         <span className="text-[11px] font-bold tracking-[0.08em] uppercase text-primary">

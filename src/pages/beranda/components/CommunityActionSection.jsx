@@ -32,17 +32,11 @@ function CommunityActionSection() {
           {/* LEFT COLUMN: Aksi Komunitas */}
           {/* ============================================================ */}
           <div className="lg:col-span-7 flex flex-col">
-            <div
-              className={`flex items-center justify-between gap-4 mb-2.5 ${getEntranceClass(0)}`}
+            <span
+              className={`block text-xs font-bold uppercase tracking-widest text-secondary font-body mb-2.5 ${getEntranceClass(0)}`}
             >
-              <span className="text-xs font-bold uppercase tracking-widest text-secondary font-body">
-                {COMMUNITY_HEADER.eyebrow}
-              </span>
-              <div className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-secondary">
-                <span className="w-2 h-2 rounded-full bg-secondary inline-block" />
-                <span>{COMMUNITY_HEADER.badge}</span>
-              </div>
-            </div>
+              {COMMUNITY_HEADER.eyebrow}
+            </span>
 
             <h2
               id="community-action-heading"
@@ -61,12 +55,15 @@ function CommunityActionSection() {
 
             <div className="flex flex-col gap-4 sm:gap-5 mb-6 sm:mb-8">
               {COMMUNITY_AGENDAS.map((agenda, index) => (
-                <div
+                <Link
                   key={agenda.id}
-                  className={`group relative bg-white rounded-2xl border border-border-warm p-5 sm:p-6 shadow-2xs hover:border-primary/30 hover:shadow-xs hover:!translate-y-0 transition-all duration-300 ease-out ${
+                  to="/komunitas"
+                  state={{ intent: { type: 'join-action', actionId: agenda.id } }}
+                  className={`group relative bg-white rounded-2xl border border-border-warm p-5 sm:p-6 shadow-2xs hover:border-primary/40 hover:shadow-xs block transition-all duration-300 ease-out focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary ${
                     inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                   }`}
                   style={{ transitionDelay: `${150 + index * 40}ms` }}
+                  aria-label={`Buka detail aksi: ${agenda.title}`}
                 >
                   <div className="flex items-start justify-between gap-4 mb-3 sm:mb-3.5">
                     <div>
@@ -100,7 +97,7 @@ function CommunityActionSection() {
                       <span>{agenda.location}</span>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
 

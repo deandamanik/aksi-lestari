@@ -1,28 +1,14 @@
-import { useState, useEffect } from 'react'
 import { getIdentificationData } from '../../../../data/lapor/identificationData'
 import { CameraIcon, AlertTriangleIcon } from '../../../../components/common/Icons'
+import { useObjectURL } from '../../../../hooks/useObjectURL'
 
 function IdentifiedWasteSummary({ photo, kenali }) {
-  const [thumbnailUrl, setThumbnailUrl] = useState(null)
   const categoryKey = kenali?.category || 'plastik'
   const ident = getIdentificationData(categoryKey)
-
-  useEffect(() => {
-    if (!photo?.file) return
-
-    const url = URL.createObjectURL(photo.file)
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- Synchronizing temporary DOM Blob URL with File object lifecycle
-    setThumbnailUrl(url)
-
-    return () => {
-      URL.revokeObjectURL(url)
-    }
-  }, [photo?.file])
-
-  const activeThumb = photo?.file ? thumbnailUrl : null
+  const activeThumb = useObjectURL(photo?.file)
 
   return (
-    <div className="w-full rounded-2xl bg-white border border-[#E8E5DC] p-3.5 sm:p-4 shadow-2xs flex items-center justify-between gap-3 sm:gap-4">
+    <div className="w-full rounded-2xl bg-white border border-border-warm p-3.5 sm:p-4 shadow-2xs flex items-center justify-between gap-3 sm:gap-4">
       <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
         <div className="w-12 h-12 rounded-xl bg-stone-100 border border-stone-200/80 overflow-hidden shrink-0 flex items-center justify-center">
           {activeThumb ? (

@@ -12,7 +12,13 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
       const savedUser = localStorage.getItem(STORAGE_KEY)
-      return savedUser ? DEMO_USER : null
+      if (savedUser) {
+        const parsed = JSON.parse(savedUser)
+        if (parsed && typeof parsed === 'object') {
+          return { ...DEMO_USER, ...parsed }
+        }
+      }
+      return null
     } catch {
       return null
     }
@@ -51,6 +57,27 @@ export function AuthProvider({ children }) {
     setUser(null)
   }
 
+  // Update active user profile state and persist to storage
+  const updateUserProfile = (updates) => {
+    setUser((prev) => {
+      if (!prev) return null
+      const computedInitials = updates.name
+        ? updates.name.trim().charAt(0).toUpperCase()
+        : prev.initials || 'I'
+      const updatedUser = {
+        ...prev,
+        ...updates,
+        initials: computedInitials,
+      }
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedUser))
+      } catch (err) {
+        console.error('Failed to save updated user profile to storage:', err)
+      }
+      return updatedUser
+    })
+  }
+
   const value = {
     user,
     isAuthenticated: Boolean(user),
@@ -58,6 +85,7 @@ export function AuthProvider({ children }) {
     login,
     register,
     logout,
+    updateUserProfile,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

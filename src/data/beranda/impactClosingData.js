@@ -33,7 +33,7 @@ export const CLOSING_CTA = {
     href: '/lapor',
   },
   secondaryAction: {
-    label: 'Jelajahi AksiLestari',
-    href: '/aksipedia',
+    label: 'Jelajahi Peta Sampah',
+    href: '/peta-sampah',
   },
 }

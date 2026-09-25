@@ -22,8 +22,8 @@ export default function LeaderboardPodium({ top3 = [] }) {
             key={item.id || item.rank}
             className={`${orderClass} rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-2xs flex flex-col items-center text-center justify-between transition-all duration-180 ${
               isFirst
-                ? 'bg-[#FAF9F4]/70 border border-[#22603B]/35 hover:border-[#22603B]/50'
-                : 'bg-white border border-border-warm hover:border-[#22603B]/25'
+                ? 'bg-neutral/70 border border-primary/35 hover:border-primary/50'
+                : 'bg-white border border-border-warm hover:border-primary/25'
             }`}
           >
             {/* Top Section: Rank -> Avatar -> Name -> Role */}
@@ -31,7 +31,7 @@ export default function LeaderboardPodium({ top3 = [] }) {
               {/* 1. Rank */}
               <span
                 className={`text-xs sm:text-sm font-bold tracking-tight ${
-                  isFirst ? 'text-[#22603B]' : 'text-stone-500'
+                  isFirst ? 'text-primary' : 'text-stone-500'
                 }`}
               >
                 #{item.rank}
@@ -41,7 +41,7 @@ export default function LeaderboardPodium({ top3 = [] }) {
               <div
                 className={`w-13 h-13 sm:w-14 sm:h-14 rounded-full flex items-center justify-center font-bold text-sm sm:text-base shrink-0 border mt-3 mb-3.5 shadow-2xs ${
                   isFirst
-                    ? 'bg-[#EAF3EC] text-[#22603B] border-[#D5E8D8]'
+                    ? 'bg-primary/10 text-primary border-primary/20'
                     : 'bg-stone-100 text-stone-700 border-border-warm'
                 }`}
               >
@@ -70,7 +70,7 @@ export default function LeaderboardPodium({ top3 = [] }) {
               {/* 5. Subtle Divider */}
               <div
                 className={`w-14 h-px mb-3.5 ${
-                  isFirst ? 'bg-[#22603B]/20' : 'bg-border-warm/80'
+                  isFirst ? 'bg-primary/20' : 'bg-border-warm/80'
                 }`}
                 aria-hidden="true"
               />
@@ -79,7 +79,7 @@ export default function LeaderboardPodium({ top3 = [] }) {
               <span
                 className={`font-display font-bold leading-tight ${
                   isFirst
-                    ? 'text-base sm:text-lg text-[#22603B]'
+                    ? 'text-base sm:text-lg text-primary'
                     : 'text-sm sm:text-base text-stone-800'
                 }`}
               >

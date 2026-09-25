@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { getIdentificationData } from '../../../../data/lapor/identificationData'
 import {
   FileTextIcon,
@@ -9,29 +9,10 @@ import {
   AlertCircleIcon,
   ClockIcon,
 } from '../../../../components/common/Icons'
-
-function formatFileSize(bytes) {
-  if (!bytes) return ''
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`
-}
-
-function formatReportDate(timestamp) {
-  if (!timestamp) return null
-  try {
-    return new Intl.DateTimeFormat('id-ID', {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    }).format(new Date(timestamp))
-  } catch {
-    return null
-  }
-}
+import { formatFileSize, formatDateTime } from '../../../../utils/formatters'
+import { useObjectURL } from '../../../../hooks/useObjectURL'
 
 function TrackingReportSummary({ temukan, kenali, createdAt }) {
-  const [previewUrl, setPreviewUrl] = useState(null)
   const [failedFile, setFailedFile] = useState(null)
 
   const photo = temukan?.photo
@@ -39,30 +20,17 @@ function TrackingReportSummary({ temukan, kenali, createdAt }) {
   const descriptionText = temukan?.description?.text?.trim()
   const categoryKey = kenali?.category || 'plastik'
   const ident = getIdentificationData(categoryKey)
-  const formattedDate = formatReportDate(createdAt)
+  const formattedDate = formatDateTime(createdAt)
 
+  const activeUrl = useObjectURL(photo?.file)
   const hasError = Boolean(photo?.file && failedFile === photo?.file)
-
-  useEffect(() => {
-    if (!photo?.file) return
-
-    const url = URL.createObjectURL(photo.file)
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- Synchronizing temporary DOM Blob URL with File object lifecycle
-    setPreviewUrl(url)
-
-    return () => {
-      URL.revokeObjectURL(url)
-    }
-  }, [photo?.file])
-
-  const activeUrl = photo?.file ? previewUrl : null
 
   const parts = location?.address ? location.address.split(',').map((p) => p.trim()) : []
   const primaryAddress = parts.slice(0, 2).join(', ') || location?.address || 'Lokasi belum ditentukan'
   const secondaryAddress = parts.slice(2, 4).join(', ')
 
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E5DC] shadow-xs p-5 sm:p-6 flex flex-col gap-4.5">
+    <div className="rounded-2xl bg-white border border-border-warm shadow-xs p-5 sm:p-6 flex flex-col gap-4.5">
       {/* Header */}
       <div className="flex items-center justify-between gap-3 border-b border-stone-100 pb-3">
         <div className="flex items-center gap-2">

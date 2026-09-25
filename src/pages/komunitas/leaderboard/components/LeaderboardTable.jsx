@@ -21,14 +21,14 @@ export default function LeaderboardTable({ rankings = [], currentUser = null }) 
             Posisi Kamu
           </h2>
           <div className="bg-white rounded-2xl sm:rounded-3xl border border-border-warm shadow-2xs overflow-hidden">
-            <div className="flex items-center justify-between gap-3 px-4 sm:px-6 py-3.5 sm:py-4 bg-[#FAF9F4] border-l-3 border-l-[#22603B]">
+            <div className="flex items-center justify-between gap-3 px-4 sm:px-6 py-3.5 sm:py-4 bg-neutral border-l-3 border-l-primary">
               <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-                <span className="w-7 sm:w-8 text-center text-xs sm:text-sm font-bold text-[#22603B] shrink-0">
+                <span className="w-7 sm:w-8 text-center text-xs sm:text-sm font-bold text-primary shrink-0">
                   #{currentUser.rank}
                 </span>
 
-                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 bg-[#EAF3EC] text-[#22603B] border border-[#D5E8D8]">
-                  <UserIcon className="w-4 h-4 text-[#22603B]" />
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 bg-primary/10 text-primary border border-primary/20">
+                  <UserIcon className="w-4 h-4 text-primary" />
                 </div>
 
                 <div className="flex items-center gap-1.5 min-w-0 flex-wrap">
@@ -44,7 +44,7 @@ export default function LeaderboardTable({ rankings = [], currentUser = null }) 
               </div>
 
               <div className="shrink-0 text-right">
-                <span className="font-display font-bold text-xs sm:text-sm text-[#22603B]">
+                <span className="font-display font-bold text-xs sm:text-sm text-primary">
                   {currentUser.xp}
                 </span>
               </div>
@@ -60,7 +60,7 @@ export default function LeaderboardTable({ rankings = [], currentUser = null }) 
         </h2>
         <div className="bg-white rounded-2xl sm:rounded-3xl border border-border-warm shadow-2xs overflow-hidden">
           {/* Table Header */}
-          <div className="flex items-center justify-between gap-3 px-4 sm:px-6 py-3 border-b border-border-warm/80 text-[11px] font-bold uppercase tracking-wider text-stone-400 bg-[#FAF9F4]/70">
+          <div className="flex items-center justify-between gap-3 px-4 sm:px-6 py-3 border-b border-border-warm/80 text-[11px] font-bold uppercase tracking-wider text-stone-400 bg-neutral/70">
             <div className="flex items-center gap-3 sm:gap-4 min-w-0">
               <span className="w-7 sm:w-8 text-center shrink-0">Rank</span>
               <span>Relawan & Kontribusi</span>
@@ -80,15 +80,15 @@ export default function LeaderboardTable({ rankings = [], currentUser = null }) 
                   key={entry.id}
                   className={`flex items-center justify-between gap-3 px-4 sm:px-6 py-3.5 sm:py-4 transition-colors duration-180 ${
                     isSelf
-                      ? 'bg-[#FAF9F4] hover:bg-[#F2F0E8] border-l-3 border-l-[#22603B]'
-                      : 'hover:bg-[#FAF9F4]/80'
+                      ? 'bg-neutral hover:bg-stone-200/50 border-l-3 border-l-primary'
+                      : 'hover:bg-neutral/80'
                   }`}
                 >
                   {/* Rank + Avatar + Details */}
                   <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                     <span
                       className={`w-7 sm:w-8 text-center text-xs sm:text-sm font-bold shrink-0 ${
-                        isSelf ? 'text-[#22603B]' : 'text-stone-500 font-semibold'
+                        isSelf ? 'text-primary' : 'text-stone-500 font-semibold'
                       }`}
                     >
                       #{entry.rank}
@@ -97,12 +97,12 @@ export default function LeaderboardTable({ rankings = [], currentUser = null }) 
                     <div
                       className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 border ${
                         isSelf
-                          ? 'bg-[#EAF3EC] text-[#22603B] border-[#D5E8D8]'
+                          ? 'bg-primary/10 text-primary border-primary/20'
                           : 'bg-stone-100 text-stone-600 border-border-warm'
                       }`}
                     >
                       {isSelf ? (
-                        <UserIcon className="w-4 h-4 text-[#22603B]" />
+                        <UserIcon className="w-4 h-4 text-primary" />
                       ) : (
                         entry.initials
                       )}
@@ -110,14 +110,12 @@ export default function LeaderboardTable({ rankings = [], currentUser = null }) 
 
                     <div className="flex items-center gap-1.5 min-w-0 flex-wrap">
                       <span
-                        className={`text-xs sm:text-sm font-bold truncate ${
-                          isSelf ? 'text-[#22603B]' : 'text-primary'
-                        }`}
+                        className="text-xs sm:text-sm font-bold truncate text-primary"
                       >
                         {entry.name}
                       </span>
                       {isSelf && (
-                        <span className="text-[11px] font-medium text-[#22603B] px-1.5 py-0.2 rounded bg-[#22603B]/10 leading-tight">
+                        <span className="text-[11px] font-medium text-primary px-1.5 py-0.2 rounded bg-primary/10 leading-tight">
                           Kamu
                         </span>
                       )}
@@ -133,7 +131,7 @@ export default function LeaderboardTable({ rankings = [], currentUser = null }) 
                   <div className="shrink-0 text-right">
                     <span
                       className={`font-display font-bold text-xs sm:text-sm ${
-                        isSelf ? 'text-[#22603B]' : 'text-stone-800'
+                        isSelf ? 'text-primary' : 'text-stone-800'
                       }`}
                     >
                       {entry.xp}

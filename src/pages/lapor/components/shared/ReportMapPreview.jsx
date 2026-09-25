@@ -23,15 +23,50 @@ function ReportMapPreview({ location, pin, isPickerMode = false, onMapClick }) {
     onMapClick({ x: clampedX, y: clampedY })
   }
 
+  const handleKeyDown = (e) => {
+    if (!isPickerMode || !onMapClick) return
+    const step = e.shiftKey ? 30 : 15
+    let newX = pinX
+    let newY = pinY
+    let handled = false
+
+    if (e.key === 'ArrowLeft') {
+      newX = Math.max(16, pinX - step)
+      handled = true
+    } else if (e.key === 'ArrowRight') {
+      newX = Math.min(544, pinX + step)
+      handled = true
+    } else if (e.key === 'ArrowUp') {
+      newY = Math.max(20, pinY - step)
+      handled = true
+    } else if (e.key === 'ArrowDown') {
+      newY = Math.min(200, pinY + step)
+      handled = true
+    }
+
+    if (handled) {
+      e.preventDefault()
+      onMapClick({ x: newX, y: newY })
+    }
+  }
+
   return (
     <div
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={isPickerMode ? 0 : undefined}
+      role={isPickerMode ? 'application' : undefined}
       className={`relative w-full rounded-xl overflow-hidden border transition-all duration-200 select-none ${
         isPickerMode
-          ? 'border-primary ring-2 ring-primary/20 cursor-crosshair shadow-sm'
-          : 'border-[#E8E5DC]'
+          ? 'border-primary ring-2 ring-primary/20 cursor-crosshair shadow-sm focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
+          : 'border-border-warm'
       }`}
-      aria-label={isPickerMode ? 'Peta interaktif: klik untuk memilih titik lokasi' : 'Pratinjau peta titik lokasi temuan sampah'}
+      aria-label={
+        isPickerMode
+          ? `Peta interaktif pemilihan lokasi. Koordinat pin saat ini X ${pinX}, Y ${pinY}. Gunakan tombol panah untuk memindahkan pin.`
+          : 'Pratinjau peta titik lokasi temuan sampah'
+      }
+      aria-roledescription={isPickerMode ? 'pemilih koordinat lokasi' : undefined}
     >
       <svg
         ref={svgRef}

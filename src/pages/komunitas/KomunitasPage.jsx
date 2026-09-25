@@ -12,6 +12,7 @@ import CommunityProposalBanner from './components/CommunityProposalBanner'
 import ActionDetailModal from './components/ActionDetailModal'
 import ProposeActionModal from './components/ProposeActionModal'
 import AuthPromptModal from '../../components/common/AuthPromptModal'
+import Button from '../../components/common/Button'
 import {
   COMMUNITY_ACTIONS,
   INITIAL_LOCATION,
@@ -244,7 +245,7 @@ function KomunitasPage() {
   }, [actionsList, activeDetailAction])
 
   return (
-    <main className="min-h-screen bg-[#FAF9F4] text-primary flex flex-col antialiased">
+    <main className="min-h-screen bg-neutral text-primary flex flex-col antialiased">
       <div className="w-full flex-1 flex flex-col animate-page-enter">
         {/* Hero Section (Stagger 0ms) */}
         <div className="animate-content-rise stagger-community-hero">
@@ -330,7 +331,7 @@ function KomunitasPage() {
                           setVisibleCount(4)
                         }
                       }}
-                      className="inline-flex items-center gap-2 h-10 px-4.5 sm:px-5 rounded-xl bg-white border border-border-warm text-stone-700 hover:text-[#22603B] hover:border-[#22603B]/40 hover:bg-[#FAF9F4] text-xs sm:text-[13px] font-semibold font-body transition-all duration-180 shadow-2xs active:scale-[0.98] cursor-pointer group focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]"
+                      className="inline-flex items-center gap-2 h-10 px-4.5 sm:px-5 rounded-xl bg-white border border-border-warm text-stone-700 hover:text-primary hover:border-primary/40 hover:bg-neutral text-xs sm:text-[13px] font-semibold font-body transition-all duration-180 shadow-2xs active:scale-[0.98] cursor-pointer group focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
                     >
                       <span>
                         {visibleCount < filteredActions.length
@@ -338,7 +339,7 @@ function KomunitasPage() {
                           : 'Lihat Lebih Sedikit'}
                       </span>
                       <ArrowRightIcon
-                        className={`w-3.5 h-3.5 text-stone-400 group-hover:text-[#22603B] transition-transform duration-180 motion-reduce:transform-none ${
+                        className={`w-3.5 h-3.5 text-stone-400 group-hover:text-primary transition-transform duration-180 motion-reduce:transform-none ${
                           visibleCount < filteredActions.length
                             ? 'group-hover:translate-x-0.5'
                             : '-rotate-90 group-hover:-translate-y-0.5'
@@ -351,7 +352,7 @@ function KomunitasPage() {
             ) : (
               /* Clean Empty State */
               <div className="w-full py-16 px-6 bg-white rounded-3xl border border-border-warm text-center flex flex-col items-center justify-center my-2 shadow-2xs animate-content-rise">
-                <div className="w-12 h-12 rounded-full bg-[#FAF9F4] flex items-center justify-center text-[#22603B] mb-3 border border-border-warm">
+                <div className="w-12 h-12 rounded-full bg-neutral flex items-center justify-center text-primary mb-3 border border-border-warm">
                   <SparklesIcon className="w-5 h-5" />
                 </div>
                 <h3 className="font-display text-primary text-lg sm:text-xl font-bold mb-1.5">
@@ -360,13 +361,13 @@ function KomunitasPage() {
                 <p className="font-body text-stone-500 text-xs sm:text-sm max-w-sm mx-auto mb-5 leading-relaxed">
                   Belum ada kegiatan yang sesuai dengan pencarian atau filter yang kamu pilih.
                 </p>
-                <button
-                  type="button"
+                <Button
+                  variant="primary"
+                  size="sm"
                   onClick={handleResetFilters}
-                  className="inline-flex items-center justify-center h-9 px-5 rounded-full text-xs sm:text-sm font-bold bg-[#22603B] text-white hover:bg-[#1C4E30] transition-all duration-150 shadow-xs cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] active:scale-[0.98]"
                 >
                   Reset Filter
-                </button>
+                </Button>
               </div>
             )}
           </div>
@@ -436,7 +437,7 @@ function KomunitasPage() {
             aria-live="polite"
             data-action-id={typeof toastMessage === 'object' ? toastMessage.actionId : undefined}
             data-action-title={typeof toastMessage === 'object' ? toastMessage.actionTitle : undefined}
-            className="fixed bottom-6 left-4 right-4 sm:left-auto sm:right-8 z-50 sm:max-w-md bg-[#22603B] text-white p-4 rounded-2xl shadow-xl border border-white/10 flex items-start gap-3 animate-toast-enter"
+            className="fixed bottom-6 left-4 right-4 sm:left-auto sm:right-8 z-50 sm:max-w-md bg-primary text-white p-4 rounded-2xl shadow-xl border border-white/10 flex items-start gap-3 animate-toast-enter"
           >
             <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0 mt-0.5">
               <CheckIcon className="w-4 h-4 text-white" />

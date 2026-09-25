@@ -177,7 +177,7 @@ export default function CommunityFilterBar({
             <label htmlFor="community-search-input" className="sr-only">
               Cari kegiatan lingkungan
             </label>
-            <div className="relative flex items-center w-full h-12 sm:h-[50px] rounded-2xl bg-white border border-border-warm shadow-2xs transition-all focus-within:border-[#22603B] focus-within:ring-2 focus-within:ring-[#22603B]/10">
+            <div className="relative flex items-center w-full h-12 sm:h-[50px] rounded-2xl bg-white border border-border-warm shadow-2xs transition-all focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10">
               <div className="pl-4 sm:pl-4.5 flex items-center pointer-events-none text-stone-400 shrink-0">
                 <SearchIcon className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
               </div>
@@ -212,17 +212,17 @@ export default function CommunityFilterBar({
                 <button
                   type="button"
                   onClick={toggleFilterDropdown}
-                  className={`inline-flex items-center gap-1.5 h-8 sm:h-8.5 px-2.5 sm:px-3 rounded-xl text-xs sm:text-[13px] font-semibold font-body transition-colors select-none cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] ${
+                  className={`inline-flex items-center gap-1.5 h-8 sm:h-8.5 px-2.5 sm:px-3 rounded-xl text-xs sm:text-[13px] font-semibold font-body transition-colors select-none cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary ${
                     selectedCategories.length > 0
-                      ? 'text-[#22603B] bg-[#FAF9F4] font-bold border border-[#22603B]/20'
-                      : 'text-stone-600 hover:text-primary hover:bg-[#FAF9F4]'
+                      ? 'text-primary bg-neutral font-bold border border-primary/20'
+                      : 'text-stone-600 hover:text-primary hover:bg-neutral'
                   }`}
                   aria-expanded={isFilterOpen}
                   aria-haspopup="dialog"
                 >
                   <FilterIcon
                     className={`w-3.5 h-3.5 shrink-0 ${
-                      selectedCategories.length > 0 ? 'text-[#22603B]' : 'text-stone-400'
+                      selectedCategories.length > 0 ? 'text-primary' : 'text-stone-400'
                     }`}
                   />
                   <span>
@@ -230,7 +230,7 @@ export default function CommunityFilterBar({
                   </span>
                   <ChevronDownIcon
                     className={`w-3 h-3 text-stone-400 shrink-0 transition-transform duration-200 ${
-                      isFilterOpen ? 'rotate-180 text-[#22603B]' : ''
+                      isFilterOpen ? 'rotate-180 text-primary' : ''
                     }`}
                   />
                 </button>
@@ -255,18 +255,18 @@ export default function CommunityFilterBar({
                         return (
                           <label
                             key={cat}
-                            className="flex items-center gap-2.5 px-2 py-1.5 rounded-xl hover:bg-[#FAF9F4] transition-colors cursor-pointer select-none text-xs font-medium text-stone-700"
+                            className="flex items-center gap-2.5 px-2 py-1.5 rounded-xl hover:bg-neutral transition-colors cursor-pointer select-none text-xs font-medium text-stone-700"
                           >
                             <input
                               type="checkbox"
                               checked={isChecked}
                               onChange={() => onToggleCategory(cat)}
-                              className="w-4 h-4 rounded-md border-border-warm text-[#22603B] focus:ring-[#22603B]/20 accent-[#22603B] cursor-pointer"
+                              className="w-4 h-4 rounded-md border-border-warm text-primary focus:ring-primary/20 accent-primary cursor-pointer"
                             />
                             <span
                               className={
                                 isChecked
-                                  ? 'font-bold text-[#22603B]'
+                                  ? 'font-bold text-primary'
                                   : 'text-stone-700'
                               }
                             >
@@ -292,7 +292,7 @@ export default function CommunityFilterBar({
                       <button
                         type="button"
                         onClick={() => setIsFilterOpen(false)}
-                        className="text-[10px] font-normal leading-tight text-[#22603B] hover:text-[#18482b] transition-colors cursor-pointer"
+                        className="text-[10px] font-normal leading-tight text-primary hover:text-primary/80 transition-colors cursor-pointer"
                       >
                         Tutup
                       </button>
@@ -311,11 +311,11 @@ export default function CommunityFilterBar({
             <button
               type="button"
               onClick={toggleLocationDropdown}
-              className="w-full h-12 sm:h-[50px] flex items-center justify-between gap-3 px-3.5 sm:px-4 rounded-2xl bg-white border border-border-warm shadow-2xs hover:border-[#22603B]/40 transition-all duration-180 active:scale-[0.99] text-left cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]"
+              className="w-full h-12 sm:h-[50px] flex items-center justify-between gap-3 px-3.5 sm:px-4 rounded-2xl bg-white border border-border-warm shadow-2xs hover:border-primary/40 transition-all duration-180 active:scale-[0.99] text-left cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
               aria-expanded={isLocationOpen}
               aria-haspopup="dialog"
             >
-              <MapPinIcon className="w-4 h-4 text-[#22603B] shrink-0" />
+              <MapPinIcon className="w-4 h-4 text-primary shrink-0" />
               <div className="flex flex-col min-w-0 flex-1">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400 leading-tight">
                   LOKASI PENCARIAN
@@ -326,7 +326,7 @@ export default function CommunityFilterBar({
               </div>
               <ChevronDownIcon
                 className={`w-3.5 h-3.5 text-stone-400 shrink-0 transition-transform duration-200 ${
-                  isLocationOpen ? 'rotate-180 text-[#22603B]' : ''
+                  isLocationOpen ? 'rotate-180 text-primary' : ''
                 }`}
               />
             </button>
@@ -357,7 +357,7 @@ export default function CommunityFilterBar({
                     value={locationQuery}
                     onChange={(e) => setLocationQuery(e.target.value)}
                     placeholder="Cari kecamatan / kota..."
-                    className="w-full h-8 pl-8 pr-7 rounded-xl bg-stone-50/80 border border-border-warm text-xs text-primary placeholder:text-stone-400 focus:outline-hidden focus:border-[#22603B] focus:bg-white transition-all font-body"
+                    className="w-full h-8 pl-8 pr-7 rounded-xl bg-stone-50/80 border border-border-warm text-xs text-primary placeholder:text-stone-400 focus:outline-hidden focus:border-primary focus:bg-white transition-all font-body"
                   />
                   {locationQuery && (
                     <button
@@ -376,10 +376,10 @@ export default function CommunityFilterBar({
                   type="button"
                   onClick={handleUseCurrentLocation}
                   disabled={isLoadingGeo}
-                  className="w-full flex items-center gap-2 px-2 py-1.5 rounded-xl text-xs font-medium text-[#22603B] hover:bg-[#FAF9F4] transition-colors cursor-pointer disabled:opacity-50 select-none text-left font-body mb-1"
+                  className="w-full flex items-center gap-2 px-2 py-1.5 rounded-xl text-xs font-medium text-primary hover:bg-neutral transition-colors cursor-pointer disabled:opacity-50 select-none text-left font-body mb-1"
                 >
                   <LocateIcon
-                    className={`w-3.5 h-3.5 shrink-0 text-[#22603B] ${
+                    className={`w-3.5 h-3.5 shrink-0 text-primary ${
                       isLoadingGeo ? 'animate-spin' : ''
                     }`}
                   />
@@ -411,15 +411,15 @@ export default function CommunityFilterBar({
                         }}
                         className={`w-full flex items-center justify-between px-2 py-1.5 rounded-xl text-xs text-left transition-colors cursor-pointer select-none font-body ${
                           isSelected
-                            ? 'bg-[#FAF9F4] text-[#22603B]'
-                            : 'hover:bg-[#FAF9F4] text-stone-700'
+                            ? 'bg-neutral text-primary'
+                            : 'hover:bg-neutral text-stone-700'
                         }`}
                       >
                         <div className="flex flex-col min-w-0 pr-2">
                           <span
                             className={`truncate leading-snug ${
                               isSelected
-                                ? 'font-bold text-[#22603B]'
+                                ? 'font-bold text-primary'
                                 : 'font-medium text-stone-700'
                             }`}
                           >
@@ -428,7 +428,7 @@ export default function CommunityFilterBar({
                           {loc.region && (
                             <span
                               className={`text-[10px] leading-tight ${
-                                isSelected ? 'text-[#22603B]/70' : 'text-stone-400'
+                                isSelected ? 'text-primary/70' : 'text-stone-400'
                               }`}
                             >
                               {loc.region}
@@ -436,7 +436,7 @@ export default function CommunityFilterBar({
                           )}
                         </div>
                         {isSelected && (
-                          <CheckIcon className="w-3.5 h-3.5 shrink-0 text-[#22603B]" />
+                          <CheckIcon className="w-3.5 h-3.5 shrink-0 text-primary" />
                         )}
                       </button>
                     )
@@ -456,7 +456,7 @@ export default function CommunityFilterBar({
                   <button
                     type="button"
                     onClick={closeLocationDropdown}
-                    className="text-[10px] font-normal leading-tight text-[#22603B] hover:text-[#18482b] transition-colors cursor-pointer"
+                    className="text-[10px] font-normal leading-tight text-primary hover:text-primary/80 transition-colors cursor-pointer"
                   >
                     Tutup
                   </button>
@@ -478,13 +478,13 @@ export default function CommunityFilterBar({
             {selectedCategories.map((cat) => (
               <span
                 key={cat}
-                className="inline-flex items-center gap-1.5 h-7 pl-2.5 pr-1.5 rounded-lg bg-[#FAF9F4] border border-[#22603B]/20 text-[#22603B] text-xs font-semibold select-none"
+                className="inline-flex items-center gap-1.5 h-7 pl-2.5 pr-1.5 rounded-lg bg-neutral border border-primary/20 text-primary text-xs font-semibold select-none"
               >
                 <span>{cat}</span>
                 <button
                   type="button"
                   onClick={() => onRemoveCategory(cat)}
-                  className="w-4 h-4 rounded-full flex items-center justify-center text-stone-400 hover:text-stone-700 hover:bg-[#22603B]/10 transition-colors cursor-pointer"
+                  className="w-4 h-4 rounded-full flex items-center justify-center text-stone-400 hover:text-stone-700 hover:bg-primary/10 transition-colors cursor-pointer"
                   aria-label={`Hapus filter ${cat}`}
                   title={`Hapus filter ${cat}`}
                 >
@@ -498,7 +498,7 @@ export default function CommunityFilterBar({
               <button
                 type="button"
                 onClick={onClearAllCategories}
-                className="text-xs text-stone-500 hover:text-[#22603B] hover:underline cursor-pointer transition-colors ml-0.5"
+                className="text-xs text-stone-500 hover:text-primary hover:underline cursor-pointer transition-colors ml-0.5"
               >
                 Hapus semua filter
               </button>

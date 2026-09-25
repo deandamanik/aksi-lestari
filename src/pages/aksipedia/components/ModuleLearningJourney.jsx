@@ -21,7 +21,7 @@ function ModuleLearningJourney({
 
   return (
     <nav
-      className="sticky top-16 sm:top-20 z-30 bg-[#FAF8F3]/98 backdrop-blur-md py-3 sm:py-4 border-y border-border-warm/70 select-none shadow-2xs"
+      className="sticky top-16 sm:top-20 z-30 bg-neutral/98 backdrop-blur-md py-3 sm:py-4 border-y border-border-warm/70 select-none shadow-2xs"
       aria-label="Alur perjalanan materi modul"
     >
       <div className="max-w-[660px] mx-auto px-4 sm:px-6">

@@ -18,7 +18,7 @@ export default function CommunityLeaderboardPage() {
   }, [selectedPeriod])
 
   return (
-    <main className="min-h-screen bg-[#FAF9F4] text-primary flex flex-col antialiased">
+    <main className="min-h-screen bg-neutral text-primary flex flex-col antialiased">
       <div className="w-full flex-1 flex flex-col animate-page-enter">
         <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 pt-20 sm:pt-24 pb-16">
           {/* Header Section */}
@@ -26,7 +26,7 @@ export default function CommunityLeaderboardPage() {
             {/* Back Navigation to Community Hub */}
             <Link
               to="/komunitas"
-              className="group inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-[#22603B] hover:text-[#17462A] transition-colors mb-3 sm:mb-3.5 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] rounded-xs"
+              className="group inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-primary hover:text-primary/80 transition-colors mb-3 sm:mb-3.5 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary rounded-xs"
             >
               <ArrowLeftIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 transition-transform duration-180 group-hover:-translate-x-0.5 motion-reduce:transform-none" />
               <span>Kembali ke Komunitas</span>
@@ -50,10 +50,10 @@ export default function CommunityLeaderboardPage() {
                     type="button"
                     onClick={() => setSelectedPeriod(period.id)}
                     aria-pressed={isActive}
-                    className={`shrink-0 whitespace-nowrap inline-flex items-center justify-center h-9 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-180 select-none cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] ${
+                    className={`shrink-0 whitespace-nowrap inline-flex items-center justify-center h-9 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-180 select-none cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary ${
                       isActive
-                        ? 'bg-[#22603B] text-white border border-[#22603B] shadow-2xs'
-                        : 'bg-white text-stone-700 border border-border-warm hover:bg-[#FAF9F4] hover:border-[#22603B]/30'
+                        ? 'bg-primary text-white border border-primary shadow-2xs'
+                        : 'bg-white text-stone-700 border border-border-warm hover:bg-neutral hover:border-primary/30'
                     }`}
                   >
                     {period.label}

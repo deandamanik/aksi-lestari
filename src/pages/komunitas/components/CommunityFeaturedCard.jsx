@@ -16,7 +16,7 @@ export default function CommunityFeaturedCard({
     action.status === 'Kuota Menipis'
 
   return (
-    <article className="group bg-white rounded-2xl sm:rounded-3xl border border-border-warm overflow-hidden shadow-2xs hover:shadow-xs hover:border-[#22603B]/30 transition-all duration-200 flex flex-col">
+    <article className="group bg-white rounded-2xl sm:rounded-3xl border border-border-warm overflow-hidden shadow-2xs hover:shadow-xs hover:border-primary/30 transition-all duration-200 flex flex-col">
       {/* Optional Top Image */}
       {action.image && (
         <div
@@ -30,7 +30,7 @@ export default function CommunityFeaturedCard({
               onOpenDetail(action)
             }
           }}
-          className="w-full h-48 sm:h-56 md:h-64 overflow-hidden cursor-pointer bg-stone-100 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#22603B]"
+          className="w-full h-48 sm:h-56 md:h-64 overflow-hidden cursor-pointer bg-stone-100 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
         >
           <img
             src={action.image}
@@ -49,12 +49,12 @@ export default function CommunityFeaturedCard({
         <div className="flex items-center justify-between gap-2 mb-2.5">
           <span
             className={`inline-flex items-center gap-1.5 text-xs font-medium ${
-              isWarning ? 'text-[#B45309]' : 'text-[#22603B]'
+              isWarning ? 'text-amber-700' : 'text-primary'
             }`}
           >
             <span
               className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                isWarning ? 'bg-[#D97706]' : 'bg-[#22603B]'
+                isWarning ? 'bg-amber-600' : 'bg-primary'
               }`}
             />
             <span>{action.status || 'Terbuka'}</span>
@@ -68,7 +68,7 @@ export default function CommunityFeaturedCard({
         {/* 2. Title */}
         <h3
           onClick={() => onOpenDetail(action)}
-          className="font-display text-primary text-lg sm:text-xl font-bold leading-snug tracking-tight mb-2 hover:text-[#22603B] transition-colors duration-180 cursor-pointer"
+          className="font-display text-primary text-lg sm:text-xl font-bold leading-snug tracking-tight mb-2 hover:text-primary transition-colors duration-180 cursor-pointer"
         >
           {action.title}
         </h3>
@@ -81,11 +81,11 @@ export default function CommunityFeaturedCard({
         {/* 4. Metadata: Location & Date */}
         <div className="pt-3 pb-3 border-t border-border-warm/60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 text-xs text-stone-600">
           <div className="flex items-center gap-2 min-w-0">
-            <MapPinIcon className="w-3.5 h-3.5 text-[#22603B] shrink-0" />
+            <MapPinIcon className="w-3.5 h-3.5 text-primary shrink-0" />
             <span className="truncate">{action.location}</span>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <CalendarIcon className="w-3.5 h-3.5 text-[#22603B] shrink-0" />
+            <CalendarIcon className="w-3.5 h-3.5 text-primary shrink-0" />
             <span className="truncate">{action.date}</span>
           </div>
         </div>
@@ -102,7 +102,7 @@ export default function CommunityFeaturedCard({
           <button
             type="button"
             onClick={() => onOpenDetail(action)}
-            className="inline-flex items-center gap-1.5 text-xs sm:text-[13px] font-bold text-[#22603B] hover:text-[#17462A] transition-all duration-180 active:scale-[0.98] cursor-pointer group/cta focus:outline-hidden focus-visible:underline shrink-0"
+            className="inline-flex items-center gap-1.5 text-xs sm:text-[13px] font-bold text-primary hover:text-primary/80 transition-all duration-180 active:scale-[0.98] cursor-pointer group/cta focus:outline-hidden focus-visible:underline shrink-0"
           >
             <span>Lihat Aksi</span>
             <ArrowRightIcon className="w-3.5 h-3.5 transition-transform duration-180 group-hover/cta:translate-x-0.5 motion-reduce:transform-none" />

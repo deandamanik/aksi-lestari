@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { getIdentificationData } from '../../../../data/lapor/identificationData'
 import {
   FileTextIcon,
@@ -9,30 +9,10 @@ import {
   AlertCircleIcon,
   ClockIcon,
 } from '../../../../components/common/Icons'
-
-function formatFileSize(bytes) {
-  if (!bytes) return ''
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`
-}
-
-function formatReportDate(timestamp) {
-  if (!timestamp) return null
-  try {
-    return new Intl.DateTimeFormat('id-ID', {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    }).format(new Date(timestamp))
-  } catch {
-    return null
-  }
-}
+import { formatFileSize, formatDateTime } from '../../../../utils/formatters'
+import { useObjectURL } from '../../../../hooks/useObjectURL'
 
 function MandiriTrackingSummary({ temukan, kenali, mandiri }) {
-  const [beforeUrl, setBeforeUrl] = useState(null)
-  const [afterUrl, setAfterUrl] = useState(null)
   const [failedBefore, setFailedBefore] = useState(null)
   const [failedAfter, setFailedAfter] = useState(null)
 
@@ -41,26 +21,10 @@ function MandiriTrackingSummary({ temukan, kenali, mandiri }) {
   const location = temukan?.location
   const categoryKey = kenali?.category || 'plastik'
   const ident = getIdentificationData(categoryKey)
-  const formattedDate = formatReportDate(mandiri?.submittedAt)
+  const formattedDate = formatDateTime(mandiri?.submittedAt)
 
-  useEffect(() => {
-    if (!beforePhoto?.file) return
-    const url = URL.createObjectURL(beforePhoto.file)
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- Synchronizing temporary DOM Blob URL with File object lifecycle
-    setBeforeUrl(url)
-    return () => URL.revokeObjectURL(url)
-  }, [beforePhoto?.file])
-
-  useEffect(() => {
-    if (!afterPhoto?.file) return
-    const url = URL.createObjectURL(afterPhoto.file)
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- Synchronizing temporary DOM Blob URL with File object lifecycle
-    setAfterUrl(url)
-    return () => URL.revokeObjectURL(url)
-  }, [afterPhoto?.file])
-
-  const activeBeforeUrl = beforePhoto?.file ? beforeUrl : null
-  const activeAfterUrl = afterPhoto?.file ? afterUrl : null
+  const activeBeforeUrl = useObjectURL(beforePhoto?.file)
+  const activeAfterUrl = useObjectURL(afterPhoto?.file)
   const hasBeforeError = Boolean(beforePhoto?.file && failedBefore === beforePhoto?.file)
   const hasAfterError = Boolean(afterPhoto?.file && failedAfter === afterPhoto?.file)
 
@@ -69,7 +33,7 @@ function MandiriTrackingSummary({ temukan, kenali, mandiri }) {
   const secondaryAddress = parts.slice(2, 4).join(', ')
 
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E5DC] shadow-xs p-5 sm:p-6 flex flex-col gap-4.5">
+    <div className="rounded-2xl bg-white border border-border-warm shadow-xs p-5 sm:p-6 flex flex-col gap-4.5">
       {/* Header */}
       <div className="flex items-center justify-between gap-3 border-b border-stone-100 pb-3">
         <div className="flex items-center gap-2">

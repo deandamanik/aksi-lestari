@@ -14,7 +14,7 @@ function MandiriReviewSummary({
   const location = temukan?.location
 
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E5DC] shadow-xs p-5 sm:p-6 flex flex-col gap-5.5">
+    <div className="rounded-2xl bg-white border border-border-warm shadow-xs p-5 sm:p-6 flex flex-col gap-5.5">
       {/* 1. Identification Summary */}
       <div className="flex flex-col gap-2">
         <div className="flex items-start justify-between gap-3">

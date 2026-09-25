@@ -91,7 +91,7 @@ function MapControlPanel({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Cari wilayah / jalan..."
-            className="w-full h-8.5 pl-9 pr-8 font-body text-xs sm:text-[13px] bg-[#F9F8F3] border border-border-warm rounded-xl text-primary placeholder:text-stone-400 focus:outline-hidden focus:border-primary focus:bg-white transition-all"
+            className="w-full h-8.5 pl-9 pr-8 font-body text-xs sm:text-[13px] bg-neutral border border-border-warm rounded-xl text-primary placeholder:text-stone-400 focus:outline-hidden focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all"
             aria-label="Cari wilayah atau jalan"
           />
           {hasSearch && (

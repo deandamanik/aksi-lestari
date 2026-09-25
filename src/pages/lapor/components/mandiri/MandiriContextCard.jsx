@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { getIdentificationData } from '../../../../data/lapor/identificationData'
 import {
   CameraIcon,
@@ -8,14 +8,8 @@ import {
   MapPinIcon,
   ShieldAlertIcon,
 } from '../../../../components/common/Icons'
-
-function formatFileSize(bytes) {
-  if (!bytes) return ''
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`
-}
+import { formatFileSize } from '../../../../utils/formatters'
+import { useObjectURL } from '../../../../hooks/useObjectURL'
 
 function MandiriContextCard({ temukan, kenali, guidance }) {
   const categoryKey = kenali?.category || 'plastik'
@@ -24,23 +18,9 @@ function MandiriContextCard({ temukan, kenali, guidance }) {
   const location = temukan?.location
   const safetyNote = guidance?.safetyNote
 
-  const [previewUrl, setPreviewUrl] = useState(null)
   const [failedFile, setFailedFile] = useState(null)
+  const activeUrl = useObjectURL(photo?.file)
   const hasError = Boolean(photo?.file && failedFile === photo?.file)
-
-  useEffect(() => {
-    if (!photo?.file) return
-
-    const url = URL.createObjectURL(photo.file)
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- Synchronizing temporary DOM Blob URL with File object lifecycle
-    setPreviewUrl(url)
-
-    return () => {
-      URL.revokeObjectURL(url)
-    }
-  }, [photo?.file])
-
-  const activeUrl = photo?.file ? previewUrl : null
 
   // Format brief address (first 2 segments)
   const locationText = location?.address
@@ -53,7 +33,7 @@ function MandiriContextCard({ temukan, kenali, guidance }) {
   const wasteMaterial = ident.materialLabel || 'PET / Polyethylene'
 
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E5DC] shadow-xs overflow-hidden">
+    <div className="rounded-2xl bg-white border border-border-warm shadow-xs overflow-hidden">
       {/* 1. Standard Lapor Photo Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-stone-100">
         <div className="flex items-center gap-2">

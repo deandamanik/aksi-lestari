@@ -8,7 +8,7 @@ import PhotoUploadCard from '../PhotoUploadCard'
 function EvidenceSummaryCard({ photo, size = 'default', className = '' }) {
   return (
     <PhotoUploadCard
-      file={photo}
+      value={photo instanceof File ? photo : photo?.file || null}
       statusText="Terekam"
       readOnly
       size={size}

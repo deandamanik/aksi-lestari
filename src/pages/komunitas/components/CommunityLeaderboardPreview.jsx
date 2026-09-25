@@ -7,10 +7,10 @@ export default function CommunityLeaderboardPreview() {
     LEADERBOARD_PREVIEW
 
   return (
-    <article className="bg-white rounded-2xl sm:rounded-3xl border border-border-warm p-5 sm:p-6 shadow-2xs hover:border-[#22603B]/30 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 motion-reduce:transform-none">
+    <article className="bg-white rounded-2xl sm:rounded-3xl border border-border-warm p-5 sm:p-6 shadow-2xs hover:border-primary/30 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 motion-reduce:transform-none">
       {/* Top Header */}
       <div className="flex items-center justify-between gap-2 mb-1.5">
-        <span className="text-[11px] font-bold uppercase tracking-widest text-[#22603B]/80 font-body">
+        <span className="text-[11px] font-bold uppercase tracking-widest text-primary/80 font-body">
           {eyebrow}
         </span>
         <AwardIcon className="w-4 h-4 text-stone-400" />
@@ -35,7 +35,7 @@ export default function CommunityLeaderboardPreview() {
               <div
                 className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
                   leader.rank === 1
-                    ? 'bg-stone-100 text-[#22603B] border border-border-warm'
+                    ? 'bg-stone-100 text-primary border border-border-warm'
                     : 'bg-stone-50 text-stone-500 border border-border-warm/60'
                 }`}
               >
@@ -69,16 +69,16 @@ export default function CommunityLeaderboardPreview() {
 
         {/* Current User Standing Row */}
         {currentUser && (
-          <div className="bg-[#FAF9F4] border border-border-warm rounded-xl p-2.5 sm:p-3 flex items-center justify-between gap-2 mt-3.5">
+          <div className="bg-neutral border border-border-warm rounded-xl p-2.5 sm:p-3 flex items-center justify-between gap-2 mt-3.5">
             <div className="flex items-center gap-2 min-w-0">
-              <span className="text-xs font-bold text-[#22603B] shrink-0">
+              <span className="text-xs font-bold text-primary shrink-0">
                 {currentUser.badgeText}
               </span>
               <span className="text-xs text-stone-600 font-medium truncate">
                 {currentUser.label}
               </span>
             </div>
-            <span className="text-xs font-semibold text-[#22603B] shrink-0">
+            <span className="text-xs font-semibold text-primary shrink-0">
               {currentUser.xp}
             </span>
           </div>
@@ -89,7 +89,7 @@ export default function CommunityLeaderboardPreview() {
       <div className="pt-3.5 mt-3 border-t border-border-warm/60">
         <Link
           to={allLink}
-          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#22603B] hover:text-[#17462A] transition-colors duration-180 group focus:outline-hidden focus-visible:underline"
+          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-primary hover:text-primary/80 transition-colors duration-180 group focus:outline-hidden focus-visible:underline"
         >
           <span>{allLinkLabel}</span>
           <ArrowRightIcon className="w-3.5 h-3.5 transition-transform duration-180 group-hover:translate-x-0.5 motion-reduce:transform-none" />

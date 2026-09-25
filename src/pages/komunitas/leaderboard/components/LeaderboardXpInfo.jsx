@@ -16,7 +16,7 @@ export default function LeaderboardXpInfo() {
         onClick={() => setIsOpen((prev) => !prev)}
         aria-expanded={isOpen}
         aria-controls="xp-info-content"
-        className="w-full p-5 sm:p-6 flex items-center justify-between gap-4 text-left cursor-pointer hover:bg-[#FAF9F4]/70 transition-colors duration-180 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]"
+        className="w-full p-5 sm:p-6 flex items-center justify-between gap-4 text-left cursor-pointer hover:bg-neutral/70 transition-colors duration-180 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
       >
         <div className="flex flex-col min-w-0">
           <h3 className="font-display font-bold text-primary text-base sm:text-lg leading-snug">
@@ -33,7 +33,7 @@ export default function LeaderboardXpInfo() {
           </span>
           <div
             className={`w-7 h-7 rounded-full bg-stone-100 flex items-center justify-center text-stone-500 transition-transform duration-200 motion-reduce:transition-none ${
-              isOpen ? 'rotate-180 bg-[#EAF3EC] text-[#22603B]' : ''
+              isOpen ? 'rotate-180 bg-primary/10 text-primary' : ''
             }`}
           >
             <ChevronDownIcon className="w-4 h-4" />
@@ -70,7 +70,7 @@ export default function LeaderboardXpInfo() {
                     </p>
                   </div>
                   <div className="shrink-0 sm:text-right">
-                    <span className="font-display font-bold text-xs sm:text-sm text-[#22603B]">
+                    <span className="font-display font-bold text-xs sm:text-sm text-primary">
                       {rule.reward}
                     </span>
                   </div>

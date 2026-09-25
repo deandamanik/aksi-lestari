@@ -97,7 +97,7 @@ function WasteBankSection() {
         </div>
 
         {/* Disclaimer Notice Box */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-[#FAF8F3] border border-border-warm flex items-start gap-3 text-xs sm:text-sm text-stone-600 leading-relaxed">
+        <div className="p-4 sm:p-5 rounded-2xl bg-neutral border border-border-warm flex items-start gap-3 text-xs sm:text-sm text-stone-600 leading-relaxed">
           <InfoIcon className="w-5 h-5 text-primary shrink-0 mt-0.5" />
           <p>
             <strong className="font-bold text-primary">{disclaimer.title} </strong>

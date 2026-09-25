@@ -47,7 +47,7 @@ function LaporStepper({ currentStep }) {
                       ? 'bg-primary text-white shadow-xs'
                       : isActive
                         ? 'bg-primary text-white ring-4 ring-primary/20 shadow-xs'
-                        : 'bg-[#F9F8F3] border border-[#D1CABC] text-stone-400 font-medium'
+                        : 'bg-neutral border border-border-warm text-stone-400 font-medium'
                   }`}
                 >
                   {isCompleted ? (
@@ -98,7 +98,7 @@ function LaporStepper({ currentStep }) {
               {!isLast && (
                 <div
                   className={`mt-[17px] h-px w-10 sm:w-14 shrink-0 transition-colors duration-300 ${
-                    s.step < currentStep ? 'bg-primary/50' : 'bg-[#D8D2C8]'
+                    s.step < currentStep ? 'bg-primary/50' : 'bg-border-warm'
                   }`}
                   aria-hidden="true"
                 />
@@ -132,7 +132,7 @@ function LaporStepper({ currentStep }) {
                       ? 'bg-primary text-white shadow-xs'
                       : isActive
                         ? 'bg-primary text-white ring-3 ring-primary/20 shadow-xs'
-                        : 'bg-[#F9F8F3] border border-[#D1CABC] text-stone-400 font-semibold'
+                        : 'bg-neutral border border-border-warm text-stone-400 font-semibold'
                   }`}
                 >
                   {isCompleted ? (
@@ -171,7 +171,7 @@ function LaporStepper({ currentStep }) {
               {!isLast && (
                 <div
                   className={`mt-3.5 h-px flex-1 min-w-[6px] max-w-[24px] shrink transition-colors duration-300 ${
-                    s.step < currentStep ? 'bg-primary/50' : 'bg-[#D8D2C8]'
+                    s.step < currentStep ? 'bg-primary/50' : 'bg-border-warm'
                   }`}
                   aria-hidden="true"
                 />

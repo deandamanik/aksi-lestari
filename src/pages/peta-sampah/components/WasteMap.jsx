@@ -325,7 +325,7 @@ function WasteMap({
 
   if (errorMessage) {
     return (
-      <div className="w-full h-full min-h-[500px] flex items-center justify-center bg-[#F9F8F3] p-6 text-center">
+      <div className="w-full h-full min-h-[500px] flex items-center justify-center bg-neutral p-6 text-center">
         <div className="max-w-md p-6 bg-white rounded-2xl border border-border-warm shadow-xs">
           <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-amber-50 text-accent flex items-center justify-center">
             <svg
@@ -348,7 +348,7 @@ function WasteMap({
           <p className="font-body text-stone-600 text-sm leading-relaxed mb-4">
             {errorMessage}
           </p>
-          <div className="text-xs text-stone-500 bg-[#F9F8F3] p-3 rounded-lg text-left font-mono">
+          <div className="text-xs text-stone-500 bg-neutral p-3 rounded-lg text-left font-mono">
             VITE_MAPTILER_KEY=your_key_here
           </div>
         </div>

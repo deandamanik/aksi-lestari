@@ -197,21 +197,6 @@ function ProblemStorySection() {
           ))}
         </div>
       </div>
-
-      {/* Reduced-Motion Support */}
-      <style>{`
-        @media (prefers-reduced-motion: reduce) {
-          .transition-all,
-          .transition-colors {
-            transition: none !important;
-            transform: none !important;
-          }
-          .translate-y-2 {
-            transform: none !important;
-            opacity: 1 !important;
-          }
-        }
-      `}</style>
     </section>
   )
 }

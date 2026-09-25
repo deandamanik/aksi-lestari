@@ -11,7 +11,7 @@ export default function AuthCardWrapper({
   children,
 }) {
   return (
-    <div className="relative min-h-screen w-full bg-[#FAF9F5] flex flex-col justify-center items-center p-4 sm:p-6 lg:p-10 overflow-x-hidden selection:bg-[#22603B] selection:text-white">
+    <div className="relative min-h-screen w-full bg-neutral flex flex-col justify-center items-center p-4 sm:p-6 lg:p-10 overflow-x-hidden selection:bg-primary selection:text-white">
       {/* Ambient background glows */}
       <div
         className="fixed -top-40 -left-40 w-96 h-96 bg-amber-200/30 rounded-full blur-3xl pointer-events-none"

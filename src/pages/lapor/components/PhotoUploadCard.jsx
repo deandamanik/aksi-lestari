@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import {
   CameraIcon,
   UploadIcon,
@@ -6,19 +6,12 @@ import {
   RefreshCwIcon,
   AlertCircleIcon,
 } from '../../../components/common/Icons'
+import { formatFileSize } from '../../../utils/formatters'
+import { useObjectURL } from '../../../hooks/useObjectURL'
 
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024 // 10 MB
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp']
-
-function formatFileSize(bytes) {
-  if (!bytes || bytes === 0) return '0 B'
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  const formatted = parseFloat((bytes / Math.pow(k, i)).toFixed(1))
-  return `${formatted} ${sizes[i]}`
-}
 
 const SIZE_CONFIGS = {
   compact: {
@@ -48,16 +41,12 @@ const SIZE_CONFIGS = {
  * - Empty state with drag-and-drop, camera trigger, and device file picker
  * - Proportional uncropped preview with status feedback, metadata, and replacement action
  * - Size variations (compact, default, large)
- * - Safe local object URL lifecycle management
+ * - Safe local object URL lifecycle management via useObjectURL hook
  */
 function PhotoUploadCard({
-  file,
-  selectedFile,
-  photo,
-  onFileSelect,
-  onFileChange,
+  value = null,
+  onChange,
   onReplace,
-  onChangePhoto,
   title = 'Ambil atau Unggah Foto',
   helperText = 'Pastikan kondisi sampah terlihat jelas dan dapat diidentifikasi.',
   statusText = 'Foto berhasil ditambahkan',
@@ -66,38 +55,19 @@ function PhotoUploadCard({
   readOnly = false,
   className = '',
 }) {
-  // Normalize file inputs (supports raw File, selectedFile prop, or reportData photo object)
-  const fileCandidate = file || selectedFile || photo
-  const activeFile = fileCandidate instanceof File ? fileCandidate : fileCandidate?.file || null
-  const directUrl = typeof fileCandidate === 'string' ? fileCandidate : fileCandidate?.url || null
-  const activeFileName = (fileCandidate instanceof File ? fileCandidate.name : fileCandidate?.fileName) || activeFile?.name || ''
-  const activeFileSize = (fileCandidate instanceof File ? fileCandidate.size : fileCandidate?.fileSize) || activeFile?.size || 0
-
-  const handleSelect = onFileSelect || onFileChange
-  const handleChangeAction = onReplace || onChangePhoto
+  const activeFile = value instanceof File ? value : null
+  const activeFileName = activeFile?.name || ''
+  const activeFileSize = activeFile?.size || 0
 
   const [isDragging, setIsDragging] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-  const [previewUrl, setPreviewUrl] = useState(null)
   const [failedFile, setFailedFile] = useState(null)
 
   const fileInputRef = useRef(null)
   const cameraInputRef = useRef(null)
 
-  useEffect(() => {
-    if (directUrl || !activeFile) return
-
-    const url = URL.createObjectURL(activeFile)
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- Synchronizing temporary DOM Blob URL with File object lifecycle
-    setPreviewUrl(url)
-
-    return () => {
-      URL.revokeObjectURL(url)
-    }
-  }, [activeFile, directUrl])
-
-  const activeUrl = directUrl || (activeFile ? previewUrl : null)
-  const hasError = Boolean((activeFile || directUrl) && failedFile === (activeFile || directUrl))
+  const activeUrl = useObjectURL(activeFile)
+  const hasError = Boolean(activeFile && failedFile === activeFile)
   const hasPhoto = Boolean(activeUrl && !hasError)
 
   const validateAndProcessFile = useCallback(
@@ -121,11 +91,11 @@ function PhotoUploadCard({
         return
       }
 
-      if (handleSelect) {
-        handleSelect(newFile)
+      if (onChange) {
+        onChange(newFile)
       }
     },
-    [handleSelect]
+    [onChange]
   )
 
   const handleFileInputChange = (e) => {
@@ -175,20 +145,20 @@ function PhotoUploadCard({
   }
 
   const handleTriggerUpload = () => {
-    if (handleChangeAction) {
-      handleChangeAction()
+    if (onReplace) {
+      onReplace()
     } else {
       fileInputRef.current?.click()
     }
   }
 
   const sizeStyles = SIZE_CONFIGS[size] || SIZE_CONFIGS.default
-  const canChange = Boolean(handleChangeAction || (!readOnly && handleSelect))
+  const canChange = Boolean(onReplace || (!readOnly && onChange))
 
   const borderClasses = isDragging
     ? 'border-2 border-dashed border-primary bg-primary/[0.02] shadow-[0_8px_30px_rgba(34,96,59,0.08)]'
     : borderStyle === 'solid'
-      ? 'border border-[#E8E5DC] shadow-xs'
+      ? 'border border-border-warm shadow-xs'
       : 'border-2 border-dashed border-stone-300 hover:border-primary/40 shadow-[0_4px_24px_rgba(0,0,0,0.02)]'
 
   return (
@@ -254,7 +224,7 @@ function PhotoUploadCard({
                 <button
                   type="button"
                   onClick={handleTriggerCamera}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-11 px-6 rounded-full bg-primary hover:bg-[#1A4B2E] text-white font-semibold text-sm transition-colors shadow-xs active:scale-[0.98] cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 select-none"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-11 px-6 rounded-full bg-primary hover:bg-primary/90 text-white font-semibold text-sm transition-colors shadow-xs active:scale-[0.98] cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 select-none"
                   aria-label="Ambil Foto"
                 >
                   <CameraIcon className="w-4.5 h-4.5" strokeWidth={2} />
@@ -304,7 +274,7 @@ function PhotoUploadCard({
               <img
                 src={activeUrl}
                 alt="Pratinjau foto"
-                onError={() => setFailedFile(activeFile || directUrl)}
+                onError={() => setFailedFile(activeFile)}
                 className="max-h-full max-w-full w-auto h-auto object-contain rounded-xl select-none"
               />
             </div>

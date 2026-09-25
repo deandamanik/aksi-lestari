@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { CameraIcon, CheckIcon } from '../../../components/common/Icons'
+import Button from '../../../components/common/Button'
 
 function PengaturanInformasiAkun({ profile, onSaveProfile }) {
   const [formData, setFormData] = useState({
@@ -230,24 +231,15 @@ function PengaturanInformasiAkun({ profile, onSaveProfile }) {
             )}
           </div>
 
-          <button
+          <Button
             type="submit"
-            disabled={!isDirty || isSaving}
-            className={`inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
-              isDirty && !isSaving
-                ? 'bg-primary hover:bg-primary/90 text-white cursor-pointer shadow-xs active:scale-[0.98]'
-                : 'bg-stone-200 text-stone-400 cursor-not-allowed'
-            }`}
+            variant="primary"
+            size="md"
+            disabled={!isDirty}
+            isLoading={isSaving}
           >
-            {isSaving ? (
-              <>
-                <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                <span>Menyimpan...</span>
-              </>
-            ) : (
-              <span>Simpan Perubahan</span>
-            )}
-          </button>
+            Simpan Perubahan
+          </Button>
         </div>
       </form>
     </section>

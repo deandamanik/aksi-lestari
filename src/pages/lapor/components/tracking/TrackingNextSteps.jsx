@@ -2,7 +2,7 @@ import { HelpCircleIcon, SparklesIcon } from '../../../../components/common/Icon
 
 function TrackingNextSteps() {
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E5DC] shadow-xs p-5 sm:p-6 flex flex-col gap-3">
+    <div className="rounded-2xl bg-white border border-border-warm shadow-xs p-5 sm:p-6 flex flex-col gap-3">
       <div className="flex items-center gap-2">
         <HelpCircleIcon className="w-4 h-4 text-primary shrink-0" strokeWidth={2} />
         <h3 className="font-bold text-sm text-stone-900">

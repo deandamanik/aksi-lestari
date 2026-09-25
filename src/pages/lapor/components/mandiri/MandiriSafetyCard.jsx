@@ -2,7 +2,7 @@ import { ShieldAlertIcon, CheckIcon } from '../../../../components/common/Icons'
 
 function MandiriSafetyCard({ isConfirmed, onToggle }) {
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E5DC] shadow-xs px-5 py-4 sm:px-6 sm:py-4.5 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+    <div className="rounded-2xl bg-white border border-border-warm shadow-xs px-5 py-4 sm:px-6 sm:py-4.5 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
       {/* Left Area: Explanatory Content */}
       <div className="flex flex-col gap-1 min-w-0 max-w-xl">
         <div className="flex items-center gap-2">

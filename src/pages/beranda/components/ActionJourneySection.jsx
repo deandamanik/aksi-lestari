@@ -299,19 +299,6 @@ function ActionJourneySection() {
           })}
         </div>
       </div>
-
-      {/* Reduced-Motion Support */}
-      <style>{`
-        @media (prefers-reduced-motion: reduce) {
-          .transition-all,
-          .transition-colors {
-            transition: none !important;
-          }
-          .scale-105 {
-            transform: none !important;
-          }
-        }
-      `}</style>
     </section>
   )
 }

@@ -1,22 +1,5 @@
 import { SALDO_APRESIASI } from '../../../data/profil/saldoRedeemData'
-
-/**
- * SaldoBalanceCard — Primary Balance Focal Point
- *
- * Dominant balance number, status dot, description, 3 stat blocks.
- * Typography-driven — no gradient, no glow, no colored background.
- *
- * Props (reactive from ProfilSaldoPage):
- * - balance: current available balance (number)
- * - totalRedeemed: total amount redeemed so far (number)
- *
- * Static from data module:
- * - totalEarned, recentAddition (don't change during a redeem session)
- */
-
-function formatRupiah(n) {
-  return 'Rp' + n.toLocaleString('id-ID')
-}
+import { formatRupiah } from '../../../utils/formatters'
 
 function SaldoBalanceCard({ balance, totalRedeemed }) {
   const {

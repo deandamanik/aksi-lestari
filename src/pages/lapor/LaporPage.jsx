@@ -73,105 +73,6 @@ function LaporPage() {
       }}
       aria-label="Lapor Sampah - Unggah Foto Temuan"
     >
-      {/* Component-scoped Ambient Floating and Entrance Keyframes */}
-      <style>{`
-        @keyframes lapor-enter {
-          0% { opacity: 0; transform: translateY(12px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-
-        .lapor-enter-header {
-          opacity: 0;
-          animation: lapor-enter 520ms cubic-bezier(0.16, 1, 0.3, 1) 0ms forwards;
-          will-change: opacity, transform;
-        }
-
-        .lapor-enter-card {
-          opacity: 0;
-          animation: lapor-enter 520ms cubic-bezier(0.16, 1, 0.3, 1) 50ms forwards;
-          will-change: opacity, transform;
-        }
-
-        .lapor-enter-actions {
-          opacity: 0;
-          animation: lapor-enter 520ms cubic-bezier(0.16, 1, 0.3, 1) 100ms forwards;
-          will-change: opacity, transform;
-        }
-
-        @keyframes lapor-preview-reveal {
-          0% { opacity: 0; transform: scale(0.98); }
-          100% { opacity: 1; transform: scale(1); }
-        }
-
-        .lapor-preview-enter {
-          animation: lapor-preview-reveal 280ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
-          will-change: opacity, transform;
-        }
-
-        @keyframes lapor-float-sun {
-          0%, 100% { transform: translate3d(0, 0, 0) rotate(-1deg); }
-          50% { transform: translate3d(2px, -8px, 0) rotate(1deg); }
-        }
-        @keyframes lapor-float-recycle {
-          0%, 100% { transform: translate3d(0, 0, 0) rotate(1deg); }
-          50% { transform: translate3d(-2px, -9px, 0) rotate(-1.5deg); }
-        }
-        @keyframes lapor-float-bin {
-          0%, 100% { transform: translate3d(0, 0, 0) rotate(-0.3deg); }
-          50% { transform: translate3d(0, -6px, 0) rotate(0.4deg); }
-        }
-        @keyframes lapor-float-earth {
-          0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-          50% { transform: translate3d(1.5px, -8px, 0) scale(1.01); }
-        }
-        @keyframes lapor-float-monstera {
-          0%, 100% { transform: translate3d(0, 0, 0) rotate(1.2deg); }
-          50% { transform: translate3d(-2px, -8px, 0) rotate(-1.5deg); }
-        }
-        @keyframes lapor-float-sprout-left {
-          0%, 100% { transform: translate3d(0, 0, 0) rotate(-1deg); }
-          50% { transform: translate3d(1.5px, -7px, 0) rotate(1.2deg); }
-        }
-        @keyframes lapor-float-sprout-right {
-          0%, 100% { transform: translate3d(0, 0, 0) rotate(1deg); }
-          50% { transform: translate3d(-1.5px, -7px, 0) rotate(-1deg); }
-        }
-        @keyframes lapor-float-leaf-a {
-          0%, 100% { transform: translate3d(0, 0, 0) rotate(-2deg); }
-          50% { transform: translate3d(2px, -6px, 0) rotate(2deg); }
-        }
-        @keyframes lapor-float-leaf-b {
-          0%, 100% { transform: translate3d(0, 0, 0) rotate(2deg); }
-          50% { transform: translate3d(-2px, -7px, 0) rotate(-2deg); }
-        }
-
-        .lapor-ambient-sun { animation: lapor-float-sun 6.4s ease-in-out infinite; will-change: transform; }
-        .lapor-ambient-recycle { animation: lapor-float-recycle 6.0s ease-in-out infinite; will-change: transform; }
-        .lapor-ambient-bin { animation: lapor-float-bin 5.8s ease-in-out infinite; will-change: transform; }
-        .lapor-ambient-earth { animation: lapor-float-earth 6.8s ease-in-out infinite; will-change: transform; }
-        .lapor-ambient-monstera { animation: lapor-float-monstera 5.6s ease-in-out infinite; will-change: transform; }
-        .lapor-ambient-sprout-left { animation: lapor-float-sprout-left 5.2s ease-in-out infinite; will-change: transform; }
-        .lapor-ambient-sprout-right { animation: lapor-float-sprout-right 5.4s ease-in-out infinite; will-change: transform; }
-        .lapor-ambient-leaf-a { animation: lapor-float-leaf-a 4.8s ease-in-out infinite; will-change: transform; }
-        .lapor-ambient-leaf-b { animation: lapor-float-leaf-b 5.0s ease-in-out infinite; will-change: transform; }
-
-        @media (prefers-reduced-motion: reduce) {
-          .lapor-enter-header,
-          .lapor-enter-card,
-          .lapor-enter-actions,
-          .lapor-preview-enter {
-            animation: none !important;
-            opacity: 1 !important;
-            transform: none !important;
-          }
-          .lapor-ambient-sun, .lapor-ambient-recycle, .lapor-ambient-bin,
-          .lapor-ambient-earth, .lapor-ambient-monstera, .lapor-ambient-sprout-left,
-          .lapor-ambient-sprout-right, .lapor-ambient-leaf-a, .lapor-ambient-leaf-b {
-            animation: none !important;
-          }
-        }
-      `}</style>
-
       {/* Decorative 3D Assets — Desktop */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block" aria-hidden="true">
         {LAPOR_DESKTOP_OBJECTS.map((obj, index) => (
@@ -215,8 +116,8 @@ function LaporPage() {
         {/* Upload Card */}
         <div className="w-full max-w-2xl mx-auto lapor-enter-card">
           <PhotoUploadCard
-            selectedFile={photoFile}
-            onFileSelect={handleFileSelect}
+            value={photoFile}
+            onChange={handleFileSelect}
             size="default"
           />
         </div>
@@ -241,7 +142,7 @@ function LaporPage() {
               onClick={handleContinue}
               className={`inline-flex items-center justify-center gap-2 h-12 sm:h-13 px-8 sm:px-10 rounded-full font-bold text-sm sm:text-base transition-colors select-none ${
                 photoFile
-                  ? 'bg-primary hover:bg-[#1A4B2E] text-white cursor-pointer shadow-md hover:shadow-lg active:scale-[0.99] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
+                  ? 'bg-primary hover:bg-primary/90 text-white cursor-pointer shadow-md hover:shadow-lg active:scale-[0.99] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
                   : 'bg-[#C6CFC9] text-white/95 cursor-not-allowed shadow-none'
               }`}
               aria-label="Lanjutkan ke Temuan"

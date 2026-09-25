@@ -18,7 +18,7 @@ function ActionChoiceCard({ option, isSelected, onSelect }) {
       className={`rounded-2xl p-5 sm:p-5.5 transition-all duration-150 cursor-pointer flex flex-col gap-3.5 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 select-none ${
         isSelected
           ? 'border-2 border-primary bg-primary/[0.025] shadow-xs'
-          : 'border border-[#E8E5DC] bg-white hover:border-primary/40 hover:bg-stone-50/50 shadow-2xs'
+          : 'border border-border-warm bg-white hover:border-primary/40 hover:bg-stone-50/50 shadow-2xs'
       }`}
     >
       <div className="flex items-center justify-between gap-3">

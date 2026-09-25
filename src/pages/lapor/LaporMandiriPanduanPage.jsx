@@ -24,8 +24,7 @@ function LaporMandiriPanduanPage() {
 
   return (
     <main
-      className="min-h-[100svh] bg-[#F9F8F3] pt-24 sm:pt-28 pb-14 sm:pb-18"
-      style={{ backgroundColor: '#F9F8F3' }}
+      className="min-h-[100svh] bg-neutral pt-24 sm:pt-28 pb-14 sm:pb-18"
       aria-label="Lapor Sampah — Panduan Penanganan Mandiri"
     >
       <div className="max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-6 sm:gap-7">

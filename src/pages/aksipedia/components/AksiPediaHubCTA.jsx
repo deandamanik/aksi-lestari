@@ -34,7 +34,7 @@ function AksiPediaHubCTA({ onStartScan }) {
               <button
                 type="button"
                 onClick={onStartScan}
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-[#FAF8F3] text-primary text-sm sm:text-base font-bold hover:bg-white active:scale-[0.98] transition-all duration-200 shadow-xs cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-white"
+                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-neutral text-primary text-sm sm:text-base font-bold hover:bg-white active:scale-[0.98] transition-all duration-200 shadow-xs cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-white"
               >
                 <CameraIcon className="w-4 h-4 text-primary" />
                 <span>{primaryCta}</span>

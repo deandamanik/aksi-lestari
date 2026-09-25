@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import AuthCardWrapper from './components/AuthCardWrapper'
 import AuthInputField from './components/AuthInputField'
-import { ArrowRightIcon, AlertCircleIcon } from './components/AuthIcons'
+import { ArrowRightIcon, AlertCircleIcon } from '../../components/common/Icons'
 import logoAksiLestari from '../../assets/logo-aksilestari.svg'
 
 /**
@@ -57,7 +57,7 @@ export default function RegisterPage() {
           alt="Logo AksiLestari"
           className="w-7 h-7 sm:w-8 sm:h-8 object-contain"
         />
-        <span className="font-display font-bold text-xl sm:text-2xl text-[#22603B] tracking-tight">
+        <span className="font-display font-bold text-xl sm:text-2xl text-primary tracking-tight">
           AksiLestari
         </span>
       </div>
@@ -137,7 +137,7 @@ export default function RegisterPage() {
         {/* Submit Button */}
         <button
           type="submit"
-          className="mt-2 w-full py-3 sm:py-3.5 px-6 rounded-xl sm:rounded-2xl font-semibold text-sm sm:text-base text-white bg-[#22603B] hover:bg-[#1B4D2F] active:scale-[0.99] transition-all duration-200 shadow-md hover:shadow-lg shadow-[#22603B]/20 flex items-center justify-center gap-2 cursor-pointer"
+          className="mt-2 w-full py-3 sm:py-3.5 px-6 rounded-xl sm:rounded-2xl font-semibold text-sm sm:text-base text-white bg-primary hover:bg-primary/90 active:scale-[0.99] transition-all duration-200 shadow-md hover:shadow-lg shadow-primary/20 flex items-center justify-center gap-2 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
           <span>Buat Akun</span>
           <ArrowRightIcon className="w-4 h-4" />
@@ -149,7 +149,7 @@ export default function RegisterPage() {
         Sudah punya akun?{' '}
         <Link
           to="/login"
-          className="font-bold text-[#22603B] hover:text-[#18462B] hover:underline transition-colors ml-0.5"
+          className="font-bold text-primary hover:text-primary/80 hover:underline transition-colors ml-0.5"
         >
           Masuk
         </Link>
