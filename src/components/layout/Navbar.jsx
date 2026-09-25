@@ -1,6 +1,6 @@
 import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { NavLink, Link, useLocation } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../hooks/useAuth'
 import logoAksiLestari from '../../assets/logo-aksilestari.svg'
 
 const NAV_ITEMS = [
