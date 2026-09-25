@@ -187,7 +187,7 @@ function Navbar() {
                 <>
                   <Link
                     to="/login"
-                    className="inline-flex items-center justify-center h-9 px-5 rounded-full text-sm font-semibold border-2 border-primary text-primary hover:bg-primary/5 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+                    className="inline-flex items-center justify-center h-9 px-5 rounded-full text-sm font-semibold border border-primary text-primary hover:bg-primary/5 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
                   >
                     Login
                   </Link>
@@ -272,7 +272,7 @@ function Navbar() {
                   <Link
                     to="/login"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex-1 flex items-center justify-center h-10 rounded-full text-sm font-semibold border-2 border-primary text-primary hover:bg-primary/5 transition-colors"
+                    className="flex-1 flex items-center justify-center h-10 rounded-full text-sm font-semibold border border-primary text-primary hover:bg-primary/5 transition-colors"
                   >
                     Login
                   </Link>

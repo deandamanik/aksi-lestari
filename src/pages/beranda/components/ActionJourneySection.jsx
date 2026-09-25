@@ -12,10 +12,10 @@ function ActionJourneySection() {
   return (
     <section
       id="langkah-partisipasi"
-      className="relative w-full bg-[#FAF8F3] text-primary pt-16 sm:pt-20 lg:pt-0 pb-16 sm:pb-20 lg:pb-0 border-t border-border-warm/50 overflow-visible"
+      className="relative w-full bg-[#FAF8F3] text-primary pt-10 sm:pt-20 lg:pt-0 pb-16 sm:pb-20 lg:pb-0 border-t border-border-warm/50 overflow-visible"
       aria-labelledby="action-journey-heading"
     >
-      <div className="block lg:hidden max-w-[1180px] mx-auto px-4 sm:px-6 pt-16 sm:pt-20 mb-10 text-center">
+      <div className="block lg:hidden max-w-[1180px] mx-auto px-4 sm:px-6 pt-0 sm:pt-20 mb-10 text-center">
         <span className="inline-block text-xs uppercase tracking-widest font-body font-bold text-secondary mb-2.5">
           LANGKAH PARTISIPASI
         </span>

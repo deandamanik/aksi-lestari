@@ -13,8 +13,8 @@ import { getValidatedContributionsCount } from './contributionHistoryData'
 export const USER_PROFILE = {
   id: 'usr-001',
   name: 'Invention 2026',
-  username: 'deann.lestari',
-  email: 'deann@aksilestari.id',
+  username: 'Invention 2026',
+  email: 'invention2026@aksilestari.id',
   phone: '0812-3456-7890',
   location: 'Bandung, Jawa Barat',
   city: 'Kota Bandung',

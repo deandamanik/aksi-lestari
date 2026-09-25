@@ -77,16 +77,16 @@ function HeroSection() {
           {/* Primary: Laporkan Sampah */}
           <Link
             to="/lapor"
-            className="inline-flex items-center justify-center gap-2 h-11 w-[88%] max-w-[320px] sm:w-auto sm:max-w-none px-6 sm:px-7 rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary shadow-xs"
+            className="inline-flex items-center justify-center gap-2.5 h-12 w-full sm:w-auto px-6 sm:px-7 rounded-full bg-primary text-white text-sm sm:text-base font-semibold hover:bg-primary/90 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary shadow-xs"
           >
-            <CameraIcon className="w-4 h-4 shrink-0 text-white" strokeWidth={2} />
+            <CameraIcon className="w-5 h-5 shrink-0 text-white" strokeWidth={2} />
             <span>Laporkan Sampah</span>
           </Link>
 
           {/* Secondary: Jelajahi Peta */}
           <Link
             to="/peta-sampah"
-            className="inline-flex items-center justify-center h-11 w-[88%] max-w-[320px] sm:w-auto sm:max-w-none px-6 sm:px-7 rounded-full bg-white/70 text-primary text-sm font-semibold border border-primary hover:bg-primary/5 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+            className="inline-flex items-center justify-center h-12 w-full sm:w-auto px-6 sm:px-7 rounded-full bg-white/70 text-primary text-sm sm:text-base font-semibold border border-primary hover:bg-primary/5 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
           >
             Jelajahi Peta
           </Link>
