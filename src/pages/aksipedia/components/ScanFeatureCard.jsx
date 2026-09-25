@@ -4,7 +4,7 @@ import { SCAN_FEATURE_INFO } from '../../../data/aksipedia/aksipediaHubData'
 function ScanFeatureCard({ onStartScan }) {
   return (
     <section className="w-full pb-14 sm:pb-16 lg:pb-20">
-      <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-2xl border border-border-warm p-6 sm:p-8 lg:p-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left: Waste Picture */}

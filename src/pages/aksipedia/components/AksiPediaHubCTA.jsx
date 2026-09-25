@@ -7,7 +7,7 @@ function AksiPediaHubCTA({ onStartScan }) {
 
   return (
     <section className="w-full pb-16 sm:pb-20 lg:pb-24">
-      <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-primary rounded-3xl sm:rounded-[36px] p-8 sm:p-12 lg:p-14 text-white shadow-md relative overflow-hidden">
           {/* Subtle decorative background glow */}
           <div

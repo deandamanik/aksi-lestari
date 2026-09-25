@@ -7,7 +7,7 @@ function LearningProgressCard() {
 
   return (
     <section className="w-full pb-14 sm:pb-16 lg:pb-20">
-      <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-2xl border border-border-warm p-5 sm:p-6 lg:p-7">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             {/* Left: Info & Title */}
