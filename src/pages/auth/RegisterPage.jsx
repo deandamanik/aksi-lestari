@@ -1,16 +1,15 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../hooks/useAuth'
 import AuthCardWrapper from './components/AuthCardWrapper'
 import AuthInputField from './components/AuthInputField'
-import { ArrowRightIcon, AlertCircleIcon, CheckCircleIcon } from './components/AuthIcons'
+import { ArrowRightIcon, AlertCircleIcon } from './components/AuthIcons'
 import logoAksiLestari from '../../assets/logo-aksilestari.svg'
 
 /**
  * RegisterPage
- * Halaman pendaftaran akun baru AksiLestari.
- * Memiliki field Nama lengkap, Email, Password, Konfirmasi password,
- * serta animasi panel visual khas AksiLestari di sebelah kiri.
+ * Halaman pendaftaran akun AksiLestari yang mengarahkan
+ * langsung ke akun demo tunggal Invention 2026.
  */
 export default function RegisterPage() {
   const navigate = useNavigate()
@@ -24,9 +23,7 @@ export default function RegisterPage() {
   })
 
   const [errors, setErrors] = useState({})
-  const [submitting, setSubmitting] = useState(false)
   const [generalError, setGeneralError] = useState('')
-  const [successMsg, setSuccessMsg] = useState('')
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -39,55 +36,15 @@ export default function RegisterPage() {
     }
   }
 
-  const validate = () => {
-    const newErrors = {}
-
-    if (!formData.name.trim()) {
-      newErrors.name = 'Nama lengkap wajib diisi'
-    } else if (formData.name.trim().length < 2) {
-      newErrors.name = 'Nama minimal 2 karakter'
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email wajib diisi'
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
-      newErrors.email = 'Format email tidak valid'
-    }
-
-    if (!formData.password) {
-      newErrors.password = 'Password wajib diisi'
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password minimal 8 karakter'
-    }
-
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Konfirmasi password wajib diisi'
-    } else if (formData.confirmPassword !== formData.password) {
-      newErrors.confirmPassword = 'Password tidak cocok'
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
     setGeneralError('')
 
-    if (!validate()) return
-
     try {
-      setSubmitting(true)
-      await register(formData.name, formData.email, formData.password)
-      setSuccessMsg('Pendaftaran berhasil! Mengarahkan...')
-
-      setTimeout(() => {
-        navigate('/', { replace: true })
-      }, 1000)
+      register(formData.name, formData.email, formData.password)
+      navigate('/', { replace: true })
     } catch (err) {
-      setGeneralError(err.message || 'Gagal mendaftar. Silakan coba lagi.')
-    } finally {
-      setSubmitting(false)
+      setGeneralError(err.message || 'Gagal menyiapkan akses. Silakan coba lagi.')
     }
   }
 
@@ -123,15 +80,6 @@ export default function RegisterPage() {
         </div>
       )}
 
-      {successMsg && (
-        <div className="mb-4 p-3.5 rounded-xl sm:rounded-2xl bg-[#22603B] text-white shadow-lg shadow-[#22603B]/20 text-xs sm:text-sm flex items-center gap-3 animate-check-scale">
-          <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-            <CheckCircleIcon className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-semibold tracking-wide">{successMsg}</span>
-        </div>
-      )}
-
       {/* Registration Form */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-3.5 sm:gap-4" noValidate>
         {/* Full Name */}
@@ -145,7 +93,6 @@ export default function RegisterPage() {
           onChange={handleChange}
           error={errors.name}
           autoComplete="name"
-          disabled={submitting}
         />
 
         {/* Email */}
@@ -159,7 +106,6 @@ export default function RegisterPage() {
           onChange={handleChange}
           error={errors.email}
           autoComplete="email"
-          disabled={submitting}
         />
 
         {/* Password */}
@@ -173,7 +119,6 @@ export default function RegisterPage() {
           onChange={handleChange}
           error={errors.password}
           autoComplete="new-password"
-          disabled={submitting}
         />
 
         {/* Confirm Password */}
@@ -187,45 +132,15 @@ export default function RegisterPage() {
           onChange={handleChange}
           error={errors.confirmPassword}
           autoComplete="new-password"
-          disabled={submitting}
         />
 
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={submitting}
-          className="mt-2 w-full py-3 sm:py-3.5 px-6 rounded-xl sm:rounded-2xl font-semibold text-sm sm:text-base text-white bg-[#22603B] hover:bg-[#1B4D2F] active:scale-[0.99] transition-all duration-200 shadow-md hover:shadow-lg shadow-[#22603B]/20 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+          className="mt-2 w-full py-3 sm:py-3.5 px-6 rounded-xl sm:rounded-2xl font-semibold text-sm sm:text-base text-white bg-[#22603B] hover:bg-[#1B4D2F] active:scale-[0.99] transition-all duration-200 shadow-md hover:shadow-lg shadow-[#22603B]/20 flex items-center justify-center gap-2 cursor-pointer"
         >
-          {submitting ? (
-            <>
-              <svg
-                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                />
-              </svg>
-              <span>Membuat akun...</span>
-            </>
-          ) : (
-            <>
-              <span>Buat Akun</span>
-              <ArrowRightIcon className="w-4 h-4" />
-            </>
-          )}
+          <span>Buat Akun</span>
+          <ArrowRightIcon className="w-4 h-4" />
         </button>
       </form>
 

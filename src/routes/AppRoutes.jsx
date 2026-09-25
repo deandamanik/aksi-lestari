@@ -27,6 +27,7 @@ import ProfilPengaturanPage from '../pages/profil/ProfilPengaturanPage'
 import ProfileWorkspaceLayout from '../pages/profil/ProfileWorkspaceLayout'
 import LoginPage from '../pages/auth/LoginPage'
 import RegisterPage from '../pages/auth/RegisterPage'
+import AuthGate from '../components/common/AuthGate'
 import ScrollToTop from '../components/common/ScrollToTop'
 
 function AppRoutes() {
@@ -40,18 +41,27 @@ function AppRoutes() {
           <Route path="/peta-sampah" element={<PetaSampahPage />} />
           <Route path="/aksipedia" element={<AksiPediaPage />} />
           <Route path="/aksipedia/modul" element={<ModuleListPage />} />
-          <Route path="/aksipedia/modul/:moduleId" element={<ModuleDetailPage />} />
+          <Route
+            path="/aksipedia/modul/:moduleId"
+            element={
+              <AuthGate intent={{ type: 'open-module' }}>
+                <ModuleDetailPage />
+              </AuthGate>
+            }
+          />
           <Route path="/aksipedia/modul/:moduleId/quiz" element={<ModuleQuizPage />} />
           <Route path="/komunitas" element={<KomunitasPage />} />
           <Route path="/komunitas/leaderboard" element={<CommunityLeaderboardPage />} />
 
-          {/* Profil Workspace routes */}
-          <Route element={<ProfileWorkspaceLayout />}>
-            <Route path="/profil" element={<ProfilPage />} />
-            <Route path="/profil/misi" element={<ProfilMisiPage />} />
-            <Route path="/profil/saldo" element={<ProfilSaldoPage />} />
-            <Route path="/profil/riwayat" element={<ProfilRiwayatPage />} />
-            <Route path="/profil/pengaturan" element={<ProfilPengaturanPage />} />
+          {/* Profil Workspace routes — Protected by AuthGate */}
+          <Route element={<AuthGate />}>
+            <Route element={<ProfileWorkspaceLayout />}>
+              <Route path="/profil" element={<ProfilPage />} />
+              <Route path="/profil/misi" element={<ProfilMisiPage />} />
+              <Route path="/profil/saldo" element={<ProfilSaldoPage />} />
+              <Route path="/profil/riwayat" element={<ProfilRiwayatPage />} />
+              <Route path="/profil/pengaturan" element={<ProfilPengaturanPage />} />
+            </Route>
           </Route>
 
           {/* Lapor flow — LaporLayout scopes LaporContext to these routes only.

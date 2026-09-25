@@ -101,10 +101,12 @@ function deepMerge(base, override) {
 // Context
 // ---------------------------------------------------------------------------
 
+let activeReportData = INITIAL_REPORT
+
 const LaporContext = createContext(null)
 
 export function LaporProvider({ children }) {
-  const [reportData, setReportData] = useState(INITIAL_REPORT)
+  const [reportData, setReportData] = useState(() => activeReportData)
 
   /**
    * updateReport(partial)
@@ -117,7 +119,11 @@ export function LaporProvider({ children }) {
    *   updateReport({ temukan: { photo: { file: f, fileName: f.name, ... } } })
    */
   const updateReport = useCallback((partial) => {
-    setReportData((prev) => deepMerge(prev, partial))
+    setReportData((prev) => {
+      const next = deepMerge(prev, partial)
+      activeReportData = next
+      return next
+    })
   }, [])
 
   /**
@@ -127,6 +133,7 @@ export function LaporProvider({ children }) {
    * Called when the user navigates away from the Lapor flow entirely.
    */
   const resetReport = useCallback(() => {
+    activeReportData = INITIAL_REPORT
     setReportData(INITIAL_REPORT)
   }, [])
 

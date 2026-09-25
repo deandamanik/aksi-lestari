@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import ProtectedModuleLink from './ProtectedModuleLink'
 import { BookOpenIcon, ArrowRightIcon } from '../../../components/common/Icons'
 import { CONTINUE_LEARNING_DATA } from '../../../data/aksipedia/modulesData'
 
@@ -44,13 +44,13 @@ function ModuleContinueCard() {
             </div>
           </div>
 
-          <Link
+          <ProtectedModuleLink
             to={link}
             className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full bg-primary text-white text-xs sm:text-sm font-semibold hover:bg-primary/90 transition-all self-start sm:self-auto group"
           >
             <span>Lanjutkan</span>
             <ArrowRightIcon className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
-          </Link>
+          </ProtectedModuleLink>
         </div>
       </div>
     </div>

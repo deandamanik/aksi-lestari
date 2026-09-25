@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import ProtectedModuleLink from './ProtectedModuleLink'
 import {
   ClockIcon,
   BookOpenIcon,
@@ -72,13 +73,13 @@ function LearningModulesSection() {
                 <span>{featuredModule.interactiveFeature}</span>
               </div>
 
-              <Link
+              <ProtectedModuleLink
                 to="/aksipedia/modul/memahami-jenis-sampah"
                 className="inline-flex items-center justify-center gap-2 px-5 py-2 rounded-full border border-primary text-primary hover:bg-primary hover:text-white text-xs sm:text-sm font-semibold transition-all duration-200"
               >
                 <BookOpenIcon className="w-4 h-4" />
                 <span>{featuredModule.ctaLabel}</span>
-              </Link>
+              </ProtectedModuleLink>
             </div>
           </div>
 
@@ -110,13 +111,13 @@ function LearningModulesSection() {
                   </p>
                 </div>
 
-                <Link
+                <ProtectedModuleLink
                   to="/aksipedia/modul/memahami-jenis-sampah"
                   className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-primary hover:text-secondary transition-colors self-start group"
                 >
                   <span>{item.ctaLabel}</span>
                   <ChevronRightIcon className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
-                </Link>
+                </ProtectedModuleLink>
               </div>
             ))}
           </div>

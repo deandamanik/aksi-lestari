@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import ProtectedModuleLink from './ProtectedModuleLink'
 import { ArrowRightIcon, CheckCircle2Icon } from '../../../components/common/Icons'
 
 function ModuleGridCard({ module }) {
@@ -46,13 +46,13 @@ function ModuleGridCard({ module }) {
 
       {/* Bottom CTA Action */}
       <div className="pt-4 border-t border-border-warm/60 flex items-center justify-end">
-        <Link
+        <ProtectedModuleLink
           to={link}
           className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-primary hover:text-secondary transition-colors group"
         >
           <span>{ctaText}</span>
           <ArrowRightIcon className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
-        </Link>
+        </ProtectedModuleLink>
       </div>
     </div>
   )

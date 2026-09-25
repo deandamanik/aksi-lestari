@@ -1,5 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { useLocation } from 'react-router-dom'
+import { useAuth } from '../../../hooks/useAuth'
+import AuthPromptModal from '../../../components/common/AuthPromptModal'
 import {
   XIcon,
   CalendarIcon,
@@ -16,6 +19,9 @@ export default function ActionDetailModal({
   isJoined,
   onJoin,
 }) {
+  const { isAuthenticated } = useAuth()
+  const location = useLocation()
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false)
   useEffect(() => {
     function handleKeyDown(e) {
       if (e.key === 'Escape') {
@@ -247,6 +253,10 @@ export default function ActionDetailModal({
             type="button"
             onClick={() => {
               if (!isJoined && !isFull) {
+                if (!isAuthenticated) {
+                  setShowAuthPrompt(true)
+                  return
+                }
                 onJoin(action)
               }
             }}
@@ -277,6 +287,15 @@ export default function ActionDetailModal({
           </button>
         </div>
       </div>
+
+      <AuthPromptModal
+        isOpen={showAuthPrompt}
+        onClose={() => setShowAuthPrompt(false)}
+        title="Masuk untuk melanjutkan"
+        description="Masuk untuk bergabung dalam aksi ini dan mencatat keikutsertaanmu."
+        returnTo={{ pathname: location.pathname, search: location.search, hash: location.hash }}
+        intent={{ type: 'join-action', actionId: action.id }}
+      />
     </div>,
     document.body
   )

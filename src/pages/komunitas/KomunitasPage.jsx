@@ -1,5 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { useLocation } from 'react-router-dom'
+import { useAuth } from '../../hooks/useAuth'
 import CommunityHero from './components/CommunityHero'
 import CommunityFilterBar from './components/CommunityFilterBar'
 import CommunityFeaturedCard from './components/CommunityFeaturedCard'
@@ -9,6 +11,7 @@ import CommunityLeaderboardPreview from './components/CommunityLeaderboardPrevie
 import CommunityProposalBanner from './components/CommunityProposalBanner'
 import ActionDetailModal from './components/ActionDetailModal'
 import ProposeActionModal from './components/ProposeActionModal'
+import AuthPromptModal from '../../components/common/AuthPromptModal'
 import {
   COMMUNITY_ACTIONS,
   INITIAL_LOCATION,
@@ -17,6 +20,9 @@ import {
 import { CheckIcon, SparklesIcon, ArrowRightIcon } from '../../components/common/Icons'
 
 function KomunitasPage() {
+  const { isAuthenticated } = useAuth()
+  const location = useLocation()
+
   // Page local state
   const [actionsList, setActionsList] = useState(COMMUNITY_ACTIONS)
   const [selectedLocation, setSelectedLocation] = useState(INITIAL_LOCATION)
@@ -29,9 +35,18 @@ function KomunitasPage() {
   // Interactive joined actions tracking
   const [joinedActions, setJoinedActions] = useState({})
 
-  // Modal states
-  const [activeDetailAction, setActiveDetailAction] = useState(null)
-  const [isProposeModalOpen, setIsProposeModalOpen] = useState(false)
+  // Modal states — restore action context if user was redirected back after login with intent
+  const [activeDetailAction, setActiveDetailAction] = useState(() => {
+    const intent = location.state?.intent
+    if (intent?.type === 'join-action' && intent?.actionId) {
+      return COMMUNITY_ACTIONS.find((item) => item.id === intent.actionId) || null
+    }
+    return null
+  })
+  const [isProposeModalOpen, setIsProposeModalOpen] = useState(() => {
+    return location.state?.intent?.type === 'propose-action'
+  })
+  const [showProposeAuthPrompt, setShowProposeAuthPrompt] = useState(false)
 
   // Feedback Toast state (4.5s auto-dismiss with timer cleanup)
   const [toastMessage, setToastMessage] = useState(null)
@@ -371,7 +386,13 @@ function KomunitasPage() {
 
             {/* 3. Initiative Proposal Card (Punya Inisiatif Aksi di Lingkunganmu?) */}
             <CommunityProposalBanner
-              onOpenProposeModal={() => setIsProposeModalOpen(true)}
+              onOpenProposeModal={() => {
+                if (!isAuthenticated) {
+                  setShowProposeAuthPrompt(true)
+                  return
+                }
+                setIsProposeModalOpen(true)
+              }}
             />
           </aside>
         </div>
@@ -394,6 +415,16 @@ function KomunitasPage() {
         isOpen={isProposeModalOpen}
         onClose={() => setIsProposeModalOpen(false)}
         onSubmitProposal={handleProposalSubmit}
+      />
+
+      {/* Proposal Auth Prompt Modal */}
+      <AuthPromptModal
+        isOpen={showProposeAuthPrompt}
+        onClose={() => setShowProposeAuthPrompt(false)}
+        title="Masuk untuk melanjutkan"
+        description="Masuk untuk mengajukan kegiatan lingkungan baru ke komunitas."
+        returnTo={{ pathname: location.pathname, search: location.search, hash: location.hash }}
+        intent={{ type: 'propose-action' }}
       />
 
       {/* Interactive Toast Notification (Natural fade + rise entrance, anchored to viewport via portal) */}

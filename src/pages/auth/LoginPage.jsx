@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../hooks/useAuth'
+import { resolveReturnDestination } from '../../utils/authRedirect'
 import AuthCardWrapper from './components/AuthCardWrapper'
 import AuthInputField from './components/AuthInputField'
-import { ArrowRightIcon, AlertCircleIcon, CheckCircleIcon } from './components/AuthIcons'
+import { ArrowRightIcon, AlertCircleIcon } from './components/AuthIcons'
 import logoAksiLestari from '../../assets/logo-aksilestari.svg'
 
 /**
  * LoginPage
- * Halaman masuk akun AksiLestari dengan form responsif, validasi,
- * toggle visibilitas password, dan integrasi AuthContext.
+ * Halaman masuk akun AksiLestari dengan form responsif,
+ * toggle visibilitas password, dan integrasi single demo account AuthContext.
  */
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -22,12 +23,10 @@ export default function LoginPage() {
   })
 
   const [errors, setErrors] = useState({})
-  const [submitting, setSubmitting] = useState(false)
   const [generalError, setGeneralError] = useState('')
-  const [successMsg, setSuccessMsg] = useState('')
 
-  // Read redirect destination if available
-  const from = location.state?.from?.pathname || '/'
+  // Resolve return destination safely (priority: AuthGate returnTo -> intended route -> fallback '/')
+  const destination = resolveReturnDestination(location.state)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -41,48 +40,20 @@ export default function LoginPage() {
     }
   }
 
-  const validate = () => {
-    const newErrors = {}
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email wajib diisi'
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
-      newErrors.email = 'Format email tidak valid'
-    }
-
-    if (!formData.password) {
-      newErrors.password = 'Password wajib diisi'
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password minimal 6 karakter'
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
     setGeneralError('')
 
-    if (!validate()) return
-
     try {
-      setSubmitting(true)
-      await login(formData.email, formData.password)
-      setSuccessMsg('Berhasil masuk! Mengarahkan...')
-
-      setTimeout(() => {
-        navigate(from, { replace: true })
-      }, 1000)
+      login(formData.email, formData.password)
+      navigate(destination, { replace: true })
     } catch (err) {
       setGeneralError(err.message || 'Terjadi kesalahan saat masuk. Silakan coba lagi.')
-    } finally {
-      setSubmitting(false)
     }
   }
 
   return (
-    <AuthCardWrapper type="login">
+    <AuthCardWrapper type="login" hideHeroOnMobile>
       {/* Brand Header */}
       <div className="flex items-center gap-2.5 mb-5 sm:mb-6">
         <img
@@ -113,15 +84,6 @@ export default function LoginPage() {
         </div>
       )}
 
-      {successMsg && (
-        <div className="mb-5 p-3.5 rounded-xl sm:rounded-2xl bg-[#22603B] text-white shadow-lg shadow-[#22603B]/20 text-xs sm:text-sm flex items-center gap-3 animate-check-scale">
-          <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-            <CheckCircleIcon className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-semibold tracking-wide">{successMsg}</span>
-        </div>
-      )}
-
       {/* Login Form */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-5" noValidate>
         {/* Email Field */}
@@ -135,7 +97,6 @@ export default function LoginPage() {
           onChange={handleChange}
           error={errors.email}
           autoComplete="email"
-          disabled={submitting}
         />
 
         {/* Password Field */}
@@ -149,50 +110,20 @@ export default function LoginPage() {
           onChange={handleChange}
           error={errors.password}
           autoComplete="current-password"
-          disabled={submitting}
         />
 
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={submitting}
-          className="mt-2 w-full py-3 sm:py-3.5 px-6 rounded-xl sm:rounded-2xl font-semibold text-sm sm:text-base text-white bg-[#22603B] hover:bg-[#1B4D2F] active:scale-[0.99] transition-all duration-200 shadow-md hover:shadow-lg shadow-[#22603B]/20 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+          className="mt-2 w-full py-3 sm:py-3.5 px-6 rounded-xl sm:rounded-2xl font-semibold text-sm sm:text-base text-white bg-[#22603B] hover:bg-[#1B4D2F] active:scale-[0.99] transition-all duration-200 shadow-md hover:shadow-lg shadow-[#22603B]/20 flex items-center justify-center gap-2 cursor-pointer"
         >
-          {submitting ? (
-            <>
-              <svg
-                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                />
-              </svg>
-              <span>Memproses...</span>
-            </>
-          ) : (
-            <>
-              <span>Masuk</span>
-              <ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </>
-          )}
+          <span>Masuk</span>
+          <ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
         </button>
       </form>
 
       {/* Switch to Register link */}
-      <div className="mt-8 text-center text-xs sm:text-sm text-gray-500">
+      <div className="mt-6 sm:mt-8 text-center text-xs sm:text-sm text-gray-500">
         Belum punya akun?{' '}
         <Link
           to="/register"
