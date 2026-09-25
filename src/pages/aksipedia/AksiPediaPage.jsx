@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import { useObjectURL } from '../../hooks/useObjectURL'
 import AksiPediaHero from './components/AksiPediaHero'
 import LearningModulesSection from './components/LearningModulesSection'
 import LearningProgressCard from './components/LearningProgressCard'
@@ -21,9 +22,12 @@ function AksiPediaPage() {
   // Derive viewMode directly from searchParams (idiomatic React, no redundant sync effect)
   const viewMode = modeParam === 'scan' ? 'scan' : modeParam === 'hasil' ? 'result' : 'hub'
 
-  const [selectedImage, setSelectedImage] = useState(null)
+  const [selectedFile, setSelectedFile] = useState(null)
   const [isIdentifying, setIsIdentifying] = useState(false)
   const [showScanAuthPrompt, setShowScanAuthPrompt] = useState(false)
+
+  // Manage safe object URL lifecycle for uploaded file
+  const objectUrl = useObjectURL(selectedFile)
 
   // Scroll to hash target if provided, otherwise top
   useEffect(() => {
@@ -54,7 +58,7 @@ function AksiPediaPage() {
   }
 
   const handleIdentify = () => {
-    if (!selectedImage) return
+    if (!selectedFile) return
     setIsIdentifying(true)
 
     // Simulated identification latency (~1.2s) for realistic prototype UX
@@ -65,7 +69,7 @@ function AksiPediaPage() {
   }
 
   const handleResetScan = () => {
-    setSelectedImage(null)
+    setSelectedFile(null)
     setSearchParams({ mode: 'scan' })
   }
 
@@ -85,8 +89,8 @@ function AksiPediaPage() {
       {viewMode === 'scan' && (
         <div className="animate-in fade-in duration-300">
           <ScanUploadSection
-            selectedImage={selectedImage}
-            setSelectedImage={setSelectedImage}
+            selectedFile={selectedFile}
+            setSelectedFile={setSelectedFile}
             onIdentify={handleIdentify}
             isIdentifying={isIdentifying}
             onBackToHub={handleBackToHub}
@@ -97,7 +101,7 @@ function AksiPediaPage() {
       {viewMode === 'result' && (
         <div className="animate-in fade-in duration-300">
           <ScanResultSection
-            uploadedImage={selectedImage}
+            uploadedImage={objectUrl}
             onResetScan={handleResetScan}
           />
           <HandlingStepsSection />

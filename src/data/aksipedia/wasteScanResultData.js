@@ -6,7 +6,11 @@
 export const DEFAULT_SCAN_RESULT = {
   category: 'Plastik',
   material: 'PET (Polyethylene Terephthalate)',
+  shortMaterial: 'PET',
   code: '1',
+  recyclingLevel: 'Tinggi',
+  commonUsage: 'Kemasan minuman sekali pakai',
+  idealCondition: 'Bersih dan kering sebelum disalurkan',
   title: 'Botol Plastik Kemasan (PET)',
   timeString: 'Hari ini, 10:24 WIB',
   verified: true,

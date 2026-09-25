@@ -1,36 +1,32 @@
-import ProtectedModuleLink from './ProtectedModuleLink'
-import { BookOpenIcon } from '../../../components/common/Icons'
-import { LEARN_MORE_BANNER_DATA } from '../../../data/aksipedia/wasteScanResultData'
+import { Link } from 'react-router-dom'
+import { BookOpenIcon, ArrowRightIcon } from '../../../components/common/Icons'
 
 function LearnMoreBanner() {
-  const { title, description, ctaText } = LEARN_MORE_BANNER_DATA
-
   return (
-    <section className="w-full pb-16 sm:pb-20 lg:pb-24">
-      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-2xl border border-border-warm p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <div className="flex items-start sm:items-center gap-4">
-            <div className="w-11 h-11 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 select-none">
-              <BookOpenIcon className="w-5 h-5 text-primary" />
+    <section className="w-full pb-14 sm:pb-16 lg:pb-20" aria-label="Pelajari Modul">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="border-t border-border-warm pt-6 sm:pt-8 flex flex-col sm:flex-row sm:items-center justify-between gap-5 sm:gap-8">
+          <div className="max-w-xl">
+            <div className="flex items-center gap-2.5 mb-1.5">
+              <BookOpenIcon className="w-4 h-4 text-secondary shrink-0" />
+              <h2 className="font-display font-bold text-primary text-xl sm:text-2xl tracking-tight">
+                Pelajari Modul
+              </h2>
             </div>
-
-            <div>
-              <h3 className="font-display font-bold text-primary text-lg sm:text-xl mb-1">
-                {title}
-              </h3>
-              <p className="font-body text-xs sm:text-sm text-primary/75 max-w-xl leading-relaxed">
-                {description}
-              </p>
-            </div>
+            <p className="font-body text-primary/75 text-xs sm:text-sm sm:leading-relaxed">
+              Temukan materi terkait dan pahami lebih jauh tentang pengelolaan material ini.
+            </p>
           </div>
 
-          <ProtectedModuleLink
-            to="/aksipedia/modul/memahami-jenis-sampah"
-            className="self-start sm:self-center inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full border border-primary text-primary hover:bg-primary hover:text-white text-xs sm:text-sm font-semibold transition-all duration-200 shrink-0"
-          >
-            <BookOpenIcon className="w-4 h-4" />
-            <span>{ctaText}</span>
-          </ProtectedModuleLink>
+          <div className="shrink-0">
+            <Link
+              to="/aksipedia#modul"
+              className="inline-flex items-center justify-center gap-2 h-10 sm:h-11 px-6 rounded-full bg-primary hover:bg-primary/90 text-white font-semibold text-xs sm:text-sm transition-colors shadow-2xs active:scale-[0.98] select-none cursor-pointer"
+            >
+              <span>Pelajari Modul</span>
+              <ArrowRightIcon className="w-4 h-4 text-white" strokeWidth={2.25} />
+            </Link>
+          </div>
         </div>
       </div>
     </section>
