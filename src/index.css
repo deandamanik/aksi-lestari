@@ -22,6 +22,7 @@
   --color-error-text: #7A0000;
   --color-error-bg: #FFE8E8;
 
+  --font-sans: "Quicksand Variable", "Quicksand", sans-serif;
   --font-body: "Quicksand Variable", "Quicksand", sans-serif;
   --font-display: "Quando", serif;
 }
@@ -80,11 +81,9 @@ select {
 @keyframes motionPageEnter {
   from {
     opacity: 0;
-    transform: translateY(6px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -154,6 +153,25 @@ select {
   }
 }
 
+@keyframes motionGpsPulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.85;
+  }
+  70% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.animate-gps-pulse {
+  animation: motionGpsPulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
 .animate-page-enter {
   animation: motionPageEnter var(--motion-page) var(--motion-ease-natural) both;
 }
@@ -180,6 +198,38 @@ select {
 
 .animate-error-slide {
   animation: motionErrorSlide var(--motion-fast) var(--motion-ease-natural) both;
+}
+
+@keyframes motionPanelEnterMobile {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes motionPanelEnterDesktop {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-panel-enter {
+  animation: motionPanelEnterMobile 420ms var(--motion-ease-natural) both;
+}
+
+@media (min-width: 768px) {
+  .animate-panel-enter {
+    animation: motionPanelEnterDesktop 480ms var(--motion-ease-natural) both;
+  }
 }
 
 /* Scroll reveal card: Settle gently into place (450ms) */
@@ -223,20 +273,49 @@ select {
    Profile Workspace Animations
    ========================================================================== */
 
-/* Profile page-enter animation */
+/* Profile page-enter animation (smooth rise & fade) */
 @keyframes profil-enter {
   from {
     opacity: 0;
-    transform: translateY(7px);
+    transform: translate3d(0, 16px, 0);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 .profil-enter {
-  animation: profil-enter 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: profil-enter 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Profile left-column identity panel entry (slide from left on desktop, rise on mobile) */
+@keyframes profil-enter-left {
+  from {
+    opacity: 0;
+    transform: translate3d(-20px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.profil-enter-left {
+  animation: profil-enter-left 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (max-width: 1023px) {
+  @keyframes profil-enter-left {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 16px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
 }
 
 .profil-enter-delay-1 { animation-delay: 60ms; }
@@ -384,6 +463,282 @@ select {
   animation: authGlowPulse 4s ease-in-out infinite;
 }
 
+/* ==========================================================================
+   Beranda Hero Animations
+   ========================================================================== */
+
+/* --- Central Content Entrance (Editorial Reveal) --- */
+@keyframes hero-content-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-reveal-headline {
+  opacity: 0;
+  animation: hero-content-reveal 600ms cubic-bezier(0.16, 1, 0.3, 1) 0ms forwards;
+  will-change: transform, opacity;
+}
+
+.hero-reveal-paragraph {
+  opacity: 0;
+  animation: hero-content-reveal 600ms cubic-bezier(0.16, 1, 0.3, 1) 120ms forwards;
+  will-change: transform, opacity;
+}
+
+.hero-reveal-cta {
+  opacity: 0;
+  animation: hero-content-reveal 600ms cubic-bezier(0.16, 1, 0.3, 1) 240ms forwards;
+  will-change: transform, opacity;
+}
+
+.hero-reveal-visual {
+  opacity: 0;
+  animation: hero-content-reveal 700ms cubic-bezier(0.16, 1, 0.3, 1) 180ms forwards;
+  will-change: transform, opacity;
+}
+
+/* --- 3D Objects Entrance (Gentle Fade & Settle) --- */
+@keyframes hero-object-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.hero-enter-object {
+  opacity: 0;
+  animation: hero-object-reveal 750ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* --- Ambient Floating Animations --- */
+@keyframes hero-float-sun {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-1deg); }
+  35% { transform: translate3d(2.5px, -9px, 0) rotate(0.8deg); }
+  70% { transform: translate3d(-2px, -4px, 0) rotate(1.2deg); }
+}
+
+@keyframes hero-float-recycle-left {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(1.2deg); }
+  40% { transform: translate3d(-2px, -10px, 0) rotate(-1.5deg); }
+  75% { transform: translate3d(1.5px, -5px, 0) rotate(0.5deg); }
+}
+
+@keyframes hero-float-recycle-right {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-1.2deg); }
+  45% { transform: translate3d(2px, -9px, 0) rotate(1.8deg); }
+  80% { transform: translate3d(-1.5px, -4px, 0) rotate(-0.5deg); }
+}
+
+@keyframes hero-float-bin {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-0.3deg); }
+  50% { transform: translate3d(0, -8px, 0) rotate(0.3deg); }
+}
+
+@keyframes hero-float-earth {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  35% { transform: translate3d(-2.5px, -10px, 0) scale(1.012); }
+  70% { transform: translate3d(2px, -3px, 0) scale(1.004); }
+}
+
+@keyframes hero-float-monstera {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(1.5deg); }
+  45% { transform: translate3d(-2px, -10px, 0) rotate(-2deg); }
+  75% { transform: translate3d(1.5px, -4px, 0) rotate(0.8deg); }
+}
+
+@keyframes hero-float-leaf-a {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-2deg); }
+  30% { transform: translate3d(3px, -8px, 0) rotate(2deg); }
+  65% { transform: translate3d(1.5px, -3px, 0) rotate(-1deg); }
+  85% { transform: translate3d(-2px, -2px, 0) rotate(1.5deg); }
+}
+
+@keyframes hero-float-leaf-b {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(2.5deg); }
+  35% { transform: translate3d(-3px, -9px, 0) rotate(-2deg); }
+  70% { transform: translate3d(-1px, -4px, 0) rotate(1.5deg); }
+  85% { transform: translate3d(2px, -2px, 0) rotate(-1deg); }
+}
+
+@keyframes hero-float-sprout-a {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-1deg) scale(1); }
+  50% { transform: translate3d(1.5px, -9px, 0) rotate(1.5deg) scale(1.015); }
+}
+
+@keyframes hero-float-sprout-b {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(1.2deg) scale(1); }
+  50% { transform: translate3d(-1.5px, -8px, 0) rotate(-1.5deg) scale(1.015); }
+}
+
+.hero-ambient-sun { animation: hero-float-sun 6.4s ease-in-out infinite; will-change: transform; }
+.hero-ambient-recycle-left { animation: hero-float-recycle-left 6.2s ease-in-out infinite; will-change: transform; }
+.hero-ambient-recycle-right { animation: hero-float-recycle-right 5.4s ease-in-out infinite; will-change: transform; }
+.hero-ambient-bin { animation: hero-float-bin 6.0s ease-in-out infinite; will-change: transform; }
+.hero-ambient-earth { animation: hero-float-earth 6.8s ease-in-out infinite; will-change: transform; }
+.hero-ambient-monstera { animation: hero-float-monstera 5.6s ease-in-out infinite; will-change: transform; }
+.hero-ambient-leaf-a { animation: hero-float-leaf-a 4.8s ease-in-out infinite; will-change: transform; }
+.hero-ambient-leaf-b { animation: hero-float-leaf-b 5.2s ease-in-out infinite; will-change: transform; }
+.hero-ambient-sprout-a { animation: hero-float-sprout-a 5.0s ease-in-out infinite; will-change: transform; }
+.hero-ambient-sprout-b { animation: hero-float-sprout-b 5.8s ease-in-out infinite; will-change: transform; }
+
+/* ==========================================================================
+   Lapor Page Animations
+   ========================================================================== */
+
+@keyframes lapor-enter {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.lapor-enter-header {
+  opacity: 0;
+  animation: lapor-enter 500ms cubic-bezier(0.16, 1, 0.3, 1) 0ms forwards;
+  will-change: opacity, transform;
+}
+
+.lapor-enter-card {
+  opacity: 0;
+  animation: lapor-enter 500ms cubic-bezier(0.16, 1, 0.3, 1) 60ms forwards;
+  will-change: opacity, transform;
+}
+
+.lapor-enter-card-delay-1 {
+  opacity: 0;
+  animation: lapor-enter 500ms cubic-bezier(0.16, 1, 0.3, 1) 120ms forwards;
+  will-change: opacity, transform;
+}
+
+.lapor-enter-card-delay-2 {
+  opacity: 0;
+  animation: lapor-enter 500ms cubic-bezier(0.16, 1, 0.3, 1) 180ms forwards;
+  will-change: opacity, transform;
+}
+
+.lapor-enter-actions {
+  opacity: 0;
+  animation: lapor-enter 500ms cubic-bezier(0.16, 1, 0.3, 1) 220ms forwards;
+  will-change: opacity, transform;
+}
+
+@keyframes lapor-preview-reveal {
+  0% { opacity: 0; transform: scale(0.98); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.lapor-preview-enter {
+  animation: lapor-preview-reveal 280ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity, transform;
+}
+
+@keyframes lapor-float-sun {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-1deg); }
+  50% { transform: translate3d(2px, -8px, 0) rotate(1deg); }
+}
+@keyframes lapor-float-recycle {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(1deg); }
+  50% { transform: translate3d(-2px, -9px, 0) rotate(-1.5deg); }
+}
+@keyframes lapor-float-bin {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-0.3deg); }
+  50% { transform: translate3d(0, -6px, 0) rotate(0.4deg); }
+}
+@keyframes lapor-float-earth {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(1.5px, -8px, 0) scale(1.01); }
+}
+@keyframes lapor-float-monstera {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(1.2deg); }
+  50% { transform: translate3d(-2px, -8px, 0) rotate(-1.5deg); }
+}
+@keyframes lapor-float-sprout-left {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-1deg); }
+  50% { transform: translate3d(1.5px, -7px, 0) rotate(1.2deg); }
+}
+@keyframes lapor-float-sprout-right {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(1deg); }
+  50% { transform: translate3d(-1.5px, -7px, 0) rotate(-1deg); }
+}
+@keyframes lapor-float-leaf-a {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-2deg); }
+  50% { transform: translate3d(2px, -6px, 0) rotate(2deg); }
+}
+@keyframes lapor-float-leaf-b {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(2deg); }
+  50% { transform: translate3d(-2px, -7px, 0) rotate(-2deg); }
+}
+
+.lapor-ambient-sun { animation: lapor-float-sun 6.4s ease-in-out infinite; will-change: transform; }
+.lapor-ambient-recycle { animation: lapor-float-recycle 6.0s ease-in-out infinite; will-change: transform; }
+.lapor-ambient-bin { animation: lapor-float-bin 5.8s ease-in-out infinite; will-change: transform; }
+.lapor-ambient-earth { animation: lapor-float-earth 6.8s ease-in-out infinite; will-change: transform; }
+.lapor-ambient-monstera { animation: lapor-float-monstera 5.6s ease-in-out infinite; will-change: transform; }
+.lapor-ambient-sprout-left { animation: lapor-float-sprout-left 5.2s ease-in-out infinite; will-change: transform; }
+.lapor-ambient-sprout-right { animation: lapor-float-sprout-right 5.4s ease-in-out infinite; will-change: transform; }
+.lapor-ambient-leaf-a { animation: lapor-float-leaf-a 4.8s ease-in-out infinite; will-change: transform; }
+.lapor-ambient-leaf-b { animation: lapor-float-leaf-b 5.0s ease-in-out infinite; will-change: transform; }
+
+/* ==========================================================================
+   Leaderboard Page Animations
+   ========================================================================== */
+
+@keyframes lb-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-lb-header {
+  opacity: 0;
+  animation: lb-rise 520ms cubic-bezier(0.16, 1, 0.3, 1) 40ms forwards;
+  will-change: opacity, transform;
+}
+
+.animate-lb-podium {
+  opacity: 0;
+  animation: lb-rise 520ms cubic-bezier(0.16, 1, 0.3, 1) 120ms forwards;
+  will-change: opacity, transform;
+}
+
+.animate-lb-table {
+  opacity: 0;
+  animation: lb-rise 520ms cubic-bezier(0.16, 1, 0.3, 1) 200ms forwards;
+  will-change: opacity, transform;
+}
+
+.animate-lb-aside {
+  opacity: 0;
+  animation: lb-rise 520ms cubic-bezier(0.16, 1, 0.3, 1) 160ms forwards;
+  will-change: opacity, transform;
+}
+
+.animate-lb-footer {
+  opacity: 0;
+  animation: lb-rise 520ms cubic-bezier(0.16, 1, 0.3, 1) 260ms forwards;
+  will-change: opacity, transform;
+}
+
 /* Global Reduced Motion Overrides */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -401,7 +756,12 @@ select {
   .animate-popover-enter,
   .animate-toast-enter,
   .animate-check-scale,
-  .animate-error-slide {
+  .animate-error-slide,
+  .animate-lb-header,
+  .animate-lb-podium,
+  .animate-lb-table,
+  .animate-lb-aside,
+  .animate-lb-footer {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
@@ -414,6 +774,7 @@ select {
   }
 
   .profil-enter,
+  .profil-enter-left,
   .profil-enter-delay-1,
   .profil-enter-delay-2,
   .profil-enter-delay-3,
@@ -448,6 +809,47 @@ select {
   .animate-auth-float-3,
   .animate-auth-float-card,
   .animate-auth-glow {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .hero-reveal-headline,
+  .hero-reveal-paragraph,
+  .hero-reveal-cta,
+  .hero-reveal-visual,
+  .hero-enter-object,
+  .hero-ambient-sun,
+  .hero-ambient-recycle-left,
+  .hero-ambient-recycle-right,
+  .hero-ambient-bin,
+  .hero-ambient-earth,
+  .hero-ambient-monstera,
+  .hero-ambient-leaf-a,
+  .hero-ambient-leaf-b,
+  .hero-ambient-sprout-a,
+  .hero-ambient-sprout-b {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .lapor-enter-header,
+  .lapor-enter-card,
+  .lapor-enter-card-delay-1,
+  .lapor-enter-card-delay-2,
+  .lapor-enter-actions,
+  .lapor-preview-enter,
+  .lapor-ambient-sun,
+  .lapor-ambient-recycle,
+  .lapor-ambient-bin,
+  .lapor-ambient-earth,
+  .lapor-ambient-monstera,
+  .lapor-ambient-sprout-left,
+  .lapor-ambient-sprout-right,
+  .lapor-ambient-leaf-a,
+  .lapor-ambient-leaf-b,
+  .animate-gps-pulse {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;

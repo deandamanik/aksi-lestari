@@ -20,7 +20,7 @@ function ModuleListPage() {
       : MODULES_LIST.filter((item) => item.category === activeCategory)
 
   return (
-    <main className="min-h-screen bg-neutral text-primary pt-28 sm:pt-32 lg:pt-36 pb-16 sm:pb-20 lg:pb-24">
+    <main className="min-h-screen bg-neutral text-primary pt-28 sm:pt-32 lg:pt-36 pb-16 sm:pb-20 lg:pb-24 animate-page-enter">
       <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Back Link to Aksipedia Hub */}
         <div className="mb-6 sm:mb-8 select-none">
@@ -34,11 +34,11 @@ function ModuleListPage() {
         </div>
 
         {/* Editorial Page Header */}
-        <div className="mb-8 sm:mb-10">
+        <div className="mb-8 sm:mb-10 lapor-enter-header">
           <span className="text-xs font-bold text-secondary uppercase tracking-widest block mb-2 select-none">
             MODUL
           </span>
-          <h1 className="font-display font-bold text-primary text-3xl sm:text-4xl lg:text-[2.75rem] tracking-tight mb-3">
+          <h1 className="font-display font-normal text-primary text-3xl sm:text-4xl lg:text-[2.75rem] tracking-tight mb-3">
             Belajar tentang Sampah, Satu Modul Sekaligus.
           </h1>
           <p className="font-body text-primary/75 text-sm sm:text-base max-w-2xl leading-relaxed">
@@ -47,7 +47,9 @@ function ModuleListPage() {
         </div>
 
         {/* 1. Continue Learning Card */}
-        <ModuleContinueCard />
+        <div className="lapor-enter-card">
+          <ModuleContinueCard />
+        </div>
 
         {/* 2. Category Filter Tabs */}
         <ModuleFilterTabs
@@ -57,11 +59,13 @@ function ModuleListPage() {
 
         {/* 3. Featured Module Card (Shown on "Semua" or "Jenis Sampah") */}
         {(activeCategory === 'Semua' || activeCategory === 'Jenis Sampah') && (
-          <FeaturedModuleCard />
+          <div className="lapor-enter-card-delay-1">
+            <FeaturedModuleCard />
+          </div>
         )}
 
         {/* 4. 2-Column Grid of Modules */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lapor-enter-card-delay-2">
           {filteredModules.map((item) => (
             <ModuleGridCard key={item.id} module={item} />
           ))}

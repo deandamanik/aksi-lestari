@@ -154,7 +154,7 @@ function ImpactClosingSection() {
             {/* Primary Filled Button */}
             <Link
               to={CLOSING_CTA.primaryAction.href}
-              className="inline-flex items-center justify-center gap-2.5 bg-primary text-white hover:bg-primary/90 active:scale-[0.98] transition-all duration-200 px-7 py-3.5 rounded-full font-body font-bold text-sm sm:text-base shadow-xs w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2.5 bg-primary text-white hover:bg-primary/90 active:scale-[0.98] transition-all duration-200 h-12 px-6 sm:px-7 rounded-full font-body font-bold text-sm sm:text-base shadow-xs w-full sm:w-auto focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
             >
               <CameraIcon className="w-5 h-5 text-white shrink-0" strokeWidth={2} />
               <span>{CLOSING_CTA.primaryAction.label}</span>
@@ -163,7 +163,7 @@ function ImpactClosingSection() {
             {/* Secondary Outlined Button */}
             <Link
               to={CLOSING_CTA.secondaryAction.href}
-              className="inline-flex items-center justify-center border border-primary text-primary hover:bg-primary/5 active:scale-[0.98] transition-all duration-200 px-7 py-3.5 rounded-full font-body font-semibold text-sm sm:text-base w-full sm:w-auto"
+              className="inline-flex items-center justify-center border border-primary text-primary hover:bg-primary/5 active:scale-[0.98] transition-all duration-200 h-12 px-6 sm:px-7 rounded-full font-body font-semibold text-sm sm:text-base w-full sm:w-auto focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
             >
               <span>{CLOSING_CTA.secondaryAction.label}</span>
             </Link>

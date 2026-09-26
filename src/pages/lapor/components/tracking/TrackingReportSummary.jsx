@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { getIdentificationData } from '../../../../data/lapor/identificationData'
 import {
   FileTextIcon,
@@ -9,29 +9,11 @@ import {
   AlertCircleIcon,
   ClockIcon,
 } from '../../../../components/common/Icons'
-
-function formatFileSize(bytes) {
-  if (!bytes) return ''
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`
-}
-
-function formatReportDate(timestamp) {
-  if (!timestamp) return null
-  try {
-    return new Intl.DateTimeFormat('id-ID', {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    }).format(new Date(timestamp))
-  } catch {
-    return null
-  }
-}
+import { formatFileSize, formatDateTime } from '../../../../utils/formatters'
+import { useObjectURL } from '../../../../hooks/useObjectURL'
+import { formatAddressBreakdown } from '../../../../utils/mapUtils'
 
 function TrackingReportSummary({ temukan, kenali, createdAt }) {
-  const [previewUrl, setPreviewUrl] = useState(null)
   const [failedFile, setFailedFile] = useState(null)
 
   const photo = temukan?.photo
@@ -39,30 +21,18 @@ function TrackingReportSummary({ temukan, kenali, createdAt }) {
   const descriptionText = temukan?.description?.text?.trim()
   const categoryKey = kenali?.category || 'plastik'
   const ident = getIdentificationData(categoryKey)
-  const formattedDate = formatReportDate(createdAt)
+  const formattedDate = formatDateTime(createdAt)
 
+  const activeUrl = useObjectURL(photo?.file)
   const hasError = Boolean(photo?.file && failedFile === photo?.file)
 
-  useEffect(() => {
-    if (!photo?.file) return
-
-    const url = URL.createObjectURL(photo.file)
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- Synchronizing temporary DOM Blob URL with File object lifecycle
-    setPreviewUrl(url)
-
-    return () => {
-      URL.revokeObjectURL(url)
-    }
-  }, [photo?.file])
-
-  const activeUrl = photo?.file ? previewUrl : null
-
-  const parts = location?.address ? location.address.split(',').map((p) => p.trim()) : []
-  const primaryAddress = parts.slice(0, 2).join(', ') || location?.address || 'Lokasi belum ditentukan'
-  const secondaryAddress = parts.slice(2, 4).join(', ')
+  const { primary: primaryAddress, secondary: secondaryAddress } = formatAddressBreakdown(
+    location?.address,
+    'Lokasi belum ditentukan'
+  )
 
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E5DC] shadow-xs p-5 sm:p-6 flex flex-col gap-4.5">
+    <div className="rounded-2xl bg-white border border-border-warm shadow-xs p-5 sm:p-6 flex flex-col gap-4.5">
       {/* Header */}
       <div className="flex items-center justify-between gap-3 border-b border-stone-100 pb-3">
         <div className="flex items-center gap-2">
@@ -79,17 +49,25 @@ function TrackingReportSummary({ temukan, kenali, createdAt }) {
         )}
       </div>
 
-      {/* 1. Photo Evidence with Approved Natural Aspect Ratio */}
+      {/* 1. Photo Evidence with Standard 4:3 Aspect Ratio Frame */}
       <div className="flex flex-col gap-2">
         {activeUrl && !hasError ? (
-          <div className="w-full rounded-xl overflow-hidden bg-stone-50 border border-stone-100 flex items-center justify-center">
+          <div className="w-full aspect-[4/3] rounded-2xl overflow-hidden bg-stone-900 border border-stone-200/80 shadow-xs relative">
             <img
               src={activeUrl}
               alt="Foto bukti temuan sampah yang dilaporkan"
               onError={() => setFailedFile(photo?.file)}
-              className="w-full h-auto block object-contain transition-opacity duration-200"
-              style={{ maxHeight: '420px' }}
+              className="w-full h-full object-cover select-none"
             />
+            {/* 4:3 Frame Camera Brackets */}
+            <div className="absolute top-2.5 left-2.5 w-3.5 h-3.5 border-t-2 border-l-2 border-white/60 pointer-events-none" />
+            <div className="absolute top-2.5 right-2.5 w-3.5 h-3.5 border-t-2 border-r-2 border-white/60 pointer-events-none" />
+            <div className="absolute bottom-2.5 left-2.5 w-3.5 h-3.5 border-b-2 border-l-2 border-white/60 pointer-events-none" />
+            <div className="absolute bottom-2.5 right-2.5 w-3.5 h-3.5 border-b-2 border-r-2 border-white/60 pointer-events-none" />
+
+            <div className="absolute top-3 left-3 bg-stone-900/80 backdrop-blur-xs text-white/90 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase pointer-events-none select-none border border-white/10">
+              Rasio 4:3
+            </div>
           </div>
         ) : hasError ? (
           <div className="w-full rounded-xl bg-amber-50/60 border border-amber-200/80 p-5 text-center flex flex-col items-center justify-center gap-1.5">

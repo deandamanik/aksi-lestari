@@ -20,7 +20,7 @@ function LaporStepHeader({ step, title, subtitle, className = '' }) {
     <div className={`text-center ${className}`}>
       <LaporStepper currentStep={step} />
 
-      <h1 className="mt-4 sm:mt-7 font-display font-bold text-2xl sm:text-4xl lg:text-[40px] text-primary tracking-tight leading-tight">
+      <h1 className="mt-4 sm:mt-7 font-display font-normal text-2xl sm:text-4xl lg:text-[40px] text-primary tracking-tight leading-tight">
         {title}
       </h1>
 

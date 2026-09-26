@@ -1,3 +1,4 @@
+import { useInView } from '../../../hooks/useInView'
 import {
   TrashIcon,
   DropletsIcon,
@@ -22,47 +23,55 @@ function getStepIcon(iconType) {
 }
 
 function HandlingStepsSection() {
+  const [sectionRef, inView] = useInView({ threshold: 0.08 })
+  const baseTransition = 'transition-all duration-700 ease-out will-change-[opacity,transform]'
+
   return (
-    <section className="w-full pb-14 sm:pb-16 lg:pb-20">
-      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Heading */}
-        <div className="mb-8">
-          <h2 className="font-display font-bold text-primary text-2xl sm:text-3xl tracking-tight mb-2">
+    <section ref={sectionRef} className="w-full pb-14 sm:pb-16 lg:pb-20" aria-label="Cara Menanganinya">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Heading — No Eyebrow */}
+        <div
+          className={`mb-6 ${baseTransition} ${
+            inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+          }`}
+        >
+          <h2 className="font-display font-bold text-primary text-2xl sm:text-3xl tracking-tight mb-1.5">
             Cara Menanganinya
           </h2>
-          <p className="font-body text-primary/75 text-sm sm:text-base">
-            Langkah sederhana mempersiapkan botol plastik sebelum disalurkan atau dimanfaatkan.
+          <p className="font-body text-primary/75 text-sm sm:text-base max-w-2xl leading-relaxed">
+            Setelah mengetahui jenisnya, apa yang harus dilakukan? Ikuti 4 tahapan berurutan ini agar material siap didaur ulang secara optimal.
           </p>
         </div>
 
-        {/* 4 Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {HANDLING_STEPS.map((item) => (
+        {/* Continuous Handling Process (ONE unified sequence, not 4 separate cards) */}
+        <div className="border-y border-border-warm divide-y divide-border-warm/70">
+          {HANDLING_STEPS.map((item, idx) => (
             <div
               key={item.step}
-              className="bg-white rounded-3xl border border-border-warm p-6 flex flex-col justify-between shadow-xs hover:border-secondary/40 transition-colors"
+              className={`py-5 sm:py-6 flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6 ${baseTransition} ${
+                inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+              }`}
+              style={{ transitionDelay: `${80 + idx * 70}ms` }}
             >
-              <div>
-                {/* Step Circle Number */}
-                <div className="w-9 h-9 rounded-full bg-[#F0F5E8] border border-secondary/30 text-primary font-bold text-sm flex items-center justify-center mb-4 select-none">
-                  {item.step}
+              {/* Number */}
+              <span className="font-display font-bold text-2xl sm:text-3xl text-secondary select-none shrink-0 w-10">
+                {String(item.step).padStart(2, '0')}
+              </span>
+
+              {/* Step Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-4 mb-1.5">
+                  <h3 className="font-display font-bold text-primary text-base sm:text-lg">
+                    {item.title}
+                  </h3>
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-500 select-none">
+                    {getStepIcon(item.iconType)}
+                    <span>{item.tag}</span>
+                  </span>
                 </div>
-
-                {/* Title */}
-                <h3 className="font-display font-bold text-primary text-lg sm:text-xl mb-2.5">
-                  {item.title}
-                </h3>
-
-                {/* Description */}
-                <p className="font-body text-primary/75 text-xs sm:text-sm leading-relaxed mb-6">
+                <p className="font-body text-primary/75 text-xs sm:text-sm leading-relaxed max-w-2xl">
                   {item.description}
                 </p>
-              </div>
-
-              {/* Tag / Micro benefit */}
-              <div className="pt-3 border-t border-border-warm/60 flex items-center gap-1.5 text-xs font-semibold text-primary/80 select-none">
-                {getStepIcon(item.iconType)}
-                <span>{item.tag}</span>
               </div>
             </div>
           ))}

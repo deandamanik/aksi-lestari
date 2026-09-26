@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { FileTextIcon, CheckIcon } from '../../../../components/common/Icons'
+import Button from '../../../../components/common/Button'
 
 const MAX_DESC = 300
 
@@ -66,7 +67,7 @@ function EditableDescriptionSection({ description, onSaveDescription, className 
             maxLength={MAX_DESC}
             rows={3}
             placeholder="Tuliskan catatan ringkas kondisi fisik lapangan jika diperlukan..."
-            className="w-full resize-none rounded-xl border border-[#E0DBCF] bg-stone-50/60 px-3 py-2.5 text-xs sm:text-sm text-stone-800 placeholder:text-stone-300 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-colors leading-relaxed"
+            className="w-full resize-none rounded-xl border border-border-warm bg-stone-50/60 px-3 py-2.5 text-xs sm:text-sm text-stone-800 placeholder:text-stone-300 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors leading-relaxed"
             aria-label="Ubah deskripsi tambahan"
           />
 
@@ -78,23 +79,23 @@ function EditableDescriptionSection({ description, onSaveDescription, className 
           </div>
 
           <div className="flex items-center gap-2 pt-1 border-t border-stone-100">
-            <button
-              type="button"
+            <Button
+              size="sm"
+              variant="primary"
               onClick={handleSave}
-              className="inline-flex items-center justify-center gap-1.5 h-9 px-5 rounded-full font-semibold text-xs sm:text-sm bg-primary hover:bg-primary/90 text-white transition-colors cursor-pointer shadow-xs active:scale-[0.98] select-none"
               aria-label="Simpan perubahan deskripsi"
             >
               <CheckIcon className="w-3.5 h-3.5" strokeWidth={2.5} />
               <span>Simpan</span>
-            </button>
-            <button
-              type="button"
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
               onClick={handleCancel}
-              className="inline-flex items-center justify-center h-9 px-4 rounded-full font-semibold text-xs sm:text-sm text-stone-700 bg-white border border-stone-200 hover:bg-stone-50 hover:border-stone-300 transition-colors cursor-pointer active:scale-[0.98] select-none"
               aria-label="Batalkan perubahan deskripsi"
             >
               Batal
-            </button>
+            </Button>
           </div>
         </div>
       )}

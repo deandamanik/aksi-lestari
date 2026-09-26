@@ -15,7 +15,7 @@ function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const location = useLocation()
-  const { user, isAuthenticated, logout } = useAuth()
+  const { user, isAuthenticated } = useAuth()
 
   const isPetaRoute = location.pathname.startsWith('/peta-sampah')
   const isFloating = isPetaRoute || isScrolled
@@ -171,30 +171,23 @@ function Navbar() {
           <div className="flex items-center justify-end shrink-0 min-w-[180px] gap-2.5">
             <div className="hidden md:flex items-center gap-2.5">
               {isAuthenticated ? (
-                <div className="flex items-center gap-2">
-                  <Link
-                    to="/profil"
-                    className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 hover:bg-primary/15 text-primary text-sm font-semibold transition-colors border border-primary/20"
-                  >
-                    <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold uppercase">
-                      {user?.name ? user.name[0] : 'U'}
-                    </div>
-                    <span className="max-w-[100px] truncate">{user?.name || 'Profil'}</span>
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={logout}
-                    className="h-8 px-2.5 rounded-full text-xs font-semibold text-gray-500 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-                    title="Keluar akun"
-                  >
-                    Keluar
-                  </button>
-                </div>
+                <Link
+                  to="/profil"
+                  className="group flex items-center gap-2.5 py-1 px-2.5 rounded-full hover:bg-black/[0.04] transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+                  aria-label={`Buka profil ${user?.name || 'relawan'}`}
+                >
+                  <div className="w-7 h-7 rounded-full bg-neutral border border-border-warm text-primary flex items-center justify-center text-xs font-bold font-display select-none">
+                    {user?.name ? user.name.trim().charAt(0).toUpperCase() : 'I'}
+                  </div>
+                  <span className="text-sm font-semibold text-stone-700 group-hover:text-primary transition-colors max-w-[120px] truncate">
+                    {user?.name || 'Profil'}
+                  </span>
+                </Link>
               ) : (
                 <>
                   <Link
                     to="/login"
-                    className="inline-flex items-center justify-center h-9 px-5 rounded-full text-sm font-semibold border-2 border-primary text-primary hover:bg-primary/5 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+                    className="inline-flex items-center justify-center h-9 px-5 rounded-full text-sm font-semibold border border-primary text-primary hover:bg-primary/5 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
                   >
                     Login
                   </Link>
@@ -264,34 +257,22 @@ function Navbar() {
             ))}
             <div className="pt-3 mt-2 border-t border-border-warm/60 flex flex-col gap-2">
               {isAuthenticated ? (
-                <>
-                  <Link
-                    to="/profil"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-primary/10 text-primary text-sm font-semibold"
-                  >
-                    <div className="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold uppercase">
-                      {user?.name ? user.name[0] : 'U'}
-                    </div>
-                    <span className="font-bold">{user?.name || 'Akun Saya'}</span>
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      logout()
-                      setMobileMenuOpen(false)
-                    }}
-                    className="w-full text-left px-4 py-2 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-                  >
-                    Keluar Akun
-                  </button>
-                </>
+                <Link
+                  to="/profil"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-black/[0.03] text-stone-800 text-sm font-semibold transition-colors"
+                >
+                  <div className="w-7 h-7 rounded-full bg-neutral border border-border-warm text-primary flex items-center justify-center text-xs font-bold font-display select-none">
+                    {user?.name ? user.name.trim().charAt(0).toUpperCase() : 'I'}
+                  </div>
+                  <span className="font-semibold text-stone-800">{user?.name || 'Profil'}</span>
+                </Link>
               ) : (
                 <div className="flex gap-2">
                   <Link
                     to="/login"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex-1 flex items-center justify-center h-10 rounded-full text-sm font-semibold border-2 border-primary text-primary hover:bg-primary/5 transition-colors"
+                    className="flex-1 flex items-center justify-center h-10 rounded-full text-sm font-semibold border border-primary text-primary hover:bg-primary/5 transition-colors"
                   >
                     Login
                   </Link>

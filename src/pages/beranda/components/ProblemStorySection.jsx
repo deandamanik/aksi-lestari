@@ -37,10 +37,10 @@ function ProblemStorySection() {
         style={{ height: '340vh' }}
       >
         {/* Single Story Viewport: Sticky centered vertically in viewport */}
-        <div className="sticky top-[max(5rem,calc(50vh-240px))] xl:top-[max(5rem,calc(50vh-260px))] w-full overflow-hidden">
+        <div className="sticky top-[max(5rem,calc(50vh-240px))] xl:top-[max(5rem,calc(50vh-260px))] w-full">
           <div className="max-w-[1360px] mx-auto w-full px-4 sm:px-6 lg:px-8 grid grid-cols-12 gap-10 xl:gap-14 items-center">
-            {/* LEFT: Fixed Visual Scene (Primary visual anchor, ~10% larger presence) */}
-            <div className="col-span-7 xl:col-span-7 relative h-[480px] xl:h-[520px] flex items-center justify-center select-none pointer-events-none pr-3 xl:pr-4">
+            {/* LEFT: Fixed Visual Scene (Comfortably scaled to prevent any clipping) */}
+            <div className="col-span-7 xl:col-span-7 relative h-[480px] xl:h-[520px] flex items-center justify-center select-none pointer-events-none p-2 sm:p-4">
               {PROBLEM_STORY_STATES.map((state, index) => {
                 return (
                   <div
@@ -58,7 +58,7 @@ function ProblemStorySection() {
                     <img
                       src={state.image}
                       alt={state.alt}
-                      className="max-h-full max-w-full scale-[1.08] xl:scale-[1.10] object-contain drop-shadow-md transform-gpu"
+                      className="max-h-[82%] max-w-[82%] xl:max-h-[85%] xl:max-w-[85%] object-contain drop-shadow-md transform-gpu"
                       draggable={false}
                     />
                   </div>
@@ -169,11 +169,10 @@ function ProblemStorySection() {
 
               {/* State Content */}
               <div className="w-full">
-                <div className="flex items-center gap-2 mb-2.5">
+                <div className="mb-2.5">
                   <span className="text-xs font-bold tracking-widest uppercase text-secondary">
                     {state.number}
                   </span>
-                  <span className="text-xs text-secondary font-bold">●</span>
                 </div>
 
                 <h3 className="font-display text-lg sm:text-xl text-primary leading-snug tracking-tight mb-3">
@@ -197,21 +196,6 @@ function ProblemStorySection() {
           ))}
         </div>
       </div>
-
-      {/* Reduced-Motion Support */}
-      <style>{`
-        @media (prefers-reduced-motion: reduce) {
-          .transition-all,
-          .transition-colors {
-            transition: none !important;
-            transform: none !important;
-          }
-          .translate-y-2 {
-            transform: none !important;
-            opacity: 1 !important;
-          }
-        }
-      `}</style>
     </section>
   )
 }

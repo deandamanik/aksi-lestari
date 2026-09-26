@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { getIdentificationData } from '../../../../data/lapor/identificationData'
 import {
   CameraIcon,
@@ -8,14 +8,9 @@ import {
   MapPinIcon,
   ShieldAlertIcon,
 } from '../../../../components/common/Icons'
-
-function formatFileSize(bytes) {
-  if (!bytes) return ''
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`
-}
+import { formatFileSize } from '../../../../utils/formatters'
+import { useObjectURL } from '../../../../hooks/useObjectURL'
+import { formatAddressBreakdown } from '../../../../utils/mapUtils'
 
 function MandiriContextCard({ temukan, kenali, guidance }) {
   const categoryKey = kenali?.category || 'plastik'
@@ -24,28 +19,12 @@ function MandiriContextCard({ temukan, kenali, guidance }) {
   const location = temukan?.location
   const safetyNote = guidance?.safetyNote
 
-  const [previewUrl, setPreviewUrl] = useState(null)
   const [failedFile, setFailedFile] = useState(null)
+  const activeUrl = useObjectURL(photo?.file)
   const hasError = Boolean(photo?.file && failedFile === photo?.file)
 
-  useEffect(() => {
-    if (!photo?.file) return
-
-    const url = URL.createObjectURL(photo.file)
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- Synchronizing temporary DOM Blob URL with File object lifecycle
-    setPreviewUrl(url)
-
-    return () => {
-      URL.revokeObjectURL(url)
-    }
-  }, [photo?.file])
-
-  const activeUrl = photo?.file ? previewUrl : null
-
   // Format brief address (first 2 segments)
-  const locationText = location?.address
-    ? location.address.split(',').slice(0, 2).join(', ').trim()
-    : null
+  const locationText = formatAddressBreakdown(location?.address).primary || null
 
   const wasteName = kenali?.label || ident.label || 'Botol Plastik Kemasan'
   const wasteCategory = ident.categoryLabel || 'Plastik'
@@ -53,7 +32,7 @@ function MandiriContextCard({ temukan, kenali, guidance }) {
   const wasteMaterial = ident.materialLabel || 'PET / Polyethylene'
 
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E5DC] shadow-xs overflow-hidden">
+    <div className="rounded-2xl bg-white border border-border-warm shadow-xs overflow-hidden">
       {/* 1. Standard Lapor Photo Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-stone-100">
         <div className="flex items-center gap-2">
@@ -69,16 +48,24 @@ function MandiriContextCard({ temukan, kenali, guidance }) {
       </div>
 
       <div className="p-4 sm:p-5 flex flex-col gap-4.5">
-        {/* Natural aspect ratio photo */}
+        {/* Standardized 4:3 aspect ratio photo */}
         {activeUrl && !hasError ? (
-          <div className="w-full rounded-xl overflow-hidden bg-stone-50 border border-stone-100 flex items-center justify-center">
+          <div className="w-full aspect-[4/3] rounded-2xl overflow-hidden bg-stone-900 border border-stone-200/80 shadow-xs relative">
             <img
               src={activeUrl}
               alt={wasteName}
               onError={() => setFailedFile(photo?.file)}
-              className="w-full h-auto block object-contain transition-opacity duration-200"
-              style={{ maxHeight: '720px' }}
+              className="w-full h-full object-cover select-none"
             />
+            {/* 4:3 Frame Camera Brackets */}
+            <div className="absolute top-2.5 left-2.5 w-3.5 h-3.5 border-t-2 border-l-2 border-white/60 pointer-events-none" />
+            <div className="absolute top-2.5 right-2.5 w-3.5 h-3.5 border-t-2 border-r-2 border-white/60 pointer-events-none" />
+            <div className="absolute bottom-2.5 left-2.5 w-3.5 h-3.5 border-b-2 border-l-2 border-white/60 pointer-events-none" />
+            <div className="absolute bottom-2.5 right-2.5 w-3.5 h-3.5 border-b-2 border-r-2 border-white/60 pointer-events-none" />
+
+            <div className="absolute top-3 left-3 bg-stone-900/80 backdrop-blur-xs text-white/90 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase pointer-events-none select-none border border-white/10">
+              Rasio 4:3
+            </div>
           </div>
         ) : hasError ? (
           <div className="w-full rounded-xl bg-amber-50/60 border border-amber-200/80 p-6 text-center flex flex-col items-center justify-center gap-2">

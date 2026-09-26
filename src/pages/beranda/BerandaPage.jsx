@@ -6,7 +6,7 @@ import ImpactClosingSection from './components/ImpactClosingSection'
 
 function BerandaPage() {
   return (
-    <main>
+    <main className="animate-page-enter">
       <HeroSection />
       <ProblemStorySection />
       <ActionJourneySection />

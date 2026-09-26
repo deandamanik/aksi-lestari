@@ -1,106 +1,92 @@
+import { useInView } from '../../../hooks/useInView'
 import {
   MapPinIcon,
-  RecycleIcon,
-  Building2Icon,
-  ExternalLinkIcon,
+  ArrowRightIcon,
   InfoIcon,
 } from '../../../components/common/Icons'
 import { WASTE_BANKS_DATA } from '../../../data/aksipedia/wasteBanksData'
 
 function WasteBankSection() {
   const { title, subtitle, items, disclaimer } = WASTE_BANKS_DATA
+  const [sectionRef, inView] = useInView({ threshold: 0.08 })
+  const baseTransition = 'transition-all duration-700 ease-out will-change-[opacity,transform]'
 
   return (
-    <section className="w-full pb-14 sm:pb-16 lg:pb-20">
-      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="mb-8">
-          <h2 className="font-display font-bold text-primary text-2xl sm:text-3xl tracking-tight mb-2">
+    <section ref={sectionRef} className="w-full pb-8 sm:pb-10" aria-label="Destinasi Penyaluran Bank Sampah">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Header — No Eyebrow */}
+        <div
+          className={`mb-5 ${baseTransition} ${
+            inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+          }`}
+        >
+          <h2 className="font-display font-bold text-primary text-xl sm:text-2xl tracking-tight mb-1.5">
             {title}
           </h2>
-          <p className="font-body text-primary/75 text-sm sm:text-base">
-            {subtitle}
+          <p className="font-body text-primary/75 text-xs sm:text-sm max-w-2xl leading-relaxed">
+            Kalau tidak ingin mengelola sendiri, ke mana benda ini bisa dibawa? {subtitle}
           </p>
         </div>
 
-        {/* Bank Sampah List */}
-        <div className="flex flex-col gap-4 mb-6">
+        {/* ONE Cohesive Location List Container */}
+        <div
+          className={`rounded-2xl border border-border-warm bg-white divide-y divide-border-warm/70 shadow-2xs overflow-hidden mb-3 ${baseTransition} ${
+            inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+          }`}
+          style={{ transitionDelay: '100ms' }}
+        >
           {items.map((bank) => (
             <div
               key={bank.id}
-              className="bg-white rounded-3xl border border-border-warm p-5 sm:p-6 lg:p-7 shadow-xs hover:border-secondary/40 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-5"
+              className="p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-stone-50/40 transition-colors"
             >
-              {/* Left Details */}
-              <div className="flex items-start gap-4">
-                {/* Icon */}
-                <div className="w-12 h-12 rounded-2xl bg-[#F4F6F0] border border-border-warm flex items-center justify-center shrink-0 select-none">
-                  {bank.iconType === 'recycle' ? (
-                    <RecycleIcon className="w-6 h-6 text-primary" />
-                  ) : (
-                    <Building2Icon className="w-6 h-6 text-primary" />
-                  )}
+              {/* Location Details */}
+              <div className="min-w-0">
+                <h3 className="font-display font-bold text-primary text-base sm:text-lg mb-1.5">
+                  {bank.name}
+                </h3>
+
+                {/* Distance & Address */}
+                <div className="flex items-center gap-1.5 text-xs sm:text-sm text-stone-600 mb-1.5">
+                  <MapPinIcon className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+                  <span>
+                    <strong className="text-primary font-semibold">{bank.distance}</strong> · {bank.address}
+                  </span>
                 </div>
 
-                {/* Info */}
-                <div>
-                  <div className="flex flex-wrap items-center gap-2.5 mb-1.5">
-                    <h3 className="font-display font-bold text-primary text-base sm:text-lg">
-                      {bank.name}
-                    </h3>
-                    <span
-                      className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold border select-none ${
-                        bank.statusType === 'success'
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                          : 'bg-stone-100 text-stone-600 border-stone-200'
-                      }`}
-                    >
-                      {bank.status}
-                    </span>
-                  </div>
-
-                  {/* Address */}
-                  <div className="flex items-center gap-1.5 text-xs sm:text-sm text-stone-600 mb-2">
-                    <MapPinIcon className="w-4 h-4 text-stone-400 shrink-0" />
-                    <span>
-                      <strong className="text-primary font-semibold">{bank.distance}</strong> ·{' '}
-                      {bank.address}
-                    </span>
-                  </div>
-
-                  {/* Accepted & Schedule */}
-                  <div className="text-xs text-stone-500 flex flex-wrap gap-x-4 gap-y-1">
-                    <span>
-                      <strong className="text-stone-700 font-semibold">Menerima: </strong>
-                      {bank.acceptedItems}
-                    </span>
-                    <span>•</span>
-                    <span>
-                      <strong className="text-stone-700 font-semibold">Buka: </strong>
-                      {bank.schedule}
-                    </span>
-                  </div>
+                {/* Accepted Materials & Schedule (Natural metadata, no badges) */}
+                <div className="text-xs text-stone-500 flex flex-wrap gap-x-3 gap-y-1">
+                  <span>
+                    <strong className="text-stone-700 font-semibold">Menerima: </strong>
+                    {bank.acceptedItems}
+                  </span>
+                  <span className="text-stone-300" aria-hidden="true">•</span>
+                  <span>
+                    <strong className="text-stone-700 font-semibold">Buka: </strong>
+                    {bank.schedule}
+                  </span>
                 </div>
               </div>
 
-              {/* Action Button */}
+              {/* Action Link: Buka di Peta (Secondary outline action) */}
               <a
                 href={bank.mapUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="self-start md:self-center inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full border border-stone-300 bg-white hover:bg-stone-50 text-primary text-xs sm:text-sm font-semibold transition-colors shadow-2xs shrink-0 cursor-pointer"
+                className="self-start md:self-center inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-full border border-primary/25 bg-white hover:bg-primary/[0.04] hover:border-primary/45 text-primary text-xs sm:text-sm font-semibold transition-colors shadow-2xs shrink-0 cursor-pointer select-none"
               >
-                <ExternalLinkIcon className="w-3.5 h-3.5 text-primary" />
                 <span>Buka di Peta</span>
+                <ArrowRightIcon className="w-3.5 h-3.5 text-primary" strokeWidth={2.25} />
               </a>
             </div>
           ))}
         </div>
 
-        {/* Disclaimer Notice Box */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-[#FAF8F3] border border-border-warm flex items-start gap-3 text-xs sm:text-sm text-stone-600 leading-relaxed">
-          <InfoIcon className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+        {/* Supporting Service Notice (Uncontained Footnote) */}
+        <div className="flex items-start gap-2 pt-1 px-1 text-xs text-stone-500 leading-relaxed select-none">
+          <InfoIcon className="w-3.5 h-3.5 text-stone-400 shrink-0 mt-0.5" />
           <p>
-            <strong className="font-bold text-primary">{disclaimer.title} </strong>
+            <strong className="font-semibold text-stone-600">{disclaimer.title} </strong>
             {disclaimer.content}
           </p>
         </div>

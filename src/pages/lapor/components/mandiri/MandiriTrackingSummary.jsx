@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { getIdentificationData } from '../../../../data/lapor/identificationData'
 import {
   FileTextIcon,
@@ -9,30 +9,11 @@ import {
   AlertCircleIcon,
   ClockIcon,
 } from '../../../../components/common/Icons'
-
-function formatFileSize(bytes) {
-  if (!bytes) return ''
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`
-}
-
-function formatReportDate(timestamp) {
-  if (!timestamp) return null
-  try {
-    return new Intl.DateTimeFormat('id-ID', {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    }).format(new Date(timestamp))
-  } catch {
-    return null
-  }
-}
+import { formatFileSize, formatDateTime } from '../../../../utils/formatters'
+import { useObjectURL } from '../../../../hooks/useObjectURL'
+import { formatAddressBreakdown } from '../../../../utils/mapUtils'
 
 function MandiriTrackingSummary({ temukan, kenali, mandiri }) {
-  const [beforeUrl, setBeforeUrl] = useState(null)
-  const [afterUrl, setAfterUrl] = useState(null)
   const [failedBefore, setFailedBefore] = useState(null)
   const [failedAfter, setFailedAfter] = useState(null)
 
@@ -41,35 +22,20 @@ function MandiriTrackingSummary({ temukan, kenali, mandiri }) {
   const location = temukan?.location
   const categoryKey = kenali?.category || 'plastik'
   const ident = getIdentificationData(categoryKey)
-  const formattedDate = formatReportDate(mandiri?.submittedAt)
+  const formattedDate = formatDateTime(mandiri?.submittedAt)
 
-  useEffect(() => {
-    if (!beforePhoto?.file) return
-    const url = URL.createObjectURL(beforePhoto.file)
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- Synchronizing temporary DOM Blob URL with File object lifecycle
-    setBeforeUrl(url)
-    return () => URL.revokeObjectURL(url)
-  }, [beforePhoto?.file])
-
-  useEffect(() => {
-    if (!afterPhoto?.file) return
-    const url = URL.createObjectURL(afterPhoto.file)
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- Synchronizing temporary DOM Blob URL with File object lifecycle
-    setAfterUrl(url)
-    return () => URL.revokeObjectURL(url)
-  }, [afterPhoto?.file])
-
-  const activeBeforeUrl = beforePhoto?.file ? beforeUrl : null
-  const activeAfterUrl = afterPhoto?.file ? afterUrl : null
+  const activeBeforeUrl = useObjectURL(beforePhoto?.file)
+  const activeAfterUrl = useObjectURL(afterPhoto?.file)
   const hasBeforeError = Boolean(beforePhoto?.file && failedBefore === beforePhoto?.file)
   const hasAfterError = Boolean(afterPhoto?.file && failedAfter === afterPhoto?.file)
 
-  const parts = location?.address ? location.address.split(',').map((p) => p.trim()) : []
-  const primaryAddress = parts.slice(0, 2).join(', ') || location?.address || 'Lokasi belum ditentukan'
-  const secondaryAddress = parts.slice(2, 4).join(', ')
+  const { primary: primaryAddress, secondary: secondaryAddress } = formatAddressBreakdown(
+    location?.address,
+    'Lokasi belum ditentukan'
+  )
 
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E5DC] shadow-xs p-5 sm:p-6 flex flex-col gap-4.5">
+    <div className="rounded-2xl bg-white border border-border-warm shadow-xs p-5 sm:p-6 flex flex-col gap-4.5">
       {/* Header */}
       <div className="flex items-center justify-between gap-3 border-b border-stone-100 pb-3">
         <div className="flex items-center gap-2">
@@ -142,22 +108,22 @@ function MandiriTrackingSummary({ temukan, kenali, mandiri }) {
               <span className="text-stone-400 font-normal text-[10px]">Awal</span>
             </div>
 
-            <div className="w-full h-36 sm:h-40 rounded-xl overflow-hidden bg-stone-50 border border-stone-100 flex items-center justify-center p-1.5">
+            <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-stone-900 border border-stone-200/80 shadow-2xs relative flex items-center justify-center">
               {activeBeforeUrl && !hasBeforeError ? (
                 <img
                   src={activeBeforeUrl}
                   alt="Foto kondisi sampah sebelum penanganan"
                   onError={() => setFailedBefore(beforePhoto?.file)}
-                  className="max-h-full max-w-full w-auto h-auto object-contain rounded-lg"
+                  className="w-full h-full object-cover select-none"
                 />
               ) : hasBeforeError ? (
                 <div className="p-2 text-center flex flex-col items-center gap-1">
                   <AlertCircleIcon className="w-5 h-5 text-amber-600" />
-                  <span className="text-[10px] text-stone-500">Gagal memuat</span>
+                  <span className="text-[10px] text-stone-300">Gagal memuat</span>
                 </div>
               ) : (
                 <div className="p-2 text-center flex flex-col items-center gap-1 text-stone-400">
-                  <CameraIcon className="w-5 h-5 text-stone-300" strokeWidth={1.5} />
+                  <CameraIcon className="w-5 h-5 text-stone-500" strokeWidth={1.5} />
                   <span className="text-[10px]">Tidak ada foto</span>
                 </div>
               )}
@@ -180,22 +146,22 @@ function MandiriTrackingSummary({ temukan, kenali, mandiri }) {
               </span>
             </div>
 
-            <div className="w-full h-36 sm:h-40 rounded-xl overflow-hidden bg-stone-50 border border-stone-100 flex items-center justify-center p-1.5">
+            <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-stone-900 border border-stone-200/80 shadow-2xs relative flex items-center justify-center">
               {activeAfterUrl && !hasAfterError ? (
                 <img
                   src={activeAfterUrl}
                   alt="Foto kondisi setelah sampah ditangani"
                   onError={() => setFailedAfter(afterPhoto?.file)}
-                  className="max-h-full max-w-full w-auto h-auto object-contain rounded-lg"
+                  className="w-full h-full object-cover select-none"
                 />
               ) : hasAfterError ? (
                 <div className="p-2 text-center flex flex-col items-center gap-1">
                   <AlertCircleIcon className="w-5 h-5 text-amber-600" />
-                  <span className="text-[10px] text-stone-500">Gagal memuat</span>
+                  <span className="text-[10px] text-stone-300">Gagal memuat</span>
                 </div>
               ) : (
                 <div className="p-2 text-center flex flex-col items-center gap-1 text-stone-400">
-                  <CameraIcon className="w-5 h-5 text-stone-300" strokeWidth={1.5} />
+                  <CameraIcon className="w-5 h-5 text-stone-500" strokeWidth={1.5} />
                   <span className="text-[10px]">Tidak ada foto</span>
                 </div>
               )}

@@ -7,22 +7,7 @@ import SaldoBalanceCard from './components/SaldoBalanceCard'
 import SaldoContributionSources from './components/SaldoContributionSources'
 import SaldoRedeemSection from './components/SaldoRedeemSection'
 import SaldoRedemptionHistory from './components/SaldoRedemptionHistory'
-
-/**
- * ProfilSaldoPage — Saldo & Redeem Hub
- *
- * Rendered within the right workspace area under the "Saldo & Redeem" tab.
- * Content:
- * 1. Page heading — Eyebrow + "Saldo & Redeem" + subtitle
- * 2. Balance card — primary focal point (reactive)
- * 3. Contribution sources — how balance grows
- * 4. Redeem section — interactive E-Wallet / Voucher
- * 5. Redemption history — past transactions
- */
-
-function formatRupiah(n) {
-  return 'Rp' + n.toLocaleString('id-ID')
-}
+import { formatRupiah } from '../../utils/formatters'
 
 function ProfilSaldoPage() {
   // ── Reactive state (persisted across session navigation) ──
@@ -85,7 +70,7 @@ function ProfilSaldoPage() {
         <span className="text-xs font-semibold text-primary select-none">
           Saldo Apresiasi
         </span>
-        <h1 className="font-display text-2xl sm:text-3xl text-stone-900 font-bold tracking-tight leading-tight">
+        <h1 className="font-display text-2xl sm:text-3xl text-stone-900 font-normal tracking-tight leading-tight">
           Saldo &amp; Redeem
         </h1>
         <p className="text-sm sm:text-base text-stone-500 leading-relaxed max-w-xl">

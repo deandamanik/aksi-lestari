@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { EyeIcon, EyeOffIcon } from './AuthIcons'
+import { EyeIcon, EyeOffIcon } from '../../../components/common/Icons'
 
 /**
  * AuthInputField
@@ -43,10 +43,12 @@ export default function AuthInputField({
           required={required}
           autoComplete={autoComplete}
           disabled={disabled}
-          className={`w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-sm sm:text-base text-gray-900 bg-gray-50/80 border transition-all duration-200 outline-none placeholder:text-gray-400 ${
+          aria-invalid={Boolean(error)}
+          aria-describedby={error ? `${id}-error` : undefined}
+          className={`w-full px-4 py-2.5 sm:py-3 rounded-xl text-sm sm:text-base text-gray-900 bg-gray-50/80 border transition-all duration-200 outline-none placeholder:text-gray-400 ${
             error
               ? 'border-red-500 focus:border-red-600 focus:ring-4 focus:ring-red-500/10'
-              : 'border-gray-200 hover:border-gray-300 focus:border-[#22603B] focus:bg-white focus:ring-4 focus:ring-[#22603B]/10'
+              : 'border-gray-200 hover:border-gray-300 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10'
           } ${isPasswordField ? 'pr-11' : 'pr-4'}`}
         />
 
@@ -56,7 +58,7 @@ export default function AuthInputField({
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
             aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
-            className="absolute right-3.5 p-1 rounded-md text-gray-400 hover:text-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-[#22603B]"
+            className="absolute right-3.5 p-1 rounded-md text-gray-400 hover:text-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
           >
             {showPassword ? (
               <EyeOffIcon className="w-4.5 h-4.5" />
@@ -68,7 +70,7 @@ export default function AuthInputField({
       </div>
 
       {error && (
-        <span className="text-xs text-red-600 font-medium mt-0.5 ml-1 animate-error-slide">
+        <span id={`${id}-error`} role="alert" className="text-xs text-red-600 font-medium mt-0.5 ml-1 animate-error-slide">
           {error}
         </span>
       )}

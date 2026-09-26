@@ -59,6 +59,18 @@ export const MODULES_LIST = [
     link: '/aksipedia/modul/memahami-jenis-sampah',
   },
   {
+    id: 'dampak-sampah-plastik-ekosistem',
+    category: 'Dampak Lingkungan',
+    meta: 'EKOSISTEM · ± 5 MENIT',
+    status: 'Belum Dimulai',
+    isCompleted: false,
+    title: 'Dampak Sampah Plastik terhadap Ekosistem Lokal',
+    description:
+      'Jejak mikroplastik pada ekosistem aliran sungai sub-DAS di perkotaan Indonesia dan risiko biologisnya.',
+    ctaText: 'Buka Modul',
+    link: '/aksipedia/modul/memahami-jenis-sampah',
+  },
+  {
     id: 'dasar-daur-ulang-kode-resin',
     category: 'Pengelolaan',
     meta: 'DAUR ULANG · ± 6 MENIT',
@@ -80,6 +92,76 @@ export const MODULES_LIST = [
     description:
       'Langkah taktis harian mengurangi penggunaan kemasan sekali pakai di lingkungan pemukiman dan perkantoran.',
     ctaText: 'Baca Lagi',
+    link: '/aksipedia/modul/memahami-jenis-sampah',
+  },
+]
+
+export const ALL_LEARNING_MODULES = [
+  {
+    index: '01',
+    id: 'memahami-jenis-sampah',
+    category: 'Jenis Sampah',
+    readTime: '± 5 menit',
+    badge: 'Termasuk Latihan Interaktif',
+    title: 'Mengenal Jenis Sampah & Karakter Material',
+    description:
+      'Panduan komprehensif membedakan polimer plastik bernilai daur ulang tinggi, residu berlapis (multilaminate), dan serat organik pekarangan tidak bernilai daur ulang lokal.',
+    ctaLabel: 'Buka Materi',
+    link: '/aksipedia/modul/memahami-jenis-sampah',
+  },
+  {
+    index: '02',
+    id: 'memilah-sampah-rumah-tangga',
+    category: 'Pemilahan',
+    readTime: '± 5 menit',
+    title: 'Memilah Sampah Rumah Tangga dengan Benar',
+    description:
+      'Tata cara 3 ember dasar di dapur untuk mengamankan sampah organik sebelum berbau dan membusuk bersama anorganik.',
+    ctaLabel: 'Buka Materi',
+    link: '/aksipedia/modul/memahami-jenis-sampah',
+  },
+  {
+    index: '03',
+    id: 'kenali-sampah-organik-di-rumah',
+    category: 'Jenis Sampah',
+    readTime: '± 4 menit',
+    title: 'Kenali Sampah Organik di Rumah',
+    description:
+      'Teknik pemisahan sisa dapur dan dedaunan pekarangan secara higienis untuk mencegah timbulan gas metana dan bau tak sedap.',
+    ctaLabel: 'Buka Materi',
+    link: '/aksipedia/modul/memahami-jenis-sampah',
+  },
+  {
+    index: '04',
+    id: 'dampak-sampah-plastik-ekosistem',
+    category: 'Dampak Lingkungan',
+    readTime: '± 5 menit',
+    title: 'Dampak Sampah Plastik terhadap Ekosistem Lokal',
+    description:
+      'Jejak mikroplastik pada ekosistem aliran sungai sub-DAS di perkotaan Indonesia dan risiko biologisnya.',
+    ctaLabel: 'Buka Materi',
+    link: '/aksipedia/modul/memahami-jenis-sampah',
+  },
+  {
+    index: '05',
+    id: 'dasar-daur-ulang-kode-resin',
+    category: 'Pengelolaan',
+    readTime: '± 6 menit',
+    title: 'Dasar-Dasar Daur Ulang & Kode Resin',
+    description:
+      'Mengenal simbol angka 1–7 pada plastik kemasan dan rantai sirkularitas material anorganik bernilai ekonomis tinggi.',
+    ctaLabel: 'Buka Materi',
+    link: '/aksipedia/modul/memahami-jenis-sampah',
+  },
+  {
+    index: '06',
+    id: 'kebiasaan-kecil-dampak-besar',
+    category: 'Kebiasaan Hijau',
+    readTime: '± 4 menit',
+    title: 'Kebiasaan Kecil, Dampak Besar',
+    description:
+      'Langkah taktis harian mengurangi penggunaan kemasan sekali pakai di lingkungan pemukiman dan perkantoran.',
+    ctaLabel: 'Buka Materi',
     link: '/aksipedia/modul/memahami-jenis-sampah',
   },
 ]

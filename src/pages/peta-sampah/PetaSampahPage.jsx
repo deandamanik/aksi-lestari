@@ -1,7 +1,8 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import WasteMap from './components/WasteMap'
 import MapControlPanel from './components/MapControlPanel'
 import MapDetailPanel from './components/MapDetailPanel'
+import { findMatchingCity } from './components/cityIndex'
 import { WASTE_REPORTS } from '../../data/peta-sampah/wasteReportsData'
 import { BANK_SAMPAH } from '../../data/peta-sampah/bankSampahData'
 
@@ -11,7 +12,7 @@ import { BANK_SAMPAH } from '../../data/peta-sampah/bankSampahData'
  * Dedicated full-screen map experience with:
  * - Full-viewport map layer engine (WasteMap)
  * - Map layer visibility state (Heatmap, Laporan, Bank Sampah)
- * - Dual-dataset search (Waste reports & Bank Sampah)
+ * - Dual-dataset search with canonical Indonesian city recognition
  * - Geolocation centering ("Gunakan Lokasiku")
  * - Side overlay detail sheet for selected Waste Report & Bank Sampah markers
  */
@@ -24,37 +25,102 @@ function PetaSampahPage() {
   const [selectedPoint, setSelectedPoint] = useState(null)
 
   const [flyToCoords, setFlyToCoords] = useState(null)
+  const [userLocation, setUserLocation] = useState(null)
   const [isLocating, setIsLocating] = useState(false)
   const [locationError, setLocationError] = useState(null)
 
-  // Derive visible waste reports matching search query
+  // Derive visible waste reports matching search query or matched canonical city
   const visibleWasteReports = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
     if (!query) return WASTE_REPORTS
 
+    const matchedCity = findMatchingCity(query)
+
     return WASTE_REPORTS.filter((report) => {
+      const titleLower = report.title.toLowerCase()
+      const catLower = report.category.toLowerCase()
+      const addrLower = report.address.toLowerCase()
+      const idLower = report.id.toLowerCase()
+
+      // If matched to a specific city/region, include all reports associated with that city
+      if (matchedCity) {
+        if (
+          addrLower.includes(matchedCity.name.toLowerCase()) ||
+          matchedCity.aliases.some((alias) => {
+            if (alias === 'bali') {
+              return addrLower.includes('bali') && !addrLower.includes('balikpapan')
+            }
+            return addrLower.includes(alias) || titleLower.includes(alias)
+          })
+        ) {
+          return true
+        }
+      }
+
+      // Avoid "bali" matching "balikpapan" in generic query
+      if (query === 'bali') {
+        const isBaliAddr = addrLower.includes('bali') && !addrLower.includes('balikpapan')
+        const isBaliTitle = titleLower.includes('bali') && !titleLower.includes('balikpapan')
+        return isBaliAddr || isBaliTitle
+      }
+
       return (
-        report.title.toLowerCase().includes(query) ||
-        report.category.toLowerCase().includes(query) ||
-        report.address.toLowerCase().includes(query) ||
-        report.id.toLowerCase().includes(query)
+        titleLower.includes(query) ||
+        catLower.includes(query) ||
+        addrLower.includes(query) ||
+        idLower.includes(query)
       )
     })
   }, [searchQuery])
 
-  // Derive visible Bank Sampah locations matching search query
+  // Derive visible Bank Sampah locations matching search query or matched canonical city
   const visibleBankSampah = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
     if (!query) return BANK_SAMPAH
 
+    const matchedCity = findMatchingCity(query)
+
     return BANK_SAMPAH.filter((bank) => {
       const accepted = bank.acceptedMaterials ? bank.acceptedMaterials.join(' ').toLowerCase() : ''
+      const nameLower = bank.name.toLowerCase()
+      const addrLower = bank.address.toLowerCase()
+      const distLower = (bank.district || '').toLowerCase()
+      const idLower = bank.id.toLowerCase()
+
+      if (matchedCity) {
+        if (
+          nameLower.includes(matchedCity.name.toLowerCase()) ||
+          addrLower.includes(matchedCity.name.toLowerCase()) ||
+          distLower.includes(matchedCity.name.toLowerCase()) ||
+          matchedCity.aliases.some((alias) => {
+            if (alias === 'bali') {
+              return (
+                (nameLower.includes('bali') || addrLower.includes('bali') || distLower.includes('bali')) &&
+                !addrLower.includes('balikpapan') &&
+                !distLower.includes('balikpapan')
+              )
+            }
+            return nameLower.includes(alias) || addrLower.includes(alias) || distLower.includes(alias)
+          })
+        ) {
+          return true
+        }
+      }
+
+      if (query === 'bali') {
+        return (
+          (nameLower.includes('bali') || addrLower.includes('bali') || distLower.includes('bali')) &&
+          !addrLower.includes('balikpapan') &&
+          !distLower.includes('balikpapan')
+        )
+      }
+
       return (
-        bank.name.toLowerCase().includes(query) ||
-        bank.address.toLowerCase().includes(query) ||
-        bank.district.toLowerCase().includes(query) ||
+        nameLower.includes(query) ||
+        addrLower.includes(query) ||
+        distLower.includes(query) ||
         accepted.includes(query) ||
-        bank.id.toLowerCase().includes(query)
+        idLower.includes(query)
       )
     })
   }, [searchQuery])
@@ -90,7 +156,9 @@ function PetaSampahPage() {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setIsLocating(false)
-        setFlyToCoords([position.coords.longitude, position.coords.latitude])
+        const coords = [position.coords.longitude, position.coords.latitude]
+        setUserLocation(coords)
+        setFlyToCoords(coords)
       },
       (error) => {
         setIsLocating(false)
@@ -104,10 +172,15 @@ function PetaSampahPage() {
     )
   }
 
+  const handleReset = useCallback(() => {
+    setUserLocation(null)
+    setSelectedPoint(null)
+  }, [])
+
   const hasNoResults = visibleWasteReports.length === 0 && visibleBankSampah.length === 0
 
   return (
-    <main className="relative w-full h-[100dvh] overflow-hidden">
+    <main data-lenis-prevent className="relative w-full h-[100dvh] overflow-hidden animate-page-enter">
       <WasteMap
         wasteReports={visibleWasteReports}
         bankSampah={visibleBankSampah}
@@ -115,10 +188,12 @@ function PetaSampahPage() {
         heatmapVisible={heatmapVisible}
         reportsVisible={reportsVisible}
         bankSampahVisible={bankSampahVisible}
+        userLocation={userLocation}
         flyToCoords={flyToCoords}
         onFlyToComplete={() => setFlyToCoords(null)}
         selectedPoint={activeSelectedPoint}
         onSelectPoint={setSelectedPoint}
+        onReset={handleReset}
       />
       <MapControlPanel
         searchQuery={searchQuery}

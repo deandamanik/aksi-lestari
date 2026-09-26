@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+import { CheckIcon } from '../../../../components/common/Icons'
 import { LAPOR_STEPS } from '../../../../data/lapor/laporSteps'
 
 /**
@@ -47,23 +48,11 @@ function LaporStepper({ currentStep }) {
                       ? 'bg-primary text-white shadow-xs'
                       : isActive
                         ? 'bg-primary text-white ring-4 ring-primary/20 shadow-xs'
-                        : 'bg-[#F9F8F3] border border-[#D1CABC] text-stone-400 font-medium'
+                        : 'bg-neutral border border-border-warm text-stone-400 font-medium'
                   }`}
                 >
                   {isCompleted ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2.5}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="w-4 h-4"
-                      aria-hidden="true"
-                    >
-                      <path d="M20 6 9 17l-5-5" />
-                    </svg>
+                    <CheckIcon className="w-4 h-4" strokeWidth={2.5} />
                   ) : (
                     <span aria-label={`Langkah ${s.step}`}>{s.step < 10 ? `0${s.step}` : s.step}</span>
                   )}
@@ -98,7 +87,7 @@ function LaporStepper({ currentStep }) {
               {!isLast && (
                 <div
                   className={`mt-[17px] h-px w-10 sm:w-14 shrink-0 transition-colors duration-300 ${
-                    s.step < currentStep ? 'bg-primary/50' : 'bg-[#D8D2C8]'
+                    s.step < currentStep ? 'bg-primary/50' : 'bg-border-warm'
                   }`}
                   aria-hidden="true"
                 />
@@ -132,23 +121,11 @@ function LaporStepper({ currentStep }) {
                       ? 'bg-primary text-white shadow-xs'
                       : isActive
                         ? 'bg-primary text-white ring-3 ring-primary/20 shadow-xs'
-                        : 'bg-[#F9F8F3] border border-[#D1CABC] text-stone-400 font-semibold'
+                        : 'bg-neutral border border-border-warm text-stone-400 font-semibold'
                   }`}
                 >
                   {isCompleted ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2.5}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="w-3.5 h-3.5"
-                      aria-hidden="true"
-                    >
-                      <path d="M20 6 9 17l-5-5" />
-                    </svg>
+                    <CheckIcon className="w-3.5 h-3.5" strokeWidth={2.5} />
                   ) : (
                     <span aria-label={`Langkah ${s.step}`}>{s.step < 10 ? `0${s.step}` : s.step}</span>
                   )}
@@ -171,7 +148,7 @@ function LaporStepper({ currentStep }) {
               {!isLast && (
                 <div
                   className={`mt-3.5 h-px flex-1 min-w-[6px] max-w-[24px] shrink transition-colors duration-300 ${
-                    s.step < currentStep ? 'bg-primary/50' : 'bg-[#D8D2C8]'
+                    s.step < currentStep ? 'bg-primary/50' : 'bg-border-warm'
                   }`}
                   aria-hidden="true"
                 />

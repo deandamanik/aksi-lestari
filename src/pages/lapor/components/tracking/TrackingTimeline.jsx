@@ -1,4 +1,5 @@
 import { CheckIcon, ClockIcon, FlagIcon } from '../../../../components/common/Icons'
+import { formatDateTime } from '../../../../utils/formatters'
 
 const TIMELINE_STAGES = [
   {
@@ -39,25 +40,16 @@ const TIMELINE_STAGES = [
   },
 ]
 
-function formatStageTime(timestamp) {
-  if (!timestamp) return null
-  try {
-    return new Intl.DateTimeFormat('id-ID', {
-      day: 'numeric',
-      month: 'short',
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(new Date(timestamp))
-  } catch {
-    return null
-  }
-}
-
 function TrackingTimeline({ createdAt }) {
-  const formattedTime = formatStageTime(createdAt)
+  const formattedTime = formatDateTime(createdAt, {
+    day: 'numeric',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
 
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E5DC] shadow-xs p-5 sm:p-6 flex flex-col gap-4">
+    <div className="rounded-2xl bg-white border border-border-warm shadow-xs p-5 sm:p-6 flex flex-col gap-4">
       {/* Header — clean without decorative pills */}
       <div className="flex items-center gap-2 border-b border-stone-100 pb-3">
         <FlagIcon className="w-4 h-4 text-primary shrink-0" strokeWidth={2} />

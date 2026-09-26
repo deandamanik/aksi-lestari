@@ -5,8 +5,19 @@ export default function ScrollToTop() {
   const { pathname } = useLocation()
 
   useEffect(() => {
-    // Reset scroll to top on every route change immediately
-    window.scrollTo(0, 0)
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual'
+    }
+  }, [])
+
+  useEffect(() => {
+    // Reset scroll to top on every route change instantly without animating from below
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant',
+    })
+    window.__lenis?.scrollTo(0, { immediate: true })
   }, [pathname])
 
   return null

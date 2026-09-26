@@ -7,7 +7,7 @@
 function RiwayatHeader() {
   return (
     <header className="flex flex-col gap-1.5 sm:gap-2">
-      <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl text-stone-900 font-bold tracking-tight leading-tight">
+      <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl text-stone-900 font-normal tracking-tight leading-tight">
         Kontribusi &amp; Riwayat
       </h1>
 

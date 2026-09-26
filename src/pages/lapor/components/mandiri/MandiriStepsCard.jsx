@@ -5,7 +5,7 @@ function MandiriStepsCard({ guidance }) {
   const { steps, documentationHelper } = stepsSection
 
   return (
-    <div className="rounded-2xl bg-white border border-[#E8E5DC] shadow-xs p-5 sm:p-7 flex flex-col gap-6">
+    <div className="rounded-2xl bg-white border border-border-warm shadow-xs p-5 sm:p-7 flex flex-col gap-6">
       {/* Section Header */}
       <div className="flex items-start justify-between gap-4">
         <div>

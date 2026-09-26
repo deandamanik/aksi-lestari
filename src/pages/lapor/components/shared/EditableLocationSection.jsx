@@ -1,24 +1,30 @@
 import { useState, useEffect, useRef } from 'react'
-import { MapPinIcon, CheckIcon } from '../../../../components/common/Icons'
-import ReportMapPreview from './ReportMapPreview'
 import {
-  DEFAULT_MAP_PIN,
-  latLngToMapCoords,
-  mapCoordsToLatLng,
+  MapPinIcon,
+  CheckIcon,
+  LocateIcon,
+  MapIcon,
+  CheckCircle2Icon,
+} from '../../../../components/common/Icons'
+import Button from '../../../../components/common/Button'
+import ReportMapPicker from './ReportMapPicker'
+import {
+  DEFAULT_COORDINATES,
+  reverseGeocodeNominatim,
+  formatAddressBreakdown,
 } from '../../../../utils/mapUtils'
 
 /**
  * EditableLocationSection
  *
  * Provides read-only display by default with inline edit capability.
- * In edit mode, allows user to use browser GPS or pick a pin interactively on the map.
+ * In edit mode, allows user to use browser GPS or pick a pin interactively on the real map.
  * Commits changes only on "Simpan Lokasi", preserving original context on "Batal".
  */
 function EditableLocationSection({ location, onSaveLocation, className = '' }) {
   const [isEditing, setIsEditing] = useState(false)
   const [isPickerMode, setIsPickerMode] = useState(false)
   const [draftLocation, setDraftLocation] = useState(location)
-  const [mapPin, setMapPin] = useState(() => latLngToMapCoords(location?.lat, location?.lng))
   const [gpsStatus, setGpsStatus] = useState('idle')
   const [gpsMessage, setGpsMessage] = useState('')
 
@@ -32,7 +38,6 @@ function EditableLocationSection({ location, onSaveLocation, className = '' }) {
 
   const handleStartEdit = () => {
     setDraftLocation(location)
-    setMapPin(latLngToMapCoords(location?.lat, location?.lng))
     setIsEditing(true)
     setIsPickerMode(false)
     setGpsStatus('idle')
@@ -41,7 +46,6 @@ function EditableLocationSection({ location, onSaveLocation, className = '' }) {
 
   const handleCancel = () => {
     setDraftLocation(location)
-    setMapPin(latLngToMapCoords(location?.lat, location?.lng))
     setIsEditing(false)
     setIsPickerMode(false)
     setGpsStatus('idle')
@@ -62,16 +66,13 @@ function EditableLocationSection({ location, onSaveLocation, className = '' }) {
     setIsPickerMode(false)
 
     if (!navigator.geolocation) {
-      const simulatedLat = -6.917464
-      const simulatedLng = 107.619123
       const fallback = {
-        lat: simulatedLat,
-        lng: simulatedLng,
+        lat: DEFAULT_COORDINATES.lat,
+        lng: DEFAULT_COORDINATES.lng,
         address: 'Jl. Braga No. 15, Sumur Bandung, Kota Bandung (Simulasi)',
         source: 'gps',
       }
       setDraftLocation(fallback)
-      setMapPin(DEFAULT_MAP_PIN)
       setGpsStatus('success')
       setGpsMessage('Lokasi simulasi digunakan (GPS tidak didukung oleh browser).')
       return
@@ -88,22 +89,17 @@ function EditableLocationSection({ location, onSaveLocation, className = '' }) {
           source: 'gps',
         }
         setDraftLocation(newLoc)
-        setMapPin(latLngToMapCoords(lat, lng))
         setGpsStatus('success')
         setGpsMessage('Lokasi saat ini berhasil digunakan.')
 
         // Attempt reverse geocoding via Nominatim
-        fetch(
-          `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=id`,
-          { headers: { 'Accept-Language': 'id' } }
-        )
-          .then((r) => r.json())
-          .then((data) => {
+        reverseGeocodeNominatim(lat, lng)
+          .then((displayName) => {
             if (!isMountedRef.current) return
-            if (data?.display_name) {
+            if (displayName) {
               setDraftLocation((prev) => ({
                 ...prev,
-                address: data.display_name,
+                address: displayName,
               }))
             }
           })
@@ -111,16 +107,13 @@ function EditableLocationSection({ location, onSaveLocation, className = '' }) {
       },
       () => {
         if (!isMountedRef.current) return
-        const fallbackLat = -6.917464
-        const fallbackLng = 107.619123
         const fallback = {
-          lat: fallbackLat,
-          lng: fallbackLng,
+          lat: DEFAULT_COORDINATES.lat,
+          lng: DEFAULT_COORDINATES.lng,
           address: 'Jl. Braga No. 15, Sumur Bandung, Kota Bandung (Simulasi)',
           source: 'gps',
         }
         setDraftLocation(fallback)
-        setMapPin(DEFAULT_MAP_PIN)
         setGpsStatus('success')
         setGpsMessage('Lokasi simulasi digunakan (izin GPS tidak diberikan).')
       },
@@ -134,23 +127,35 @@ function EditableLocationSection({ location, onSaveLocation, className = '' }) {
     setGpsMessage('Klik atau sentuh area peta untuk menempatkan titik lokasi temuan.')
   }
 
-  const handleMapClick = (coords) => {
-    setMapPin(coords)
-    const { lat, lng } = mapCoordsToLatLng(coords.x, coords.y)
-    setDraftLocation({
+  const handleLocationSelect = ({ lat, lng }) => {
+    setDraftLocation((prev) => ({
+      ...prev,
       lat,
       lng,
-      address: 'Lokasi dipilih secara manual di peta',
+      address: `${lat.toFixed(5)}, ${lng.toFixed(5)}`,
       source: 'map',
-    })
+    }))
     setGpsStatus('map-selected')
-    setGpsMessage('Titik lokasi berhasil diperbarui dari peta.')
+    setGpsMessage('Titik lokasi berhasil dipilih dari peta.')
+
+    reverseGeocodeNominatim(lat, lng)
+      .then((displayName) => {
+        if (!isMountedRef.current) return
+        if (displayName) {
+          setDraftLocation((prev) => ({
+            ...prev,
+            address: displayName,
+          }))
+        }
+      })
+      .catch(() => {})
   }
 
   const displayedLoc = isEditing ? draftLocation : location
-  const parts = displayedLoc?.address ? displayedLoc.address.split(',').map((p) => p.trim()) : []
-  const primaryAddress = parts.slice(0, 2).join(', ') || displayedLoc?.address || 'Lokasi belum ditentukan'
-  const secondaryAddress = parts.slice(2, 4).join(', ')
+  const { primary: primaryAddress, secondary: secondaryAddress } = formatAddressBreakdown(
+    displayedLoc?.address,
+    'Lokasi belum ditentukan'
+  )
 
   return (
     <div className={`pt-4.5 border-t border-stone-100 flex flex-col gap-3 min-w-0 ${className}`}>
@@ -186,23 +191,7 @@ function EditableLocationSection({ location, onSaveLocation, className = '' }) {
             }`}
             aria-label="Gunakan lokasi GPS saat ini"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="w-4 h-4 shrink-0"
-              aria-hidden="true"
-            >
-              <line x1="2" x2="5" y1="12" y2="12" />
-              <line x1="19" x2="22" y1="12" y2="12" />
-              <line x1="12" x2="12" y1="2" y2="5" />
-              <line x1="12" x2="12" y1="19" y2="22" />
-              <circle cx="12" cy="12" r="4" />
-            </svg>
+            <LocateIcon className="w-4 h-4 shrink-0" strokeWidth={2} />
             <span>{gpsStatus === 'loading' ? 'Mendeteksi GPS…' : 'Gunakan Lokasi Saya'}</span>
           </button>
 
@@ -216,21 +205,7 @@ function EditableLocationSection({ location, onSaveLocation, className = '' }) {
             }`}
             aria-label="Atur lokasi titik sampah di peta"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="w-4 h-4 text-primary shrink-0"
-              aria-hidden="true"
-            >
-              <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
-              <line x1="9" x2="9" y1="3" y2="18" />
-              <line x1="15" x2="15" y1="6" y2="21" />
-            </svg>
+            <MapIcon className="w-4 h-4 text-primary shrink-0" strokeWidth={2} />
             <span>Atur Lokasi di Peta</span>
           </button>
         </div>
@@ -239,20 +214,7 @@ function EditableLocationSection({ location, onSaveLocation, className = '' }) {
       {/* Status / Feedback Banner */}
       {isEditing && gpsMessage && (
         <div className="rounded-xl bg-stone-50 border border-stone-200/80 px-3 py-2 text-xs text-stone-600 flex items-center gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-3.5 h-3.5 text-primary shrink-0"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <path d="m9 12 2 2 4-4" />
-          </svg>
+          <CheckCircle2Icon className="w-3.5 h-3.5 text-primary shrink-0" strokeWidth={2} />
           <span className="leading-snug">{gpsMessage}</span>
         </div>
       )}
@@ -280,34 +242,33 @@ function EditableLocationSection({ location, onSaveLocation, className = '' }) {
         </div>
       </div>
 
-      {/* Map Component (Interactive in Picker Mode, Preview in Read-only Mode) */}
-      <ReportMapPreview
+      {/* Real Geographic Map Component (Interactive in Picker Mode, Preview in Read-only Mode) */}
+      <ReportMapPicker
         location={displayedLoc}
-        pin={isEditing ? mapPin : undefined}
         isPickerMode={isEditing && isPickerMode}
-        onMapClick={handleMapClick}
+        onLocationSelect={handleLocationSelect}
       />
 
       {/* Save & Cancel Actions (Edit Mode) */}
       {isEditing && (
         <div className="flex items-center gap-2 pt-1 border-t border-stone-100">
-          <button
-            type="button"
+          <Button
+            size="sm"
+            variant="primary"
             onClick={handleSave}
-            className="inline-flex items-center justify-center gap-1.5 h-9 px-5 rounded-full font-semibold text-xs sm:text-sm bg-primary hover:bg-primary/90 text-white transition-colors cursor-pointer shadow-xs active:scale-[0.98] select-none"
             aria-label="Simpan perubahan lokasi"
           >
             <CheckIcon className="w-3.5 h-3.5" strokeWidth={2.5} />
             <span>Simpan Lokasi</span>
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            size="sm"
+            variant="secondary"
             onClick={handleCancel}
-            className="inline-flex items-center justify-center h-9 px-4 sm:px-5 rounded-full font-semibold text-xs sm:text-sm text-stone-700 bg-white border border-stone-200 hover:bg-stone-50 hover:border-stone-300 transition-colors cursor-pointer active:scale-[0.98] select-none"
             aria-label="Batalkan perubahan lokasi"
           >
             Batal
-          </button>
+          </Button>
         </div>
       )}
     </div>

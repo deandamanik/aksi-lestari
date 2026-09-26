@@ -6,7 +6,7 @@ import {
   MapPinIcon,
   UsersIcon,
   ShieldCheckIcon,
-} from './AuthIcons'
+} from '../../../components/common/Icons'
 
 /**
  * AuthHeroPanel

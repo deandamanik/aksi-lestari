@@ -1,9 +1,10 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState, useRef, useEffect } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import { resolveReturnDestination } from '../../utils/authRedirect'
 import AuthCardWrapper from './components/AuthCardWrapper'
 import AuthInputField from './components/AuthInputField'
-import { ArrowRightIcon, AlertCircleIcon } from './components/AuthIcons'
+import { ArrowRightIcon, AlertCircleIcon } from '../../components/common/Icons'
 import logoAksiLestari from '../../assets/logo-aksilestari.svg'
 
 /**
@@ -13,6 +14,7 @@ import logoAksiLestari from '../../assets/logo-aksilestari.svg'
  */
 export default function RegisterPage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { register } = useAuth()
 
   const [formData, setFormData] = useState({
@@ -24,6 +26,16 @@ export default function RegisterPage() {
 
   const [errors, setErrors] = useState({})
   const [generalError, setGeneralError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const timerRef = useRef(null)
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+      }
+    }
+  }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -38,18 +50,24 @@ export default function RegisterPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    if (isLoading) return
     setGeneralError('')
 
-    try {
-      register(formData.name, formData.email, formData.password)
-      navigate('/', { replace: true })
-    } catch (err) {
-      setGeneralError(err.message || 'Gagal menyiapkan akses. Silakan coba lagi.')
-    }
+    setIsLoading(true)
+    timerRef.current = setTimeout(() => {
+      try {
+        register(formData.name, formData.email, formData.password)
+        const destination = resolveReturnDestination(location.state)
+        navigate(destination, { replace: true })
+      } catch (err) {
+        setIsLoading(false)
+        setGeneralError(err.message || 'Gagal menyiapkan akses. Silakan coba lagi.')
+      }
+    }, 1100)
   }
 
   return (
-    <AuthCardWrapper type="register">
+    <AuthCardWrapper type="register" hideHeroOnMobile>
       {/* Brand Header */}
       <div className="flex items-center gap-2.5 mb-5 sm:mb-6">
         <img
@@ -57,14 +75,14 @@ export default function RegisterPage() {
           alt="Logo AksiLestari"
           className="w-7 h-7 sm:w-8 sm:h-8 object-contain"
         />
-        <span className="font-display font-bold text-xl sm:text-2xl text-[#22603B] tracking-tight">
+        <span className="font-display font-bold text-xl sm:text-2xl text-primary tracking-tight">
           AksiLestari
         </span>
       </div>
 
       {/* Page Title & Subtitle */}
       <div className="mb-5 sm:mb-6">
-        <h1 className="font-display text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+        <h1 className="font-display text-2xl sm:text-3xl font-normal text-gray-900 tracking-tight">
           Buat Akun Baru
         </h1>
         <p className="mt-1.5 text-xs sm:text-sm text-gray-500 leading-relaxed">
@@ -137,10 +155,29 @@ export default function RegisterPage() {
         {/* Submit Button */}
         <button
           type="submit"
-          className="mt-2 w-full py-3 sm:py-3.5 px-6 rounded-xl sm:rounded-2xl font-semibold text-sm sm:text-base text-white bg-[#22603B] hover:bg-[#1B4D2F] active:scale-[0.99] transition-all duration-200 shadow-md hover:shadow-lg shadow-[#22603B]/20 flex items-center justify-center gap-2 cursor-pointer"
+          disabled={isLoading}
+          className={`mt-2 w-full py-3 sm:py-3.5 px-6 rounded-full font-semibold text-sm sm:text-base text-white transition-all duration-200 shadow-md shadow-primary/20 flex items-center justify-center gap-2 select-none ${
+            isLoading
+              ? 'bg-[#C6CFC9] text-white/90 cursor-not-allowed shadow-none'
+              : 'bg-primary hover:bg-primary/90 active:scale-[0.99] hover:shadow-lg cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
+          }`}
+          aria-label="Daftar"
+          aria-disabled={isLoading}
         >
-          <span>Buat Akun</span>
-          <ArrowRightIcon className="w-4 h-4" />
+          {isLoading ? (
+            <>
+              <span
+                className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin shrink-0"
+                aria-hidden="true"
+              />
+              <span>Mendaftarkan...</span>
+            </>
+          ) : (
+            <>
+              <span>Daftar</span>
+              <ArrowRightIcon className="w-4 h-4" />
+            </>
+          )}
         </button>
       </form>
 
@@ -149,7 +186,8 @@ export default function RegisterPage() {
         Sudah punya akun?{' '}
         <Link
           to="/login"
-          className="font-bold text-[#22603B] hover:text-[#18462B] hover:underline transition-colors ml-0.5"
+          state={location.state}
+          className="font-bold text-primary hover:text-primary/80 hover:underline transition-colors ml-0.5"
         >
           Masuk
         </Link>

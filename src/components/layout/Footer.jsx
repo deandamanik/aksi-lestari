@@ -84,7 +84,7 @@ function Footer() {
                 </Link>
               </li>
               <li>
-                <span className="text-stone-600 hover:text-primary transition-colors cursor-pointer">
+                <span className="text-stone-500">
                   Kebijakan Privasi
                 </span>
               </li>

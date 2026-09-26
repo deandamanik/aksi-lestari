@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
-import { createPortal } from 'react-dom'
+import { useState, useRef, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useAuth } from '../../../hooks/useAuth'
 import AuthPromptModal from '../../../components/common/AuthPromptModal'
+import Modal from '../../../components/common/Modal'
 import {
   XIcon,
   CalendarIcon,
@@ -22,21 +22,16 @@ export default function ActionDetailModal({
   const { isAuthenticated } = useAuth()
   const location = useLocation()
   const [showAuthPrompt, setShowAuthPrompt] = useState(false)
+  const [isJoining, setIsJoining] = useState(false)
+  const joinTimerRef = useRef(null)
+
   useEffect(() => {
-    function handleKeyDown(e) {
-      if (e.key === 'Escape') {
-        onClose()
+    return () => {
+      if (joinTimerRef.current) {
+        clearTimeout(joinTimerRef.current)
       }
     }
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-      window.addEventListener('keydown', handleKeyDown)
-    }
-    return () => {
-      document.body.style.overflow = ''
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [isOpen, onClose])
+  }, [])
 
   if (!isOpen || !action) return null
 
@@ -46,40 +41,28 @@ export default function ActionDetailModal({
   )
   const isFull = action.participants >= action.capacity
 
-  return createPortal(
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3.5 sm:p-6 overflow-hidden"
-      role="region"
-      aria-label="Modal Rincian Aksi"
-    >
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-300 animate-in fade-in"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-
-      {/* Dialog */}
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="action-detail-title"
-        className="relative z-10 w-full max-w-[860px] bg-white rounded-2xl sm:rounded-3xl border border-border-warm shadow-xl overflow-hidden max-h-[85vh] flex flex-col animate-dialog-enter"
-        onClick={(e) => e.stopPropagation()}
+  return (
+    <>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        ariaLabelledBy="action-detail-title"
+        backdropClassName="bg-black/50"
+        className="w-full max-w-[860px] bg-white rounded-2xl sm:rounded-3xl border border-border-warm shadow-xl overflow-hidden max-h-[85vh] flex flex-col animate-dialog-enter"
       >
         {/* Modal Header (Fixed) */}
         <div className="p-6 sm:p-7 sm:px-8 border-b border-border-warm/60 relative shrink-0">
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-5 sm:top-6 right-5 sm:right-6 w-8 h-8 rounded-full flex items-center justify-center text-stone-400 hover:text-primary hover:bg-stone-100 transition-colors cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]"
+            className="absolute top-5 sm:top-6 right-5 sm:right-6 w-8 h-8 rounded-full flex items-center justify-center text-stone-400 hover:text-primary hover:bg-stone-100 transition-colors cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
             aria-label="Tutup rincian aksi"
           >
             <XIcon className="w-4 h-4" />
           </button>
 
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#22603B] font-body">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-primary font-body">
               {action.category}
             </span>
             {action.subCategory && action.subCategory !== action.category && (
@@ -111,7 +94,7 @@ export default function ActionDetailModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3.5 text-xs sm:text-[13px] font-body">
             {/* Left Col 1: Tanggal Pelaksanaan */}
             <div className="flex items-start gap-2.5">
-              <CalendarIcon className="w-4 h-4 text-[#22603B] shrink-0 mt-0.5" />
+              <CalendarIcon className="w-4 h-4 text-primary shrink-0 mt-0.5" />
               <div>
                 <span className="block text-[11px] text-stone-400 font-medium">
                   Tanggal Pelaksanaan
@@ -122,7 +105,7 @@ export default function ActionDetailModal({
 
             {/* Right Col 1: Waktu */}
             <div className="flex items-start gap-2.5">
-              <ClockIcon className="w-4 h-4 text-[#22603B] shrink-0 mt-0.5" />
+              <ClockIcon className="w-4 h-4 text-primary shrink-0 mt-0.5" />
               <div>
                 <span className="block text-[11px] text-stone-400 font-medium">
                   Waktu
@@ -133,7 +116,7 @@ export default function ActionDetailModal({
 
             {/* Left Col 2: Lokasi */}
             <div className="flex items-start gap-2.5">
-              <MapPinIcon className="w-4 h-4 text-[#22603B] shrink-0 mt-0.5" />
+              <MapPinIcon className="w-4 h-4 text-primary shrink-0 mt-0.5" />
               <div>
                 <span className="block text-[11px] text-stone-400 font-medium">
                   Lokasi
@@ -149,7 +132,7 @@ export default function ActionDetailModal({
 
             {/* Right Col 2: Reward Partisipasi */}
             <div className="flex items-start gap-2.5">
-              <ZapIcon className="w-4 h-4 text-[#22603B] shrink-0 mt-0.5" />
+              <ZapIcon className="w-4 h-4 text-primary shrink-0 mt-0.5" />
               <div>
                 <span className="block text-[11px] text-stone-400 font-medium">
                   Reward Partisipasi
@@ -172,7 +155,7 @@ export default function ActionDetailModal({
             </div>
             <div className="w-full h-1.5 bg-stone-100 rounded-full overflow-hidden">
               <div
-                className="h-full bg-[#22603B] rounded-full transition-all duration-300"
+                className="h-full bg-primary rounded-full transition-all duration-300"
                 style={{ width: `${percentFilled}%` }}
               />
             </div>
@@ -207,7 +190,7 @@ export default function ActionDetailModal({
                 Titik Kumpul (Meeting Point)
               </h3>
               <div className="flex items-start gap-2 text-xs sm:text-sm text-stone-700 font-medium">
-                <MapPinIcon className="w-4 h-4 text-[#22603B] shrink-0 mt-0.5" />
+                <MapPinIcon className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                 <span>{action.meetingPoint}</span>
               </div>
             </div>
@@ -222,7 +205,7 @@ export default function ActionDetailModal({
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-stone-600 font-body">
                 {action.equipment.map((item, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <CheckIcon className="w-3.5 h-3.5 text-[#22603B] shrink-0 mt-0.5" />
+                    <CheckIcon className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -239,54 +222,71 @@ export default function ActionDetailModal({
           )}
         </div>
 
-        {/* Modal Footer / Action CTA (Fixed) */}
-        <div className="px-4 sm:px-8 py-3 sm:py-3.5 bg-[#FAF9F4] border-t border-border-warm/70 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 shrink-0">
+        {/* Modal Footer / Action CTA (Consistent rounded-full & font-body) */}
+        <div className="px-5 sm:px-8 py-3.5 sm:py-4 bg-neutral border-t border-border-warm/70 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 sm:gap-3 shrink-0">
           <button
             type="button"
             onClick={onClose}
-            className="text-xs sm:text-[13px] font-normal text-stone-500 hover:text-stone-800 transition-colors cursor-pointer py-1 px-1 focus:outline-hidden focus-visible:underline shrink-0"
+            className="inline-flex items-center justify-center h-10 px-5 rounded-full bg-white hover:bg-stone-50 border border-border-warm text-stone-700 hover:text-primary text-xs sm:text-sm font-body font-semibold transition-all duration-180 active:scale-[0.98] cursor-pointer shadow-2xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary w-full sm:w-auto"
           >
             Tutup
           </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              if (!isJoined && !isFull) {
+          {isJoined ? (
+            <div className="inline-flex items-center justify-center gap-2 h-10 px-5 rounded-full bg-[#DCFCE7] text-[#15803D] border border-[#86EFAC] text-xs sm:text-sm font-body font-semibold select-none w-full sm:w-auto">
+              <CheckIcon className="w-3.5 h-3.5 text-[#15803D] animate-check-scale shrink-0" />
+              <span>Kamu Sudah Terdaftar</span>
+            </div>
+          ) : isFull ? (
+            <button
+              type="button"
+              disabled
+              className="inline-flex items-center justify-center h-10 px-5 rounded-full bg-stone-200 text-stone-500 border border-stone-300 text-xs sm:text-sm font-body font-semibold cursor-not-allowed w-full sm:w-auto"
+            >
+              Kuota Penuh
+            </button>
+          ) : (
+            <button
+              type="button"
+              disabled={isJoining}
+              onClick={() => {
                 if (!isAuthenticated) {
                   setShowAuthPrompt(true)
                   return
                 }
-                onJoin(action)
-              }
-            }}
-            disabled={isJoined || isFull}
-            className={`inline-flex items-center justify-center gap-1.5 h-9 sm:h-9.5 px-4 sm:px-5 rounded-xl text-xs sm:text-[13px] font-semibold font-body transition-all duration-180 max-[350px]:w-full ${
-              isJoined
-                ? 'bg-[#DCFCE7] text-[#15803D] border border-[#86EFAC] cursor-default'
-                : isFull
-                ? 'bg-stone-200 text-stone-500 border border-stone-300 cursor-not-allowed'
-                : 'bg-[#22603B] text-white hover:bg-[#17462A] shadow-2xs active:scale-[0.98] cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]'
-            }`}
-          >
-            {isJoined ? (
-              <>
-                <CheckIcon className="w-3.5 h-3.5 text-[#15803D] animate-check-scale shrink-0" />
-                <span>Kamu Sudah Terdaftar</span>
-              </>
-            ) : isFull ? (
-              <span>Kuota Penuh</span>
-            ) : (
-              <span>
-                Gabung Aksi Ini
-                {action.xpReward ? (
-                  <span className="font-normal opacity-85"> · +{action.xpReward} XP</span>
-                ) : null}
-              </span>
-            )}
-          </button>
+                if (isJoining) return
+                setIsJoining(true)
+                joinTimerRef.current = setTimeout(() => {
+                  onJoin(action)
+                  setIsJoining(false)
+                }, 850)
+              }}
+              className={`inline-flex items-center justify-center gap-1.5 h-10 px-6 rounded-full text-xs sm:text-sm font-body font-semibold transition-all duration-180 active:scale-[0.98] select-none w-full sm:w-auto ${
+                isJoining
+                  ? 'bg-[#C6CFC9] text-white/90 cursor-not-allowed shadow-none'
+                  : 'bg-primary text-white hover:bg-primary/90 cursor-pointer shadow-xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary'
+              }`}
+            >
+              {isJoining ? (
+                <>
+                  <span
+                    className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin shrink-0"
+                    aria-hidden="true"
+                  />
+                  <span>Mendaftarkan...</span>
+                </>
+              ) : (
+                <>
+                  <span>Gabung Aksi Ini</span>
+                  {action.xpReward ? (
+                    <span className="font-normal opacity-85 font-body"> · +{action.xpReward} XP</span>
+                  ) : null}
+                </>
+              )}
+            </button>
+          )}
         </div>
-      </div>
+      </Modal>
 
       <AuthPromptModal
         isOpen={showAuthPrompt}
@@ -296,7 +296,6 @@ export default function ActionDetailModal({
         returnTo={{ pathname: location.pathname, search: location.search, hash: location.hash }}
         intent={{ type: 'join-action', actionId: action.id }}
       />
-    </div>,
-    document.body
+    </>
   )
 }

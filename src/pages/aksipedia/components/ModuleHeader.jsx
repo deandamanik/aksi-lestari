@@ -1,17 +1,12 @@
 import { ClockIcon, BookOpenIcon, SparklesIcon } from '../../../components/common/Icons'
 
 function ModuleHeader({ module }) {
-  const { eyebrow, title, description, readTime, sectionsCount, level } = module
+  const { title, description, readTime, sectionsCount, level } = module
 
   return (
-    <header className="mb-10 text-center max-w-3xl mx-auto">
-      {/* Clean Eyebrow (No pill background) */}
-      <span className="text-xs font-bold tracking-widest uppercase text-secondary block mb-3 select-none">
-        {eyebrow}
-      </span>
-
+    <header className="mb-10 text-center max-w-3xl mx-auto lapor-enter-header">
       {/* Main Title in Quando Serif */}
-      <h1 className="font-display font-bold text-primary text-3xl sm:text-4xl lg:text-[2.625rem] tracking-tight mb-4 leading-tight">
+      <h1 className="font-display font-normal text-primary text-3xl sm:text-4xl lg:text-[2.625rem] tracking-tight mb-4 leading-tight">
         {title}
       </h1>
 

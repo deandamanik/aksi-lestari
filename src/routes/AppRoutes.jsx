@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 import LaporLayout from '../layouts/LaporLayout'
 import BerandaPage from '../pages/beranda/BerandaPage'
@@ -14,7 +14,6 @@ import LaporMandiriValidasiPage from '../pages/lapor/LaporMandiriValidasiPage'
 import LaporTrackingPage from '../pages/lapor/LaporTrackingPage'
 import PetaSampahPage from '../pages/peta-sampah/PetaSampahPage'
 import AksiPediaPage from '../pages/aksipedia/AksiPediaPage'
-import ModuleListPage from '../pages/aksipedia/ModuleListPage'
 import ModuleDetailPage from '../pages/aksipedia/ModuleDetailPage'
 import ModuleQuizPage from '../pages/aksipedia/ModuleQuizPage'
 import KomunitasPage from '../pages/komunitas/KomunitasPage'
@@ -40,7 +39,7 @@ function AppRoutes() {
           <Route path="/" element={<BerandaPage />} />
           <Route path="/peta-sampah" element={<PetaSampahPage />} />
           <Route path="/aksipedia" element={<AksiPediaPage />} />
-          <Route path="/aksipedia/modul" element={<ModuleListPage />} />
+          <Route path="/aksipedia/modul" element={<Navigate to="/aksipedia#modul" replace />} />
           <Route
             path="/aksipedia/modul/:moduleId"
             element={
@@ -51,7 +50,14 @@ function AppRoutes() {
           />
           <Route path="/aksipedia/modul/:moduleId/quiz" element={<ModuleQuizPage />} />
           <Route path="/komunitas" element={<KomunitasPage />} />
-          <Route path="/komunitas/leaderboard" element={<CommunityLeaderboardPage />} />
+          <Route
+            path="/komunitas/leaderboard"
+            element={
+              <AuthGate intent={{ type: 'open-leaderboard' }}>
+                <CommunityLeaderboardPage />
+              </AuthGate>
+            }
+          />
 
           {/* Profil Workspace routes — Protected by AuthGate */}
           <Route element={<AuthGate />}>
@@ -64,8 +70,7 @@ function AppRoutes() {
             </Route>
           </Route>
 
-          {/* Lapor flow — LaporLayout scopes LaporContext to these routes only.
-              Context resets automatically when the user navigates away. */}
+          {/* Lapor flow — LaporLayout houses LaporFlowGuard session guard for mid-flow routes */}
           <Route element={<LaporLayout />}>
             {/* Photo Entry — pre-flow, NO stepper */}
             <Route path="/lapor" element={<LaporPage />} />
@@ -102,6 +107,9 @@ function AppRoutes() {
         {/* Auth routes — Standalone full-screen with dedicated interactive card */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+
+        {/* Wildcard / 404 Fallback — Safely redirect unhandled routes to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   )

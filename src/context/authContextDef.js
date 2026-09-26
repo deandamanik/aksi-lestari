@@ -1,21 +1,15 @@
 import { createContext } from 'react'
+import { USER_PROFILE } from '../data/profil/userProfileData'
 
 export const AuthContext = createContext(null)
 
 /**
  * Single Demo Account: Invention 2026
- * Sourced directly from AksiLestari Profile baseline (userProfileData.js).
+ * Canonical source of truth for authenticated user and active profile state.
  */
 export const DEMO_USER = {
-  id: 'usr-001',
-  name: 'Invention 2026',
-  username: 'deann.lestari',
-  email: 'deann@aksilestari.id',
+  ...USER_PROFILE,
   role: 'Relawan Lestari',
-  avatar: null,
-  initials: 'I',
-  currentLevel: 'Level 12',
-  levelTierName: 'Peduli Aktif',
-  xp: 420,
   badge: 'Pelapor Aktif',
+  xp: USER_PROFILE.currentXP,
 }

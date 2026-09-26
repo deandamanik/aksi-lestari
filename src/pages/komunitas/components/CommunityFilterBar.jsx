@@ -5,11 +5,9 @@ import {
   MapPinIcon,
   LocateIcon,
   ChevronDownIcon,
-  FilterIcon,
   CheckIcon,
 } from '../../../components/common/Icons'
 import {
-  COMMUNITY_CATEGORIES,
   COMMUNITY_LOCATIONS,
 } from '../../../data/komunitas/communityActionsData'
 
@@ -45,10 +43,8 @@ function findClosestLocation(lat, lng) {
 export default function CommunityFilterBar({
   selectedLocation,
   onSelectLocation,
-  selectedCategories = [],
-  onToggleCategory,
-  onRemoveCategory,
-  onClearAllCategories,
+  selectedCategory = 'Semua',
+  onSelectCategory,
   searchQuery,
   onSearchChange,
 }) {
@@ -59,9 +55,6 @@ export default function CommunityFilterBar({
   const locationDropdownRef = useRef(null)
   const locationSearchInputRef = useRef(null)
 
-  const [isFilterOpen, setIsFilterOpen] = useState(false)
-  const filterDropdownRef = useRef(null)
-
   const closeLocationDropdown = () => {
     setIsLocationOpen(false)
     setLocationQuery('')
@@ -69,7 +62,6 @@ export default function CommunityFilterBar({
   }
 
   const toggleLocationDropdown = () => {
-    setIsFilterOpen(false)
     setIsLocationOpen((prev) => {
       const next = !prev
       if (!next) {
@@ -80,11 +72,6 @@ export default function CommunityFilterBar({
     })
   }
 
-  const toggleFilterDropdown = () => {
-    closeLocationDropdown()
-    setIsFilterOpen((prev) => !prev)
-  }
-
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -93,17 +80,10 @@ export default function CommunityFilterBar({
       ) {
         closeLocationDropdown()
       }
-      if (
-        filterDropdownRef.current &&
-        !filterDropdownRef.current.contains(event.target)
-      ) {
-        setIsFilterOpen(false)
-      }
     }
     function handleKeyDown(event) {
-      if (event.key === 'Escape') {
-        if (isLocationOpen) closeLocationDropdown()
-        if (isFilterOpen) setIsFilterOpen(false)
+      if (event.key === 'Escape' && isLocationOpen) {
+        closeLocationDropdown()
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
@@ -112,7 +92,7 @@ export default function CommunityFilterBar({
       document.removeEventListener('mousedown', handleClickOutside)
       document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [isLocationOpen, isFilterOpen])
+  }, [isLocationOpen])
 
   useEffect(() => {
     if (isLocationOpen) {
@@ -164,20 +144,27 @@ export default function CommunityFilterBar({
     })
   }, [locationQuery])
 
+  const categoriesList = useMemo(() => {
+    return [
+      { id: 'Semua', label: 'Semua Aksi' },
+      { id: 'Bersih Lingkungan', label: 'Bersih Lingkungan' },
+      { id: 'Pilah & Daur Ulang', label: 'Pilah & Daur Ulang' },
+      { id: 'Penghijauan Kota', label: 'Penghijauan Kota' },
+      { id: 'Edukasi Warga', label: 'Edukasi Warga' },
+    ]
+  }, [])
+
   return (
-    <section className="relative z-30 w-full pt-1 pb-5 sm:pb-6 overflow-visible">
-      {/* Two-row composition with clean, natural spacing */}
-      <div className="flex flex-col gap-3 sm:gap-3.5">
-        {/* ========================================================= */}
-        {/* ROW 1: Discovery Bar (Search + Inline Filter) + Location Selector */}
-        {/* ========================================================= */}
-        <div className="relative z-30 flex flex-col lg:flex-row items-stretch lg:items-center gap-3 sm:gap-3.5 lg:gap-4.5">
-          {/* Discovery Bar: Search Input (Flexible Width) + Inline Filter Trigger */}
-          <div className="flex-1 min-w-0">
+    <section className="relative z-30 w-full pt-1 pb-4 sm:pb-6 overflow-visible select-none">
+      <div className="flex flex-col gap-4">
+        {/* ROW 1: Expanded Search Field + Location Selector Dropdown */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+          {/* Expanded Search Field (matching AksiPedia style, fills flexible row width) */}
+          <div className="relative flex-1 min-w-0">
             <label htmlFor="community-search-input" className="sr-only">
               Cari kegiatan lingkungan
             </label>
-            <div className="relative flex items-center w-full h-12 sm:h-[50px] rounded-2xl bg-white border border-border-warm shadow-2xs transition-all focus-within:border-[#22603B] focus-within:ring-2 focus-within:ring-[#22603B]/10">
+            <div className="relative flex items-center w-full h-11 sm:h-12 rounded-full bg-white border border-border-warm shadow-2xs transition-all focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10">
               <div className="pl-4 sm:pl-4.5 flex items-center pointer-events-none text-stone-400 shrink-0">
                 <SearchIcon className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
               </div>
@@ -190,215 +177,99 @@ export default function CommunityFilterBar({
                   if (e.key === 'Escape') onSearchChange('')
                 }}
                 placeholder="Cari kegiatan lingkungan..."
-                className="flex-1 min-w-0 h-full pl-3 pr-2 bg-transparent text-sm sm:text-[15px] font-body text-primary placeholder:text-stone-400 focus:outline-hidden"
+                className="flex-1 min-w-0 h-full pl-3 pr-9 bg-transparent text-xs sm:text-sm font-body text-primary placeholder:text-stone-400 focus:outline-hidden"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => onSearchChange('')}
-                  className="p-1.5 text-stone-400 hover:text-primary transition-colors cursor-pointer shrink-0"
+                  className="absolute right-3.5 p-1 text-stone-400 hover:text-primary transition-colors cursor-pointer"
                   aria-label="Hapus teks pencarian"
                   title="Hapus pencarian (Esc)"
                 >
-                  <XIcon className="w-4 h-4" />
+                  <XIcon className="w-3.5 h-3.5" />
                 </button>
               )}
-
-              {/* Subtle Short Vertical Divider */}
-              <div className="w-px h-5 bg-border-warm/70 shrink-0 mx-1" aria-hidden="true" />
-
-              {/* Inline Filter Trigger & Popover Wrapper */}
-              <div className="relative shrink-0 mr-1.5 sm:mr-2" ref={filterDropdownRef}>
-                <button
-                  type="button"
-                  onClick={toggleFilterDropdown}
-                  className={`inline-flex items-center gap-1.5 h-8 sm:h-8.5 px-2.5 sm:px-3 rounded-xl text-xs sm:text-[13px] font-semibold font-body transition-colors select-none cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] ${
-                    selectedCategories.length > 0
-                      ? 'text-[#22603B] bg-[#FAF9F4] font-bold border border-[#22603B]/20'
-                      : 'text-stone-600 hover:text-primary hover:bg-[#FAF9F4]'
-                  }`}
-                  aria-expanded={isFilterOpen}
-                  aria-haspopup="dialog"
-                >
-                  <FilterIcon
-                    className={`w-3.5 h-3.5 shrink-0 ${
-                      selectedCategories.length > 0 ? 'text-[#22603B]' : 'text-stone-400'
-                    }`}
-                  />
-                  <span>
-                    Filter{selectedCategories.length > 0 ? ` ${selectedCategories.length}` : ''}
-                  </span>
-                  <ChevronDownIcon
-                    className={`w-3 h-3 text-stone-400 shrink-0 transition-transform duration-200 ${
-                      isFilterOpen ? 'rotate-180 text-[#22603B]' : ''
-                    }`}
-                  />
-                </button>
-
-                {/* Filter Panel / Dropdown (Positioned directly below Filter trigger, aligned right) */}
-                {isFilterOpen && (
-                  <div
-                    className="absolute top-full right-0 mt-2 z-40 w-64 sm:w-72 bg-white rounded-2xl border border-border-warm shadow-[0_12px_36px_rgba(0,0,0,0.1)] p-3 animate-popover-enter"
-                    role="dialog"
-                    aria-label="Filter Kategori Kegiatan"
-                  >
-                    <div className="text-[10px] font-bold text-stone-400 uppercase tracking-wider px-1 mb-1">
-                      FILTER
-                    </div>
-                    <div className="text-xs font-bold text-primary px-1 mb-2.5">
-                      Kategori kegiatan
-                    </div>
-
-                    <div className="space-y-1">
-                      {COMMUNITY_CATEGORIES.map((cat) => {
-                        const isChecked = selectedCategories.includes(cat)
-                        return (
-                          <label
-                            key={cat}
-                            className="flex items-center gap-2.5 px-2 py-1.5 rounded-xl hover:bg-[#FAF9F4] transition-colors cursor-pointer select-none text-xs font-medium text-stone-700"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={isChecked}
-                              onChange={() => onToggleCategory(cat)}
-                              className="w-4 h-4 rounded-md border-border-warm text-[#22603B] focus:ring-[#22603B]/20 accent-[#22603B] cursor-pointer"
-                            />
-                            <span
-                              className={
-                                isChecked
-                                  ? 'font-bold text-[#22603B]'
-                                  : 'text-stone-700'
-                              }
-                            >
-                              {cat}
-                            </span>
-                          </label>
-                        )
-                      })}
-                    </div>
-
-                    {/* Footer: Reset & Tutup */}
-                    <div className="pt-2 mt-2 border-t border-border-warm/60 flex items-center justify-between px-1">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          onClearAllCategories()
-                          setIsFilterOpen(false)
-                        }}
-                        className="text-[10px] font-normal leading-tight text-stone-500 hover:text-stone-700 transition-colors cursor-pointer"
-                      >
-                        Reset
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setIsFilterOpen(false)}
-                        className="text-[10px] font-normal leading-tight text-[#22603B] hover:text-[#18482b] transition-colors cursor-pointer"
-                      >
-                        Tutup
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
             </div>
           </div>
 
-          {/* Location Selector - Natural Width with Tight Spacing */}
-          <div
-            className="w-full lg:w-72 xl:w-80 shrink-0 relative z-30"
-            ref={locationDropdownRef}
-          >
+          {/* Location Selector Dropdown */}
+          <div className="relative shrink-0" ref={locationDropdownRef}>
             <button
               type="button"
               onClick={toggleLocationDropdown}
-              className="w-full h-12 sm:h-[50px] flex items-center justify-between gap-3 px-3.5 sm:px-4 rounded-2xl bg-white border border-border-warm shadow-2xs hover:border-[#22603B]/40 transition-all duration-180 active:scale-[0.99] text-left cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]"
+              className="inline-flex items-center justify-between sm:justify-start gap-2.5 h-11 sm:h-12 px-4.5 sm:px-5 rounded-full bg-white border border-border-warm text-xs sm:text-sm font-semibold text-primary hover:border-primary/40 transition-colors shadow-2xs cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary w-full sm:w-auto"
               aria-expanded={isLocationOpen}
               aria-haspopup="dialog"
             >
-              <MapPinIcon className="w-4 h-4 text-[#22603B] shrink-0" />
-              <div className="flex flex-col min-w-0 flex-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400 leading-tight">
-                  LOKASI PENCARIAN
-                </span>
-                <span className="font-bold text-primary text-xs sm:text-[13px] leading-tight truncate mt-0.5 font-body">
-                  {selectedLocation}
-                </span>
+              <div className="flex items-center gap-2 truncate">
+                <MapPinIcon className="w-3.5 h-3.5 text-secondary shrink-0" />
+                <span className="truncate">{selectedLocation}</span>
               </div>
               <ChevronDownIcon
                 className={`w-3.5 h-3.5 text-stone-400 shrink-0 transition-transform duration-200 ${
-                  isLocationOpen ? 'rotate-180 text-[#22603B]' : ''
+                  isLocationOpen ? 'rotate-180 text-primary' : ''
                 }`}
               />
             </button>
 
-            {/* Location Dropdown Menu */}
+            {/* Location Dropdown Modal / Popover */}
             {isLocationOpen && (
               <div
-                className="absolute top-full right-0 mt-2 z-40 w-full bg-white rounded-2xl border border-border-warm shadow-[0_12px_36px_rgba(0,0,0,0.1)] p-3 animate-popover-enter"
                 role="dialog"
-                aria-label="Pilih Lokasi Kegiatan"
+                aria-label="Pilih Lokasi"
+                className="absolute top-[calc(100%+8px)] right-0 z-50 w-full sm:w-80 bg-white rounded-2xl border border-border-warm shadow-xl p-4 animate-content-rise"
               >
-                {/* Heading */}
-                <div className="text-[10px] font-bold text-stone-400 uppercase tracking-wider px-1 mb-1">
-                  LOKASI
-                </div>
-                <div className="text-xs font-bold text-primary px-1 mb-2">
-                  Lokasi kegiatan
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <h4 className="font-display text-primary text-sm font-bold">
+                    Pilih Lokasi Aksi
+                  </h4>
+                  <button
+                    type="button"
+                    onClick={closeLocationDropdown}
+                    className="p-1 text-stone-400 hover:text-primary transition-colors cursor-pointer"
+                    aria-label="Tutup pemilih lokasi"
+                  >
+                    <XIcon className="w-4 h-4" />
+                  </button>
                 </div>
 
-                {/* Search Input */}
-                <div className="relative flex items-center mb-1.5">
-                  <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-stone-400">
-                    <SearchIcon className="w-3.5 h-3.5" />
-                  </div>
+                {/* Quick Geolocation Trigger */}
+                <button
+                  type="button"
+                  onClick={handleUseCurrentLocation}
+                  disabled={isLoadingGeo}
+                  className="w-full flex items-center justify-center gap-2 h-9 px-3 rounded-xl bg-neutral hover:bg-neutral/80 border border-border-warm text-xs font-semibold text-primary transition-colors cursor-pointer mb-3 disabled:opacity-60"
+                >
+                  <LocateIcon
+                    className={`w-3.5 h-3.5 text-secondary ${isLoadingGeo ? 'animate-spin' : ''}`}
+                  />
+                  <span>
+                    {isLoadingGeo ? 'Mendeteksi lokasi...' : 'Gunakan Lokasiku Saat Ini'}
+                  </span>
+                </button>
+
+                {geoFeedback && (
+                  <p className="text-[11px] text-amber-700 bg-amber-50 rounded-lg p-2 mb-2 leading-relaxed font-body">
+                    {geoFeedback}
+                  </p>
+                )}
+
+                {/* Location Search Input */}
+                <div className="relative mb-2.5">
+                  <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-stone-400 pointer-events-none" />
                   <input
                     ref={locationSearchInputRef}
                     type="text"
                     value={locationQuery}
                     onChange={(e) => setLocationQuery(e.target.value)}
-                    placeholder="Cari kecamatan / kota..."
-                    className="w-full h-8 pl-8 pr-7 rounded-xl bg-stone-50/80 border border-border-warm text-xs text-primary placeholder:text-stone-400 focus:outline-hidden focus:border-[#22603B] focus:bg-white transition-all font-body"
+                    placeholder="Cari kecamatan..."
+                    className="w-full h-8 pl-8 pr-3 text-xs bg-stone-50 border border-border-warm rounded-lg focus:outline-hidden focus:border-primary text-primary"
                   />
-                  {locationQuery && (
-                    <button
-                      type="button"
-                      onClick={() => setLocationQuery('')}
-                      className="absolute inset-y-0 right-0 pr-2 flex items-center text-stone-400 hover:text-primary transition-colors cursor-pointer"
-                      aria-label="Hapus filter lokasi"
-                    >
-                      <XIcon className="w-3.5 h-3.5" />
-                    </button>
-                  )}
                 </div>
 
-                {/* Auto Geolocation Trigger (Clean actionable row, no dashed border) */}
-                <button
-                  type="button"
-                  onClick={handleUseCurrentLocation}
-                  disabled={isLoadingGeo}
-                  className="w-full flex items-center gap-2 px-2 py-1.5 rounded-xl text-xs font-medium text-[#22603B] hover:bg-[#FAF9F4] transition-colors cursor-pointer disabled:opacity-50 select-none text-left font-body mb-1"
-                >
-                  <LocateIcon
-                    className={`w-3.5 h-3.5 shrink-0 text-[#22603B] ${
-                      isLoadingGeo ? 'animate-spin' : ''
-                    }`}
-                  />
-                  <span className="truncate">
-                    {isLoadingGeo
-                      ? 'Mendeteksi lokasi...'
-                      : 'Gunakan lokasi perangkat saya'}
-                  </span>
-                </button>
-
-                {/* Geolocation feedback / error message */}
-                {geoFeedback && (
-                  <div className="px-2 py-1 mb-1 text-[11px] text-amber-700 bg-amber-50 rounded-lg">
-                    {geoFeedback}
-                  </div>
-                )}
-
                 {/* Location List */}
-                <div className="max-h-52 overflow-y-auto space-y-0.5 pr-0.5 no-scrollbar">
+                <div className="max-h-48 overflow-y-auto space-y-1 pr-0.5">
                   {filteredLocations.map((loc) => {
                     const isSelected = selectedLocation === loc.name
                     return (
@@ -409,102 +280,57 @@ export default function CommunityFilterBar({
                           onSelectLocation(loc.name)
                           closeLocationDropdown()
                         }}
-                        className={`w-full flex items-center justify-between px-2 py-1.5 rounded-xl text-xs text-left transition-colors cursor-pointer select-none font-body ${
+                        className={`w-full flex items-center justify-between p-2 rounded-lg text-left text-xs transition-colors cursor-pointer ${
                           isSelected
-                            ? 'bg-[#FAF9F4] text-[#22603B]'
-                            : 'hover:bg-[#FAF9F4] text-stone-700'
+                            ? 'bg-neutral text-primary font-bold'
+                            : 'hover:bg-stone-50 text-stone-700'
                         }`}
                       >
                         <div className="flex flex-col min-w-0 pr-2">
-                          <span
-                            className={`truncate leading-snug ${
-                              isSelected
-                                ? 'font-bold text-[#22603B]'
-                                : 'font-medium text-stone-700'
-                            }`}
-                          >
-                            {loc.name}
-                          </span>
+                          <span className="truncate">{loc.name}</span>
                           {loc.region && (
-                            <span
-                              className={`text-[10px] leading-tight ${
-                                isSelected ? 'text-[#22603B]/70' : 'text-stone-400'
-                              }`}
-                            >
-                              {loc.region}
-                            </span>
+                            <span className="text-[10px] text-stone-400">{loc.region}</span>
                           )}
                         </div>
-                        {isSelected && (
-                          <CheckIcon className="w-3.5 h-3.5 shrink-0 text-[#22603B]" />
-                        )}
+                        {isSelected && <CheckIcon className="w-3.5 h-3.5 text-secondary shrink-0" />}
                       </button>
                     )
                   })}
-                  {filteredLocations.length === 0 && (
-                    <div className="px-2 py-3 text-center text-xs text-stone-500">
-                      <span>Lokasi tidak ditemukan.</span>
-                      <p className="text-[10px] text-stone-400 mt-0.5">
-                        Coba cari nama kota atau kecamatan lain.
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Footer: Tutup */}
-                <div className="pt-2 mt-2 border-t border-border-warm/60 flex items-center justify-end px-1">
-                  <button
-                    type="button"
-                    onClick={closeLocationDropdown}
-                    className="text-[10px] font-normal leading-tight text-[#22603B] hover:text-[#18482b] transition-colors cursor-pointer"
-                  >
-                    Tutup
-                  </button>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* ========================================================= */}
-        {/* ROW 2: Active Filter Tags (Only rendered when active) */}
-        {/* ========================================================= */}
-        {selectedCategories.length > 0 && (
-          <div className="relative z-20 flex items-center gap-2 flex-wrap min-w-0 pt-0.5">
-            <span className="text-xs text-stone-400 font-medium shrink-0">
-              Filter aktif:
-            </span>
+        {/* ROW 2: Category Filter Pills (Natural, unforced, smooth horizontal scroll matching AksiPedia) */}
+        <div className="w-full overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 pt-0.5">
+          <nav
+            aria-label="Filter Kategori Aksi"
+            className="flex items-center gap-2 sm:gap-2.5 min-w-max pb-1"
+          >
+            {categoriesList.map((cat) => {
+              const isActive =
+                selectedCategory === cat.id ||
+                (cat.id === 'Semua' && (selectedCategory === 'Semua Aksi' || !selectedCategory))
 
-            {selectedCategories.map((cat) => (
-              <span
-                key={cat}
-                className="inline-flex items-center gap-1.5 h-7 pl-2.5 pr-1.5 rounded-lg bg-[#FAF9F4] border border-[#22603B]/20 text-[#22603B] text-xs font-semibold select-none"
-              >
-                <span>{cat}</span>
+              return (
                 <button
+                  key={cat.id}
                   type="button"
-                  onClick={() => onRemoveCategory(cat)}
-                  className="w-4 h-4 rounded-full flex items-center justify-center text-stone-400 hover:text-stone-700 hover:bg-[#22603B]/10 transition-colors cursor-pointer"
-                  aria-label={`Hapus filter ${cat}`}
-                  title={`Hapus filter ${cat}`}
+                  onClick={() => onSelectCategory(cat.id)}
+                  className={`px-4 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-150 cursor-pointer select-none whitespace-nowrap shrink-0 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary ${
+                    isActive
+                      ? 'bg-primary text-white font-semibold shadow-xs'
+                      : 'bg-white border border-border-warm text-stone-700 hover:bg-stone-50 hover:border-primary/40'
+                  }`}
+                  aria-pressed={isActive}
                 >
-                  <XIcon className="w-3 h-3" />
+                  {cat.label}
                 </button>
-              </span>
-            ))}
-
-            {/* Clear All action if more than 1 active filter */}
-            {selectedCategories.length > 1 && (
-              <button
-                type="button"
-                onClick={onClearAllCategories}
-                className="text-xs text-stone-500 hover:text-[#22603B] hover:underline cursor-pointer transition-colors ml-0.5"
-              >
-                Hapus semua filter
-              </button>
-            )}
-          </div>
-        )}
+              )
+            })}
+          </nav>
+        </div>
       </div>
     </section>
   )

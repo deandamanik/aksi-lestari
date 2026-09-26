@@ -1,40 +1,35 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import {
   CameraIcon,
   UploadIcon,
   CheckIcon,
   RefreshCwIcon,
   AlertCircleIcon,
+  CropIcon,
 } from '../../../components/common/Icons'
+import { formatFileSize } from '../../../utils/formatters'
+import { useObjectURL } from '../../../hooks/useObjectURL'
+import PhotoCropModal from './PhotoCropModal'
 
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024 // 10 MB
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp']
 
-function formatFileSize(bytes) {
-  if (!bytes || bytes === 0) return '0 B'
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  const formatted = parseFloat((bytes / Math.pow(k, i)).toFixed(1))
-  return `${formatted} ${sizes[i]}`
-}
-
 const SIZE_CONFIGS = {
   compact: {
-    previewHeight: 'h-48 sm:h-56',
+    previewAspect: 'w-full aspect-[4/3]',
     emptyPadding: 'p-6 sm:p-8',
     previewPadding: 'p-3.5 sm:p-4',
     cardRadius: 'rounded-2xl',
   },
   default: {
-    previewHeight: 'h-64 sm:h-76',
+    previewAspect: 'w-full aspect-[4/3]',
     emptyPadding: 'p-8 sm:p-10 lg:p-12',
     previewPadding: 'p-5 sm:p-6',
     cardRadius: 'rounded-3xl',
   },
   large: {
-    previewHeight: 'h-72 sm:h-88',
+    previewAspect: 'w-full aspect-[4/3]',
     emptyPadding: 'p-10 sm:p-12 lg:p-16',
     previewPadding: 'p-6 sm:p-8',
     cardRadius: 'rounded-3xl',
@@ -48,56 +43,53 @@ const SIZE_CONFIGS = {
  * - Empty state with drag-and-drop, camera trigger, and device file picker
  * - Proportional uncropped preview with status feedback, metadata, and replacement action
  * - Size variations (compact, default, large)
- * - Safe local object URL lifecycle management
+ * - Safe local object URL lifecycle management via useObjectURL hook
  */
 function PhotoUploadCard({
-  file,
-  selectedFile,
-  photo,
-  onFileSelect,
-  onFileChange,
+  value = null,
+  onChange,
   onReplace,
-  onChangePhoto,
   title = 'Ambil atau Unggah Foto',
   helperText = 'Pastikan kondisi sampah terlihat jelas dan dapat diidentifikasi.',
   statusText = 'Foto berhasil ditambahkan',
   size = 'default',
   borderStyle = 'dashed',
   readOnly = false,
+  allowCrop = true,
   className = '',
 }) {
-  // Normalize file inputs (supports raw File, selectedFile prop, or reportData photo object)
-  const fileCandidate = file || selectedFile || photo
-  const activeFile = fileCandidate instanceof File ? fileCandidate : fileCandidate?.file || null
-  const directUrl = typeof fileCandidate === 'string' ? fileCandidate : fileCandidate?.url || null
-  const activeFileName = (fileCandidate instanceof File ? fileCandidate.name : fileCandidate?.fileName) || activeFile?.name || ''
-  const activeFileSize = (fileCandidate instanceof File ? fileCandidate.size : fileCandidate?.fileSize) || activeFile?.size || 0
-
-  const handleSelect = onFileSelect || onFileChange
-  const handleChangeAction = onReplace || onChangePhoto
+  const activeFile = value instanceof File ? value : null
+  const activeFileName = activeFile?.name || ''
+  const activeFileSize = activeFile?.size || 0
 
   const [isDragging, setIsDragging] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-  const [previewUrl, setPreviewUrl] = useState(null)
   const [failedFile, setFailedFile] = useState(null)
+  const [isCropModalOpen, setIsCropModalOpen] = useState(false)
+  const [originalFile, setOriginalFile] = useState(null)
+  const [lastCropState, setLastCropState] = useState(null)
+
+  // Use the stored full original file so repeated edits never crop an already-cropped file
+  const sourceFileForCrop = originalFile || activeFile
+
+  const handleApplyCrop = useCallback(
+    (croppedFile, cropState) => {
+      if (!originalFile && activeFile) {
+        setOriginalFile(activeFile)
+      }
+      setLastCropState(cropState)
+      if (onChange) {
+        onChange(croppedFile)
+      }
+    },
+    [activeFile, onChange, originalFile]
+  )
 
   const fileInputRef = useRef(null)
   const cameraInputRef = useRef(null)
 
-  useEffect(() => {
-    if (directUrl || !activeFile) return
-
-    const url = URL.createObjectURL(activeFile)
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- Synchronizing temporary DOM Blob URL with File object lifecycle
-    setPreviewUrl(url)
-
-    return () => {
-      URL.revokeObjectURL(url)
-    }
-  }, [activeFile, directUrl])
-
-  const activeUrl = directUrl || (activeFile ? previewUrl : null)
-  const hasError = Boolean((activeFile || directUrl) && failedFile === (activeFile || directUrl))
+  const activeUrl = useObjectURL(activeFile)
+  const hasError = Boolean(activeFile && failedFile === activeFile)
   const hasPhoto = Boolean(activeUrl && !hasError)
 
   const validateAndProcessFile = useCallback(
@@ -121,11 +113,14 @@ function PhotoUploadCard({
         return
       }
 
-      if (handleSelect) {
-        handleSelect(newFile)
+      setOriginalFile(newFile)
+      setLastCropState(null)
+
+      if (onChange) {
+        onChange(newFile)
       }
     },
-    [handleSelect]
+    [onChange]
   )
 
   const handleFileInputChange = (e) => {
@@ -175,24 +170,24 @@ function PhotoUploadCard({
   }
 
   const handleTriggerUpload = () => {
-    if (handleChangeAction) {
-      handleChangeAction()
+    if (onReplace) {
+      onReplace()
     } else {
       fileInputRef.current?.click()
     }
   }
 
   const sizeStyles = SIZE_CONFIGS[size] || SIZE_CONFIGS.default
-  const canChange = Boolean(handleChangeAction || (!readOnly && handleSelect))
+  const canChange = Boolean(onReplace || (!readOnly && onChange))
 
   const borderClasses = isDragging
     ? 'border-2 border-dashed border-primary bg-primary/[0.02] shadow-[0_8px_30px_rgba(34,96,59,0.08)]'
     : borderStyle === 'solid'
-      ? 'border border-[#E8E5DC] shadow-xs'
+      ? 'border border-border-warm shadow-xs'
       : 'border-2 border-dashed border-stone-300 hover:border-primary/40 shadow-[0_4px_24px_rgba(0,0,0,0.02)]'
 
   return (
-    <div className={`w-full ${className}`}>
+    <div className={`w-full self-start ${className}`.trim()}>
       {/* Hidden Native File & Camera Inputs (when not readOnly) */}
       {!readOnly && (
         <>
@@ -254,7 +249,7 @@ function PhotoUploadCard({
                 <button
                   type="button"
                   onClick={handleTriggerCamera}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-11 px-6 rounded-full bg-primary hover:bg-[#1A4B2E] text-white font-semibold text-sm transition-colors shadow-xs active:scale-[0.98] cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 select-none"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-11 px-6 rounded-full bg-primary hover:bg-primary/90 text-white font-semibold text-sm transition-colors shadow-xs active:scale-[0.98] cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 select-none"
                   aria-label="Ambil Foto"
                 >
                   <CameraIcon className="w-4.5 h-4.5" strokeWidth={2} />
@@ -295,34 +290,100 @@ function PhotoUploadCard({
             )}
           </div>
         ) : (
-          /* Preview State: Proportional Image, Divider, Status, Ganti Foto, Metadata */
+          /* Preview State: Standardized 4:3 Frame, Divider, Status, Sesuaikan Foto, Ganti Foto, Metadata */
           <div className="flex flex-col">
-            {/* Inner Image Container — constrained, proportional, uncropped */}
+            {/* Inner Image Container — Standardized 4:3 Aspect Ratio Frame */}
             <div
-              className={`w-full relative rounded-2xl overflow-hidden border border-stone-200/80 bg-stone-50/70 flex items-center justify-center p-2 shadow-xs ${sizeStyles.previewHeight}`}
+              onClick={allowCrop && activeFile && !readOnly ? () => setIsCropModalOpen(true) : undefined}
+              className={`w-full ${sizeStyles.previewAspect || 'aspect-[4/3]'} relative rounded-2xl overflow-hidden border border-border-warm bg-neutral shadow-2xs group select-none ${
+                allowCrop && activeFile && !readOnly ? 'cursor-pointer' : ''
+              }`}
             >
               <img
                 src={activeUrl}
-                alt="Pratinjau foto"
-                onError={() => setFailedFile(activeFile || directUrl)}
-                className="max-h-full max-w-full w-auto h-auto object-contain rounded-xl select-none"
+                alt="Pratinjau foto rasio 4:3"
+                onError={() => setFailedFile(activeFile)}
+                className="w-full h-full object-cover select-none transition-transform duration-300 group-hover:scale-[1.01]"
               />
+
+              {/* 4:3 Frame Camera Brackets */}
+              <div className="absolute top-2.5 left-2.5 w-3.5 h-3.5 border-t-2 border-l-2 border-white/80 drop-shadow-xs pointer-events-none" />
+              <div className="absolute top-2.5 right-2.5 w-3.5 h-3.5 border-t-2 border-r-2 border-white/80 drop-shadow-xs pointer-events-none" />
+              <div className="absolute bottom-2.5 left-2.5 w-3.5 h-3.5 border-b-2 border-l-2 border-white/80 drop-shadow-xs pointer-events-none" />
+              <div className="absolute bottom-2.5 right-2.5 w-3.5 h-3.5 border-b-2 border-r-2 border-white/80 drop-shadow-xs pointer-events-none" />
+
+              {/* Badge Rasio 4:3 — Clean Light Token Style */}
+              <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs text-stone-700 px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider uppercase pointer-events-none select-none border border-border-warm shadow-2xs">
+                Rasio 4:3
+              </div>
+
+              {/* Desktop Hover Overlay: appears ONLY on hover with on-brand light glass styling */}
+              {allowCrop && activeFile && !readOnly && (
+                <div className="absolute inset-0 bg-primary/10 backdrop-blur-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 hidden sm:flex items-center justify-center pointer-events-none">
+                  <span className="bg-white/95 backdrop-blur-xs text-primary text-xs font-semibold px-4 py-2 rounded-full shadow-md border border-border-warm flex items-center gap-2">
+                    <CropIcon className="w-3.5 h-3.5 text-primary" strokeWidth={2.2} />
+                    <span>Klik untuk Sesuaikan Posisi Foto</span>
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Status & Metadata & Change Action Stack */}
-            <div className="mt-4 pt-3.5 border-t border-stone-100 flex flex-col gap-1">
-              {/* Row 1: Left = Status Text, Right = Ganti Foto */}
+            <div className="mt-4 pt-3.5 border-t border-stone-100 flex flex-col gap-2">
+              {/* Row 1: Status & Info (Desktop: flex with Ganti Foto; Mobile: Status + File Size) */}
               <div className="flex items-center justify-between gap-3">
-                <div className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-secondary select-none">
+                <div className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-secondary select-none min-w-0">
                   <CheckIcon className="w-4 h-4 text-secondary shrink-0" strokeWidth={2.5} />
-                  <span>{statusText}</span>
+                  <span className="truncate">{statusText}</span>
                 </div>
+
+                {/* Desktop: Ganti Foto sits here */}
+                {canChange && (
+                  <button
+                    type="button"
+                    onClick={handleTriggerUpload}
+                    className="hidden sm:inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-primary hover:text-primary/80 transition-colors underline underline-offset-4 decoration-primary/40 hover:decoration-primary cursor-pointer shrink-0 select-none"
+                    aria-label="Ganti foto"
+                  >
+                    <RefreshCwIcon className="w-3.5 h-3.5" strokeWidth={2} />
+                    <span>Ganti Foto</span>
+                  </button>
+                )}
+
+                {/* Mobile: File Size text on right */}
+                {activeFileSize && (
+                  <span className="sm:hidden text-[11px] text-stone-400 font-medium shrink-0">
+                    {formatFileSize(activeFileSize)}
+                  </span>
+                )}
+              </div>
+
+              {/* Filename details */}
+              {activeFileName && (
+                <p className="text-[11px] sm:text-xs text-stone-500 font-medium truncate max-w-sm sm:max-w-md -mt-0.5">
+                  {activeFileName} <span className="hidden sm:inline">{activeFileSize ? `· ${formatFileSize(activeFileSize)}` : ''}</span>
+                </p>
+              )}
+
+              {/* Mobile-Only Action Row: Spacious, easy-to-tap dual actions */}
+              <div className="sm:hidden flex items-center justify-between gap-3 pt-2 mt-0.5 border-t border-stone-100">
+                {allowCrop && activeFile && !readOnly ? (
+                  <button
+                    type="button"
+                    onClick={() => setIsCropModalOpen(true)}
+                    className="inline-flex items-center gap-1.5 py-1.5 text-xs font-semibold text-stone-600 hover:text-primary transition-colors underline underline-offset-4 decoration-stone-300 hover:decoration-primary cursor-pointer select-none active:scale-[0.98]"
+                    aria-label="Sesuaikan posisi foto"
+                  >
+                    <CropIcon className="w-3.5 h-3.5 text-primary" strokeWidth={2.2} />
+                    <span>Sesuaikan Foto</span>
+                  </button>
+                ) : <div />}
 
                 {canChange && (
                   <button
                     type="button"
                     onClick={handleTriggerUpload}
-                    className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-primary hover:text-primary/80 transition-colors underline underline-offset-4 decoration-primary/40 hover:decoration-primary cursor-pointer shrink-0 select-none"
+                    className="inline-flex items-center gap-1.5 py-1.5 text-xs font-semibold text-primary hover:text-primary/80 transition-colors underline underline-offset-4 decoration-primary/40 cursor-pointer shrink-0 select-none active:scale-[0.98]"
                     aria-label="Ganti foto"
                   >
                     <RefreshCwIcon className="w-3.5 h-3.5" strokeWidth={2} />
@@ -330,13 +391,6 @@ function PhotoUploadCard({
                   </button>
                 )}
               </div>
-
-              {/* Row 2: Filename + Size directly below */}
-              {activeFileName && (
-                <p className="text-xs text-stone-500 font-medium truncate max-w-sm sm:max-w-md">
-                  {activeFileName} {activeFileSize ? `· ${formatFileSize(activeFileSize)}` : ''}
-                </p>
-              )}
             </div>
           </div>
         )}
@@ -350,6 +404,17 @@ function PhotoUploadCard({
             <AlertCircleIcon className="w-4.5 h-4.5 shrink-0 text-red-500" strokeWidth={2} />
             <span className="font-medium">{errorMessage}</span>
           </div>
+        )}
+
+        {/* Interactive 4:3 Crop & Frame Modal */}
+        {allowCrop && sourceFileForCrop && !readOnly && (
+          <PhotoCropModal
+            isOpen={isCropModalOpen}
+            onClose={() => setIsCropModalOpen(false)}
+            file={sourceFileForCrop}
+            initialCrop={lastCropState}
+            onApplyCrop={handleApplyCrop}
+          />
         )}
       </div>
     </div>

@@ -1,109 +1,162 @@
-import {
-  CheckCircle2Icon,
-  InfoIcon,
-} from '../../../components/common/Icons'
 import { DEFAULT_SCAN_RESULT } from '../../../data/aksipedia/wasteScanResultData'
+import { useInView } from '../../../hooks/useInView'
 
-function ScanResultSection({ uploadedImage, onResetScan }) {
+function ScanResultSection({ uploadedImage }) {
   const result = DEFAULT_SCAN_RESULT
+  const [charRef, charInView] = useInView({ threshold: 0.08 })
+  const baseTransition = 'transition-all duration-700 ease-out will-change-[opacity,transform]'
+
+  const contextualItems = [
+    result.commonUsage && {
+      label: 'PENGGUNAAN UMUM',
+      value: result.commonUsage,
+    },
+    result.idealCondition && {
+      label: 'KONDISI IDEAL',
+      value: result.idealCondition,
+    },
+  ].filter(Boolean)
 
   return (
-    <section className="w-full pt-28 sm:pt-32 lg:pt-36 pb-12 sm:pb-16">
-      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="text-center mb-8 sm:mb-10">
-          <span className="text-xs font-bold tracking-wider uppercase text-secondary block mb-2 select-none">
-            HASIL SCAN
-          </span>
-          <h1 className="font-display font-bold text-primary text-3xl sm:text-4xl lg:text-[2.625rem] tracking-tight mb-2.5">
-            Hasil Identifikasi Sampah
-          </h1>
-          <p className="font-body text-primary/75 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
-            Berikut informasi tentang sampah yang berhasil dikenali dari foto yang kamu unggah.
-          </p>
-        </div>
-
-        {/* Main Result Card */}
-        <div className="bg-white rounded-2xl border border-border-warm p-6 sm:p-8 lg:p-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+    <section className="w-full pt-24 sm:pt-28 lg:pt-32 pb-12 sm:pb-16" aria-label="Hasil Identifikasi Sampah">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* 1. Primary Identity Card — Main Result Entry Point */}
+        <div className="bg-white rounded-3xl border border-border-warm p-6 sm:p-8 lg:p-9 shadow-xs lapor-enter-card">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-9 items-start">
             {/* Left: Scanned Photo with Meta */}
-            <div className="lg:col-span-5 flex flex-col gap-3">
-              <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden border border-border-warm/70 bg-stone-100">
+            <div className="lg:col-span-6 flex flex-col gap-3">
+              <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden border border-border-warm/80 bg-stone-50/70 p-3 flex items-center justify-center">
                 <img
                   src={uploadedImage || '/images/aksipedia/sample-waste.jpg'}
-                  alt="Hasil pemindaian sampah botol plastik"
-                  className="w-full h-full object-cover"
+                  alt={`Hasil pemindaian ${result.title}`}
+                  className="w-full h-full object-contain rounded-xl select-none"
                 />
-                <div className="absolute top-3 left-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-xs text-white text-xs font-semibold select-none">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                  <span>Foto Terpindai</span>
-                </div>
               </div>
 
-              {/* Bottom Meta Row */}
-              <div className="flex items-center justify-between text-xs text-stone-500 pt-1 select-none">
-                <span>Waktu Pemindaian: {result.timeString}</span>
-                <span className="inline-flex items-center gap-1 text-emerald-700 font-semibold">
-                  <CheckCircle2Icon className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>{result.verified ? 'Terverifikasi' : 'Pending'}</span>
-                </span>
+              {/* Bottom Meta Row: Timestamp */}
+              <div className="text-xs text-stone-500 pt-0.5 select-none">
+                <span>Waktu: {result.timeString}</span>
               </div>
             </div>
 
-            {/* Right: Category, Material, Description & Notes */}
-            <div className="lg:col-span-7 flex flex-col justify-between">
+            {/* Right: Identity, Title, & Subtle Explanation */}
+            <div className="lg:col-span-6 flex flex-col justify-between">
               <div>
-                {/* Clean Inline Metadata (No chunky pill boxes) */}
-                <div className="text-xs text-stone-500 font-medium mb-3 select-none">
-                  <span className="font-bold text-primary tracking-wider uppercase">
-                    {result.category}
-                  </span>
-                  <span className="mx-1.5 text-stone-300">·</span>
-                  <span>{result.material}</span>
-                  <span className="mx-1.5 text-stone-300">·</span>
-                  <span>Kode #{result.code}</span>
+                {/* Title & Material Metadata */}
+                <div className="mb-4">
+                  <div className="flex items-center gap-2 text-xs text-stone-500 font-medium mb-2 select-none">
+                    <span className="font-bold text-primary tracking-wider uppercase">
+                      {result.category}
+                    </span>
+                    <span className="text-stone-300" aria-hidden="true">·</span>
+                    <span className="text-stone-700 font-semibold">{result.shortMaterial || 'PET'}</span>
+                    <span className="text-stone-300" aria-hidden="true">·</span>
+                    <span className="text-stone-600 font-medium">Kode #{result.code}</span>
+                  </div>
+                  <h1 className="font-display font-normal text-primary text-2xl sm:text-3xl lg:text-[2rem] leading-snug tracking-tight">
+                    {result.title}
+                  </h1>
                 </div>
 
-                {/* Title */}
-                <h2 className="font-display font-bold text-primary text-2xl sm:text-3xl leading-snug mb-3">
-                  {result.title}
-                </h2>
-
-                {/* Description */}
-                <p className="font-body text-primary/80 text-sm sm:text-[15px] leading-relaxed mb-4">
-                  {result.description}
-                </p>
-
-                {/* Physical Characteristics Box */}
-                <div className="p-4 rounded-xl bg-neutral border border-border-warm/80 mb-4 flex items-start gap-3">
-                  <InfoIcon className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                  <p className="text-xs sm:text-sm text-primary/85 leading-relaxed">
-                    <strong className="font-bold text-primary">Karakteristik Fisik: </strong>
-                    {result.physicalCharacteristics}
+                {/* Subtle Integrated Information Block: Kenapa Ini Penting? (No card-in-card) */}
+                <div className="pt-4 border-t border-stone-100">
+                  <h2 className="text-xs font-bold uppercase tracking-wider text-secondary mb-1.5 select-none">
+                    Kenapa Informasi Ini Penting?
+                  </h2>
+                  <p className="font-body text-xs sm:text-sm text-stone-600 leading-relaxed">
+                    {result.description}
                   </p>
                 </div>
 
-                {/* Prototype disclaimer note */}
-                <div className="flex items-start gap-2 text-xs text-stone-500 mb-6">
-                  <InfoIcon className="w-4 h-4 text-stone-400 shrink-0 mt-0.5" />
-                  <p className="leading-relaxed">{result.prototypeNotice}</p>
+                {/* Contextual Information Block: Penggunaan Umum & Kondisi Ideal */}
+                {contextualItems.length > 0 && (
+                  <div className="mt-5 pt-4 border-t border-border-warm/70">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-border-warm/70 gap-4 sm:gap-0">
+                      {contextualItems.map((item, index) => (
+                        <div
+                          key={item.label}
+                          className={`${
+                            index === 0 ? 'sm:pr-5' : 'sm:pl-5 pt-3 sm:pt-0'
+                          } min-w-0`}
+                        >
+                          <span className="block text-[11px] sm:text-xs font-bold uppercase tracking-wider text-stone-400 select-none mb-1">
+                            {item.label}
+                          </span>
+                          <p className="font-body text-xs sm:text-sm font-semibold text-primary/90 leading-relaxed">
+                            {item.value}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 2. Material & Characteristics — ONE Unified Structured Information Block */}
+        <div
+          ref={charRef}
+          className={`mt-12 sm:mt-14 ${baseTransition} ${
+            charInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+          }`}
+        >
+          <div className="mb-5">
+            <h2 className="font-display font-bold text-primary text-xl sm:text-2xl tracking-tight mb-1.5">
+              Karakteristik & Spesifikasi
+            </h2>
+            <p className="font-body text-primary/75 text-xs sm:text-sm">
+              Struktur polimer dan sifat fisik bawaan dari material yang teridentifikasi.
+            </p>
+          </div>
+
+          {/* Unified Structured Surface with Dividers (Not 3 Cards, No Dashboard Metrics) */}
+          <div className="rounded-2xl border border-border-warm bg-white shadow-2xs overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border-warm/70">
+              {/* 1. Jenis Polimer */}
+              <div className="p-5 sm:p-6 flex flex-col justify-between">
+                <div>
+                  <span className="text-xs font-bold text-stone-400 uppercase tracking-wider block mb-1.5 select-none">
+                    Jenis Polimer
+                  </span>
+                  <h3 className="font-semibold text-stone-900 text-sm sm:text-base leading-snug mb-1.5">
+                    {result.material}
+                  </h3>
+                  <p className="font-body text-xs text-stone-500 leading-relaxed">
+                    Kategori {result.category} · Termoplastik poliester jernih yang kedap cairan dan higienis untuk kemasan minuman sekali pakai.
+                  </p>
                 </div>
               </div>
 
-              {/* Bottom Actions Row */}
-              <div className="pt-4 border-t border-border-warm/70 flex items-center justify-between">
-                <button
-                  type="button"
-                  onClick={onResetScan}
-                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-primary hover:text-secondary transition-colors cursor-pointer group"
-                >
-                  <span className="transition-transform group-hover:-translate-x-1">←</span>
-                  <span>Scan Sampah Lain</span>
-                </button>
+              {/* 2. Kode Daur Ulang */}
+              <div className="p-5 sm:p-6 flex flex-col justify-between">
+                <div>
+                  <span className="text-xs font-bold text-stone-400 uppercase tracking-wider block mb-1.5 select-none">
+                    Kode Daur Ulang
+                  </span>
+                  <h3 className="font-semibold text-stone-900 text-sm sm:text-base leading-snug mb-1.5">
+                    Kode #{result.code} · Resin PETE
+                  </h3>
+                  <p className="font-body text-xs text-stone-500 leading-relaxed">
+                    Simbol panah segitiga tertera di dasar wadah untuk memandu klasifikasi mekanis pada rantai daur ulang.
+                  </p>
+                </div>
+              </div>
 
-                <span className="text-xs text-stone-400 font-medium select-none">
-                  {result.version}
-                </span>
+              {/* 3. Karakteristik Fisik */}
+              <div className="p-5 sm:p-6 flex flex-col justify-between">
+                <div>
+                  <span className="text-xs font-bold text-stone-400 uppercase tracking-wider block mb-1.5 select-none">
+                    Karakteristik Fisik
+                  </span>
+                  <h3 className="font-semibold text-stone-900 text-sm sm:text-base leading-snug mb-1.5">
+                    Sifat Fisik Benda
+                  </h3>
+                  <p className="font-body text-xs text-stone-500 leading-relaxed">
+                    {result.physicalCharacteristics}
+                  </p>
+                </div>
               </div>
             </div>
           </div>

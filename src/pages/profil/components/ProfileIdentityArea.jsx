@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { getUserProfileSession } from '../../../data/profil/userProfileData'
-import { SettingsIcon, ArrowRightIcon, FlameIcon, AwardIcon } from '../../../components/common/Icons'
+import { useAuth } from '../../../hooks/useAuth'
+import { DEMO_USER } from '../../../context/authContextDef'
+import { SettingsIcon, ArrowRightIcon, FlameIcon, AwardIcon, LogOutIcon } from '../../../components/common/Icons'
 
 /**
  * ProfileIdentityArea — Persistent Personal Identity Panel
@@ -13,25 +13,13 @@ import { SettingsIcon, ArrowRightIcon, FlameIcon, AwardIcon } from '../../../com
  * 3. XP Progression (current XP, progress bar, next level goal)
  * 4. Compact civic stats (Streak & Badges)
  * 5. Secondary action: Pengaturan Akun
+ * 6. Account session action: Keluar
  */
 function ProfileIdentityArea() {
   const location = useLocation()
   const isSettingsActive = location.pathname === '/profil/pengaturan'
-
-  const [profile, setProfile] = useState(getUserProfileSession)
-
-  useEffect(() => {
-    const handleUpdate = (e) => {
-      if (e?.detail) {
-        setProfile((prev) => ({ ...prev, ...e.detail }))
-      } else {
-        setProfile(getUserProfileSession())
-      }
-    }
-
-    window.addEventListener('profile-session-updated', handleUpdate)
-    return () => window.removeEventListener('profile-session-updated', handleUpdate)
-  }, [])
+  const { user, logout } = useAuth()
+  const profile = user || DEMO_USER
 
   const {
     name,
@@ -58,7 +46,7 @@ function ProfileIdentityArea() {
         <div className="flex flex-row lg:flex-col items-center lg:items-start gap-3.5 lg:gap-4">
           {/* Avatar */}
           <div
-            className="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-full bg-neutral border-2 border-primary/20 text-primary flex items-center justify-center font-display text-2xl lg:text-3xl font-bold select-none shrink-0"
+            className="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-full bg-neutral border-2 border-primary/20 text-primary flex items-center justify-center font-display text-2xl lg:text-3xl font-bold select-none shrink-0 transition-transform duration-300 hover:scale-105"
             aria-label={`Inisial relawan ${name}`}
           >
             {displayInitials}
@@ -153,8 +141,8 @@ function ProfileIdentityArea() {
         </div>
       </div>
 
-      {/* 4. Secondary Utility Action: Pengaturan Akun */}
-      <div className="pt-0.5">
+      {/* 4. Secondary Utility Action: Pengaturan Akun & Keluar */}
+      <div className="pt-0.5 flex flex-col gap-1">
         <Link
           to="/profil/pengaturan"
           className={`group flex items-center justify-between w-full px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary ${
@@ -170,6 +158,21 @@ function ProfileIdentityArea() {
           </span>
           <ArrowRightIcon className="w-3.5 h-3.5 text-stone-500 group-hover:text-primary transition-colors shrink-0" strokeWidth={2} />
         </Link>
+
+        {/* Subtle Divider between Pengaturan Akun and Keluar */}
+        <div className="border-t border-border-warm my-0.5" aria-hidden="true" />
+
+        <button
+          type="button"
+          onClick={logout}
+          className="group flex items-center justify-between w-full px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-red-500/40 cursor-pointer text-left text-stone-600 hover:text-red-600 hover:bg-red-50/60"
+          aria-label="Keluar dari akun"
+        >
+          <span className="flex items-center gap-2">
+            <LogOutIcon className="w-3.5 h-3.5 text-stone-500 group-hover:text-red-600 transition-colors" strokeWidth={1.8} />
+            <span className="font-body text-xs font-semibold leading-4">Keluar</span>
+          </span>
+        </button>
       </div>
     </div>
   )

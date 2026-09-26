@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import { useObjectURL } from '../../hooks/useObjectURL'
 import AksiPediaHero from './components/AksiPediaHero'
-import ScanFeatureCard from './components/ScanFeatureCard'
 import LearningModulesSection from './components/LearningModulesSection'
 import LearningProgressCard from './components/LearningProgressCard'
-import AksiPediaHubCTA from './components/AksiPediaHubCTA'
 import ScanUploadSection from './components/ScanUploadSection'
 import ScanResultSection from './components/ScanResultSection'
 import HandlingStepsSection from './components/HandlingStepsSection'
@@ -16,20 +15,35 @@ import AuthPromptModal from '../../components/common/AuthPromptModal'
 
 function AksiPediaPage() {
   const { isAuthenticated } = useAuth()
+  const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
   const modeParam = searchParams.get('mode')
 
   // Derive viewMode directly from searchParams (idiomatic React, no redundant sync effect)
   const viewMode = modeParam === 'scan' ? 'scan' : modeParam === 'hasil' ? 'result' : 'hub'
 
-  const [selectedImage, setSelectedImage] = useState(null)
+  const [selectedFile, setSelectedFile] = useState(null)
   const [isIdentifying, setIsIdentifying] = useState(false)
   const [showScanAuthPrompt, setShowScanAuthPrompt] = useState(false)
 
-  // Scroll to top whenever the view mode changes
+  // Manage safe object URL lifecycle for uploaded file
+  const objectUrl = useObjectURL(selectedFile)
+
+  // Scroll to hash target if provided, otherwise top
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [viewMode])
+    if (viewMode === 'hub' && location.hash) {
+      const targetId = location.hash.replace('#', '')
+      const el = document.getElementById(targetId)
+      if (el) {
+        const timer = setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth' })
+        }, 100)
+        return () => clearTimeout(timer)
+      }
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [viewMode, location.hash])
 
   const handleStartScan = () => {
     if (!isAuthenticated) {
@@ -44,7 +58,7 @@ function AksiPediaPage() {
   }
 
   const handleIdentify = () => {
-    if (!selectedImage) return
+    if (!selectedFile) return
     setIsIdentifying(true)
 
     // Simulated identification latency (~1.2s) for realistic prototype UX
@@ -55,29 +69,28 @@ function AksiPediaPage() {
   }
 
   const handleResetScan = () => {
-    setSelectedImage(null)
+    setSelectedFile(null)
     setSearchParams({ mode: 'scan' })
   }
 
   return (
     <main className="min-h-screen bg-neutral text-primary">
       {viewMode === 'hub' && (
-        <div className="animate-in fade-in duration-300">
-          <AksiPediaHero />
-          <ScanFeatureCard onStartScan={handleStartScan} />
-          <div id="modul-belajar-section">
+        <div className="animate-page-enter">
+          <AksiPediaHero onStartScan={handleStartScan} />
+          <div id="modul" className="scroll-mt-16">
+            <div id="modul-belajar-section" className="sr-only" aria-hidden="true" />
             <LearningModulesSection />
+            <LearningProgressCard />
           </div>
-          <LearningProgressCard />
-          <AksiPediaHubCTA onStartScan={handleStartScan} />
         </div>
       )}
 
       {viewMode === 'scan' && (
-        <div className="animate-in fade-in duration-300">
+        <div className="animate-page-enter">
           <ScanUploadSection
-            selectedImage={selectedImage}
-            setSelectedImage={setSelectedImage}
+            selectedFile={selectedFile}
+            setSelectedFile={setSelectedFile}
             onIdentify={handleIdentify}
             isIdentifying={isIdentifying}
             onBackToHub={handleBackToHub}
@@ -86,15 +99,12 @@ function AksiPediaPage() {
       )}
 
       {viewMode === 'result' && (
-        <div className="animate-in fade-in duration-300">
-          <ScanResultSection
-            uploadedImage={selectedImage}
-            onResetScan={handleResetScan}
-          />
+        <div className="animate-page-enter">
+          <ScanResultSection uploadedImage={objectUrl} />
           <HandlingStepsSection />
           <ReuseIdeasSection />
           <WasteBankSection />
-          <LearnMoreBanner />
+          <LearnMoreBanner onResetScan={handleResetScan} />
         </div>
       )}
 

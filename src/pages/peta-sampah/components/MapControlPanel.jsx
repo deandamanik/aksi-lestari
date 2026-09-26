@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { SearchIcon } from '../../../components/common/Icons'
+import Button from '../../../components/common/Button'
+import { SearchIcon, CompassIcon, XIcon, MapPinIcon } from '../../../components/common/Icons'
+import { filterCities, findMatchingCity } from './cityIndex'
 
 /**
  * MapControlPanel Component
@@ -27,33 +29,41 @@ function MapControlPanel({
   isDetailOpen = false,
 }) {
   const [isMobileCollapsed, setIsMobileCollapsed] = useState(true)
+  const [isInputFocused, setIsInputFocused] = useState(false)
 
   const hasSearch = searchQuery.trim().length > 0
-  const noResults = hasSearch && hasNoResults
+  const matchedCity = findMatchingCity(searchQuery)
+  const noResults = hasSearch && hasNoResults && !matchedCity
+
+  const citySuggestions = filterCities(searchQuery, 4)
+  const showSuggestions =
+    isInputFocused &&
+    hasSearch &&
+    citySuggestions.length > 0 &&
+    !citySuggestions.some((c) => c.name.toLowerCase() === searchQuery.trim().toLowerCase())
 
   return (
     <div
-      className={`fixed md:absolute bottom-3 md:bottom-auto left-3 sm:left-4 md:left-4 lg:left-8 md:top-24 z-20 w-[calc(100%-1.5rem)] sm:w-[calc(100%-2rem)] md:w-[300px] lg:w-[360px] pointer-events-none transition-all duration-200 ease-out ${
+      className={`fixed md:absolute bottom-3 md:bottom-auto left-3 sm:left-4 md:left-4 lg:left-8 md:top-24 z-20 w-[calc(100%-1.5rem)] sm:w-[calc(100%-2rem)] md:w-[320px] lg:w-[360px] pointer-events-none transition-all duration-200 ease-out ${
         isDetailOpen
           ? 'max-md:opacity-0 max-md:pointer-events-none max-md:translate-y-6 max-md:invisible'
           : 'max-md:opacity-100 max-md:translate-y-0'
       }`}
     >
-      <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-border-warm shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-3.5 sm:p-4 pointer-events-auto max-h-[68dvh] md:max-h-[calc(100dvh-7.5rem)] flex flex-col overflow-hidden transition-all duration-200">
+      <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-border-warm shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-3.5 sm:p-4 pointer-events-auto max-h-[68dvh] md:max-h-[calc(100dvh-7.5rem)] flex flex-col overflow-hidden transition-all duration-200 animate-panel-enter">
         {/* Mobile Pull Handle */}
         <div className="md:hidden w-8 h-1 bg-stone-300 rounded-full mx-auto mb-2 shrink-0" aria-hidden="true" />
 
         {/* Panel Header */}
         <div className="flex items-start justify-between gap-2 mb-2.5 sm:mb-3 shrink-0">
           <div>
-            <div className="flex items-center gap-1.5 mb-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" aria-hidden="true" />
+            <div className="mb-1">
               <span className="font-body text-[10px] sm:text-[11px] font-semibold tracking-wider text-stone-500 uppercase">
                 Monitoring Sebaran Sampah
               </span>
             </div>
 
-            <h1 className="font-display font-semibold text-primary text-[19px] sm:text-[20px] lg:text-[21px] leading-[1.15] tracking-tight">
+            <h1 className="font-display font-normal text-primary text-[19px] sm:text-[20px] lg:text-[21px] leading-[1.15] tracking-tight">
               Peta Titik &amp; Pantau
             </h1>
             <p className="font-body text-xs sm:text-[13px] text-stone-500 mt-0.5 sm:mt-1 leading-snug">
@@ -83,26 +93,82 @@ function MapControlPanel({
           </button>
         </div>
 
-        {/* Search Input across both datasets */}
+        {/* Search Input across both datasets — Styled consistently with AksiPedia Module search */}
         <div className="relative mb-2.5 sm:mb-3 shrink-0">
-          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400 pointer-events-none" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari wilayah / jalan..."
-            className="w-full h-8.5 pl-9 pr-8 font-body text-xs sm:text-[13px] bg-[#F9F8F3] border border-border-warm rounded-xl text-primary placeholder:text-stone-400 focus:outline-hidden focus:border-primary focus:bg-white transition-all"
-            aria-label="Cari wilayah atau jalan"
-          />
-          {hasSearch && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 text-stone-400 hover:text-stone-700 text-xs rounded-md"
-              aria-label="Hapus teks pencarian"
-            >
-              ✕
-            </button>
+          <label htmlFor="cari-wilayah-input" className="sr-only">
+            Cari wilayah atau jalan
+          </label>
+          <div className="relative flex items-center w-full h-9.5 sm:h-10 rounded-full bg-neutral/80 border border-border-warm focus-within:border-primary focus-within:bg-white focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+            <div className="pl-3.5 flex items-center pointer-events-none text-stone-400 shrink-0">
+              <SearchIcon className="w-4 h-4" />
+            </div>
+            <input
+              id="cari-wilayah-input"
+              type="text"
+              value={searchQuery}
+              onFocus={() => setIsInputFocused(true)}
+              onBlur={() => {
+                setTimeout(() => setIsInputFocused(false), 200)
+              }}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') {
+                  setSearchQuery('')
+                  setIsInputFocused(false)
+                } else if (e.key === 'Enter') {
+                  if (
+                    citySuggestions.length > 0 &&
+                    !citySuggestions.some((c) => c.name.toLowerCase() === searchQuery.trim().toLowerCase())
+                  ) {
+                    setSearchQuery(citySuggestions[0].name)
+                  }
+                  setIsInputFocused(false)
+                }
+              }}
+              placeholder="Cari wilayah / kota..."
+              className="w-full h-full pl-2.5 pr-8 bg-transparent text-xs sm:text-[13px] font-body text-primary placeholder:text-stone-400 focus:outline-hidden"
+              aria-label="Cari wilayah atau kota"
+            />
+            {hasSearch && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery('')
+                  setIsInputFocused(false)
+                }}
+                className="absolute right-2.5 p-1 text-stone-400 hover:text-primary transition-colors cursor-pointer rounded-full"
+                aria-label="Hapus teks pencarian"
+                title="Hapus pencarian (Esc)"
+              >
+                <XIcon className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+
+          {/* Autocomplete City Suggestions Dropdown */}
+          {showSuggestions && (
+            <div className="absolute top-[calc(100%+6px)] left-0 right-0 z-30 bg-white/98 backdrop-blur-md rounded-2xl border border-border-warm shadow-[0_10px_25px_rgba(0,0,0,0.12)] py-1.5 overflow-hidden transition-all">
+              <div className="px-3.5 py-1 text-[10px] font-semibold text-stone-400 uppercase tracking-wider">
+                Arahkan ke Kota / Wilayah
+              </div>
+              {citySuggestions.map((city) => (
+                <button
+                  key={city.id}
+                  type="button"
+                  onMouseDown={(e) => {
+                    e.preventDefault()
+                    setSearchQuery(city.name)
+                    setIsInputFocused(false)
+                  }}
+                  className="w-full px-3.5 py-2 text-left flex items-center gap-2.5 hover:bg-neutral transition-colors text-xs font-body text-stone-700 hover:text-primary cursor-pointer group"
+                >
+                  <MapPinIcon className="w-3.5 h-3.5 text-stone-400 group-hover:text-primary transition-colors shrink-0" />
+                  <span className="font-medium text-stone-800 group-hover:text-primary transition-colors">
+                    {city.name}
+                  </span>
+                </button>
+              ))}
+            </div>
           )}
         </div>
 
@@ -110,7 +176,7 @@ function MapControlPanel({
         <div className={`space-y-3 overflow-y-auto pr-0.5 ${isMobileCollapsed ? 'hidden md:block' : 'block'}`}>
           <div className="pt-2.5 border-t border-border-warm/60">
             <div className="mb-1.5">
-              <span className="font-body text-[10px] font-medium text-stone-700">
+              <span className="font-body text-[11px] sm:text-xs font-semibold text-stone-700">
                 Lapisan Peta
               </span>
             </div>
@@ -119,10 +185,10 @@ function MapControlPanel({
               <button
                 type="button"
                 onClick={() => setHeatmapVisible((prev) => !prev)}
-                className={`flex-1 min-w-0 box-border inline-flex items-center justify-center h-7 px-2 rounded-lg font-body text-[10px] font-medium border transition-colors whitespace-nowrap ${
+                className={`flex-1 min-w-0 box-border inline-flex items-center justify-center h-7.5 sm:h-8 px-1.5 sm:px-2 rounded-lg font-body text-[11px] sm:text-xs font-semibold border transition-all whitespace-nowrap cursor-pointer select-none active:scale-[0.98] ${
                   heatmapVisible
-                    ? 'bg-primary/10 text-primary border-primary/30'
-                    : 'bg-stone-50 border-border-warm text-stone-500 hover:bg-stone-100 hover:text-stone-700'
+                    ? 'bg-primary text-white border-primary shadow-2xs'
+                    : 'bg-stone-50 border-border-warm text-stone-400 hover:bg-stone-100 hover:text-stone-600'
                 }`}
                 aria-pressed={heatmapVisible}
               >
@@ -132,10 +198,10 @@ function MapControlPanel({
               <button
                 type="button"
                 onClick={() => setReportsVisible((prev) => !prev)}
-                className={`flex-1 min-w-0 box-border inline-flex items-center justify-center h-7 px-2 rounded-lg font-body text-[10px] font-medium border transition-colors whitespace-nowrap ${
+                className={`flex-1 min-w-0 box-border inline-flex items-center justify-center h-7.5 sm:h-8 px-1.5 sm:px-2 rounded-lg font-body text-[11px] sm:text-xs font-semibold border transition-all whitespace-nowrap cursor-pointer select-none active:scale-[0.98] ${
                   reportsVisible
-                    ? 'bg-amber-500/10 text-amber-900 border-amber-500/30'
-                    : 'bg-stone-50 border-border-warm text-stone-500 hover:bg-stone-100 hover:text-stone-700'
+                    ? 'bg-primary text-white border-primary shadow-2xs'
+                    : 'bg-stone-50 border-border-warm text-stone-400 hover:bg-stone-100 hover:text-stone-600'
                 }`}
                 aria-pressed={reportsVisible}
               >
@@ -145,10 +211,10 @@ function MapControlPanel({
               <button
                 type="button"
                 onClick={() => setBankSampahVisible((prev) => !prev)}
-                className={`flex-[1.3] min-w-0 box-border inline-flex items-center justify-center h-7 px-2.5 rounded-lg font-body text-[10px] font-medium border transition-colors whitespace-nowrap ${
+                className={`flex-[1.4] min-w-0 box-border inline-flex items-center justify-center h-7.5 sm:h-8 px-2 sm:px-2.5 rounded-lg font-body text-[11px] sm:text-xs font-semibold border transition-all whitespace-nowrap cursor-pointer select-none active:scale-[0.98] ${
                   bankSampahVisible
-                    ? 'bg-blue-500/10 text-blue-900 border-blue-500/30'
-                    : 'bg-stone-50 border-border-warm text-stone-500 hover:bg-stone-100 hover:text-stone-700'
+                    ? 'bg-primary text-white border-primary shadow-2xs'
+                    : 'bg-stone-50 border-border-warm text-stone-400 hover:bg-stone-100 hover:text-stone-600'
                 }`}
                 aria-pressed={bankSampahVisible}
               >
@@ -176,7 +242,7 @@ function MapControlPanel({
             <div className="pt-2.5 border-t border-border-warm/60 space-y-2">
               {heatmapVisible && (
                 <div>
-                  <div className="font-body text-[11px] sm:text-xs font-medium text-stone-700 mb-1">
+                  <div className="font-body text-[11px] sm:text-xs font-semibold text-stone-700 mb-1">
                     Konsentrasi Masalah
                   </div>
                   <div
@@ -187,7 +253,7 @@ function MapControlPanel({
                     }}
                     aria-hidden="true"
                   />
-                  <div className="flex items-center justify-between font-body text-[10px] sm:text-[11px] text-stone-500 leading-none">
+                  <div className="flex items-center justify-between font-body text-[10px] sm:text-[11px] font-medium text-stone-500 leading-none">
                     <span>Rendah</span>
                     <span>Sedang</span>
                     <span>Tinggi</span>
@@ -196,7 +262,7 @@ function MapControlPanel({
               )}
 
               {(reportsVisible || bankSampahVisible) && (
-                <div className="flex items-center gap-4 pt-0.5 font-body text-[11px] sm:text-xs text-stone-600">
+                <div className="flex items-center gap-4 pt-0.5 font-body text-[11px] sm:text-xs font-semibold text-stone-700">
                   {reportsVisible && (
                     <div className="flex items-center gap-1.5">
                       <span className="w-2.5 h-2.5 rounded-full bg-[#FFA938] border border-white shadow-2xs shrink-0" />
@@ -216,33 +282,16 @@ function MapControlPanel({
 
           {/* Location Action: "Gunakan Lokasiku" */}
           <div className="pt-2 border-t border-border-warm/60">
-            <button
-              type="button"
+            <Button
+              variant="secondary"
+              size="sm"
               onClick={onUseMyLocation}
-              disabled={isLocating}
-              className="w-full inline-flex items-center justify-center gap-2 h-8 px-3 rounded-xl bg-stone-100 hover:bg-stone-200/80 active:bg-stone-200 text-primary font-body text-xs sm:text-[13px] font-medium border border-border-warm transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-60"
+              isLoading={isLocating}
+              className="w-full h-9.5 sm:h-10 text-primary font-body text-xs sm:text-[13px] font-semibold"
             >
-              {isLocating ? (
-                <svg className="w-3.5 h-3.5 animate-spin text-primary shrink-0" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                </svg>
-              ) : (
-                <svg
-                  className="w-3.5 h-3.5 text-primary shrink-0"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-                </svg>
-              )}
+              {!isLocating && <CompassIcon className="w-4 h-4 text-primary shrink-0" />}
               <span>{isLocating ? 'Mencari lokasi...' : 'Gunakan Lokasiku'}</span>
-            </button>
+            </Button>
 
             {locationError && (
               <p className="font-body text-[11px] text-amber-800 text-center mt-1.5 leading-snug">

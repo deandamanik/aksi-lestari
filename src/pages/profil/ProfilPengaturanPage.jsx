@@ -6,7 +6,9 @@ import PengaturanKeamanan from './components/PengaturanKeamanan'
 import PengaturanPrivasiData from './components/PengaturanPrivasiData'
 import PengaturanBantuan from './components/PengaturanBantuan'
 import PengaturanHapusModal from './components/PengaturanHapusModal'
-import { getUserProfileSession, saveUserProfileSession } from '../../data/profil/userProfileData'
+import { useAuth } from '../../hooks/useAuth'
+import { useToast } from '../../hooks/useToast'
+import { DEMO_USER } from '../../context/authContextDef'
 import { CheckIcon } from '../../components/common/Icons'
 
 /**
@@ -25,20 +27,14 @@ import { CheckIcon } from '../../components/common/Icons'
  * Design: calm, civic, mature, clean, functional, low visual noise.
  */
 function ProfilPengaturanPage() {
-  const [profile, setProfile] = useState(getUserProfileSession)
+  const { user, updateUserProfile } = useAuth()
+  const { showToast } = useToast()
+  const profile = user || DEMO_USER
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [globalNotice, setGlobalNotice] = useState(null)
 
   const handleSaveProfile = (updatedFields) => {
-    setProfile((prev) => {
-      const next = {
-        ...prev,
-        ...updatedFields,
-        initials: (updatedFields.name || prev.name || 'D').trim().charAt(0).toUpperCase(),
-      }
-      saveUserProfileSession(next)
-      return next
-    })
+    updateUserProfile(updatedFields)
   }
 
   const handleDownloadData = () => {
@@ -72,8 +68,10 @@ function ProfilPengaturanPage() {
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
 
-    setGlobalNotice('Berkas data profil berhasil diekspor dan diunduh ke perangkatmu.')
-    setTimeout(() => setGlobalNotice(null), 4000)
+    showToast({
+      title: 'Data Diekspor',
+      message: 'Berkas data profil berhasil diekspor dan diunduh ke perangkatmu.',
+    })
   }
 
   const handleConfirmDelete = () => {

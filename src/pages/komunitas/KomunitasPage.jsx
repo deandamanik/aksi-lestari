@@ -1,23 +1,26 @@
-import { useState, useMemo, useRef, useEffect } from 'react'
-import { createPortal } from 'react-dom'
+import { useState, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import { useToast } from '../../hooks/useToast'
 import CommunityHero from './components/CommunityHero'
 import CommunityFilterBar from './components/CommunityFilterBar'
 import CommunityFeaturedCard from './components/CommunityFeaturedCard'
 import CommunityActionCard from './components/CommunityActionCard'
-import CommunitySidebarActionCard from './components/CommunitySidebarActionCard'
 import CommunityLeaderboardPreview from './components/CommunityLeaderboardPreview'
 import CommunityProposalBanner from './components/CommunityProposalBanner'
 import ActionDetailModal from './components/ActionDetailModal'
 import ProposeActionModal from './components/ProposeActionModal'
 import AuthPromptModal from '../../components/common/AuthPromptModal'
+import Button from '../../components/common/Button'
 import {
   COMMUNITY_ACTIONS,
   INITIAL_LOCATION,
   COMMUNITY_LOCATIONS,
 } from '../../data/komunitas/communityActionsData'
-import { CheckIcon, SparklesIcon, ArrowRightIcon } from '../../components/common/Icons'
+import {
+  KOMUNITAS_HERO_DESKTOP_OBJECTS,
+} from '../../data/komunitas/komunitasHeroObjects'
+import { SparklesIcon, ArrowRightIcon } from '../../components/common/Icons'
 
 function KomunitasPage() {
   const { isAuthenticated } = useAuth()
@@ -26,7 +29,7 @@ function KomunitasPage() {
   // Page local state
   const [actionsList, setActionsList] = useState(COMMUNITY_ACTIONS)
   const [selectedLocation, setSelectedLocation] = useState(INITIAL_LOCATION)
-  const [selectedCategories, setSelectedCategories] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState('Semua')
   const [searchQuery, setSearchQuery] = useState('')
 
   // Local state for visible actions count (Load More pattern: 4 initial, +4 per click)
@@ -48,27 +51,7 @@ function KomunitasPage() {
   })
   const [showProposeAuthPrompt, setShowProposeAuthPrompt] = useState(false)
 
-  // Feedback Toast state (4.5s auto-dismiss with timer cleanup)
-  const [toastMessage, setToastMessage] = useState(null)
-  const toastTimeoutRef = useRef(null)
-
-  const showToast = (message) => {
-    if (toastTimeoutRef.current) {
-      clearTimeout(toastTimeoutRef.current)
-    }
-    setToastMessage(message)
-    toastTimeoutRef.current = setTimeout(() => {
-      setToastMessage(null)
-    }, 4500)
-  }
-
-  useEffect(() => {
-    return () => {
-      if (toastTimeoutRef.current) {
-        clearTimeout(toastTimeoutRef.current)
-      }
-    }
-  }, [])
+  const { showToast } = useToast()
 
   // Handle joining an action (strictly once, prevents duplicate registration and overflow)
   const handleJoinAction = (action) => {
@@ -110,31 +93,15 @@ function KomunitasPage() {
     showToast(`Lokasi dialihkan ke ${loc}`)
   }
 
-  // Category handlers (reset visibleCount to initial 4 on every filter change)
-  const handleToggleCategory = (cat) => {
+  // Category tab handler (resets visibleCount to initial 4)
+  const handleSelectCategory = (cat) => {
     setVisibleCount(4)
-    setSelectedCategories((prev) => {
-      if (cat === 'Semua Aksi') return []
-      if (prev.includes(cat)) {
-        return prev.filter((c) => c !== cat)
-      }
-      return [...prev, cat]
-    })
-  }
-
-  const handleRemoveCategory = (cat) => {
-    setVisibleCount(4)
-    setSelectedCategories((prev) => prev.filter((c) => c !== cat))
-  }
-
-  const handleClearAllCategories = () => {
-    setVisibleCount(4)
-    setSelectedCategories([])
+    setSelectedCategory(cat)
   }
 
   // Reset all filters to default
   const handleResetFilters = () => {
-    setSelectedCategories([])
+    setSelectedCategory('Semua')
     setSearchQuery('')
     setSelectedLocation(INITIAL_LOCATION)
     setVisibleCount(4)
@@ -143,7 +110,7 @@ function KomunitasPage() {
 
   // Active filter state check
   const isFiltered =
-    selectedCategories.length > 0 ||
+    (selectedCategory && selectedCategory !== 'Semua' && selectedCategory !== 'Semua Aksi') ||
     searchQuery.trim() !== '' ||
     selectedLocation !== INITIAL_LOCATION
 
@@ -160,7 +127,8 @@ function KomunitasPage() {
     }).length
   }, [actionsList, selectedLocation])
 
-  // Combined Filtering Pipeline (Location -> Category -> Search -> Sort)
+
+  // Combined Filtering Pipeline (Location -> Category Tab -> Search Query)
   const filteredActions = useMemo(() => {
     let result = [...actionsList]
 
@@ -182,9 +150,9 @@ function KomunitasPage() {
       })
     }
 
-    // 2. Category Filter (multi-select)
-    if (selectedCategories.length > 0) {
-      result = result.filter((action) => selectedCategories.includes(action.category))
+    // 2. Category Tab Filter
+    if (selectedCategory && selectedCategory !== 'Semua' && selectedCategory !== 'Semua Aksi') {
+      result = result.filter((action) => action.category === selectedCategory)
     }
 
     // 3. Search Query Filter (case-insensitive across title, location, category, organizer, description)
@@ -203,28 +171,16 @@ function KomunitasPage() {
     }
 
     return result
-  }, [actionsList, selectedLocation, selectedCategories, searchQuery])
+  }, [actionsList, selectedLocation, selectedCategory, searchQuery])
 
   // Select featured action from filtered results
   const featuredAction = useMemo(() => {
     return (
       filteredActions.find((a) => a.isFeatured) ||
-      filteredActions.find((a) => !a.isSidebarAction) ||
       filteredActions[0] ||
       null
     )
   }, [filteredActions])
-
-  // Select sidebar action matching location when possible
-  const sidebarAction = useMemo(() => {
-    const locObj = COMMUNITY_LOCATIONS.find((l) => l.name === selectedLocation)
-    const locTag = locObj ? locObj.id : ''
-    return (
-      actionsList.find((a) => a.locationTag === locTag && a.isSidebarAction) ||
-      actionsList.find((a) => a.isSidebarAction) ||
-      null
-    )
-  }, [actionsList, selectedLocation])
 
   // Secondary actions are remaining items in the left column
   const secondaryActions = useMemo(() => {
@@ -244,12 +200,49 @@ function KomunitasPage() {
   }, [actionsList, activeDetailAction])
 
   return (
-    <main className="min-h-screen bg-[#FAF9F4] text-primary flex flex-col antialiased">
-      <div className="w-full flex-1 flex flex-col animate-page-enter">
+    <main className="relative min-h-screen bg-neutral text-primary flex flex-col antialiased">
+      {/* Exact Beranda/AksiPedia/Profil first-viewport pattern alignment */}
+      <div
+        className="absolute top-0 left-0 right-0 h-[100svh] min-h-[580px] pointer-events-none select-none z-0 overflow-hidden opacity-50 sm:opacity-100"
+        style={{
+          backgroundImage: 'url(/images/pattern.webp)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center',
+          backgroundRepeat: 'no-repeat',
+          maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 32%, rgba(0,0,0,0) 78%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 32%, rgba(0,0,0,0) 78%)',
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Decorative 3D Floating Objects — Desktop Only (hidden on mobile to prevent clutter) */}
+      <div className="absolute top-0 left-0 right-0 h-[100svh] min-h-[580px] pointer-events-none select-none overflow-hidden hidden md:block z-0" aria-hidden="true">
+        {KOMUNITAS_HERO_DESKTOP_OBJECTS.map((obj, i) => (
+          <div
+            key={`komunitas-dec-${i}`}
+            className={`absolute pointer-events-none select-none hero-enter-object ${obj.className}`}
+            style={{
+              animationDelay: `${obj.enterDelay}ms`,
+            }}
+          >
+            <img
+              src={obj.src}
+              alt=""
+              className={`w-full h-auto drop-shadow-sm pointer-events-none select-none ${obj.ambientClass}`}
+              style={{
+                animationDelay: `${obj.enterDelay + 750}ms`,
+              }}
+              draggable={false}
+            />
+          </div>
+        ))}
+      </div>
+
+      <div className="relative z-10 w-full flex-1 flex flex-col animate-page-enter">
         {/* Hero Section (Stagger 0ms) */}
         <div className="animate-content-rise stagger-community-hero">
-        <CommunityHero />
-      </div>
+          <CommunityHero />
+        </div>
 
       {/* 3. Main Content Container */}
       <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1">
@@ -258,16 +251,10 @@ function KomunitasPage() {
           <CommunityFilterBar
             selectedLocation={selectedLocation}
             onSelectLocation={handleSelectLocation}
-            selectedCategories={selectedCategories}
-            onToggleCategory={handleToggleCategory}
-            onRemoveCategory={handleRemoveCategory}
-            onClearAllCategories={handleClearAllCategories}
+            selectedCategory={selectedCategory}
+            onSelectCategory={handleSelectCategory}
             searchQuery={searchQuery}
             onSearchChange={handleSearchChange}
-            filteredCount={filteredActions.length}
-            totalCount={currentLocationActionsCount}
-            isFiltered={isFiltered}
-            onResetFilters={handleResetFilters}
           />
         </div>
 
@@ -295,7 +282,7 @@ function KomunitasPage() {
             {/* Actions Display with smooth category/filter change transition */}
             {filteredActions.length > 0 && featuredAction ? (
               <div
-                key={`${selectedCategories.join(',')}_${selectedLocation}`}
+                key={`${selectedCategory}_${selectedLocation}`}
                 className="space-y-5 sm:space-y-6 animate-content-rise"
               >
                 {/* Large Featured Action Card */}
@@ -318,9 +305,9 @@ function KomunitasPage() {
                   </div>
                 )}
 
-                {/* Load More / Collapse Button (Left-aligned list continuation) */}
+                {/* Load More / Collapse Button (Consistent rounded-full styling) */}
                 {filteredActions.length > 4 && (
-                  <div className="pt-1 sm:pt-1.5 flex justify-start">
+                  <div className="pt-2 sm:pt-3 flex justify-start">
                     <button
                       type="button"
                       onClick={() => {
@@ -330,7 +317,7 @@ function KomunitasPage() {
                           setVisibleCount(4)
                         }
                       }}
-                      className="inline-flex items-center gap-2 h-10 px-4.5 sm:px-5 rounded-xl bg-white border border-border-warm text-stone-700 hover:text-[#22603B] hover:border-[#22603B]/40 hover:bg-[#FAF9F4] text-xs sm:text-[13px] font-semibold font-body transition-all duration-180 shadow-2xs active:scale-[0.98] cursor-pointer group focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B]"
+                      className="inline-flex items-center justify-center gap-2 h-10 sm:h-11 px-5 sm:px-6 rounded-full bg-white border border-border-warm text-stone-700 hover:text-primary hover:border-primary/40 hover:bg-stone-50/80 text-xs sm:text-sm font-semibold font-body transition-all duration-180 shadow-2xs active:scale-[0.98] cursor-pointer group focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary select-none"
                     >
                       <span>
                         {visibleCount < filteredActions.length
@@ -338,7 +325,7 @@ function KomunitasPage() {
                           : 'Lihat Lebih Sedikit'}
                       </span>
                       <ArrowRightIcon
-                        className={`w-3.5 h-3.5 text-stone-400 group-hover:text-[#22603B] transition-transform duration-180 motion-reduce:transform-none ${
+                        className={`w-3.5 h-3.5 text-stone-400 group-hover:text-primary transition-transform duration-180 motion-reduce:transform-none ${
                           visibleCount < filteredActions.length
                             ? 'group-hover:translate-x-0.5'
                             : '-rotate-90 group-hover:-translate-y-0.5'
@@ -351,7 +338,7 @@ function KomunitasPage() {
             ) : (
               /* Clean Empty State */
               <div className="w-full py-16 px-6 bg-white rounded-3xl border border-border-warm text-center flex flex-col items-center justify-center my-2 shadow-2xs animate-content-rise">
-                <div className="w-12 h-12 rounded-full bg-[#FAF9F4] flex items-center justify-center text-[#22603B] mb-3 border border-border-warm">
+                <div className="w-12 h-12 rounded-full bg-neutral flex items-center justify-center text-primary mb-3 border border-border-warm">
                   <SparklesIcon className="w-5 h-5" />
                 </div>
                 <h3 className="font-display text-primary text-lg sm:text-xl font-bold mb-1.5">
@@ -360,31 +347,23 @@ function KomunitasPage() {
                 <p className="font-body text-stone-500 text-xs sm:text-sm max-w-sm mx-auto mb-5 leading-relaxed">
                   Belum ada kegiatan yang sesuai dengan pencarian atau filter yang kamu pilih.
                 </p>
-                <button
-                  type="button"
+                <Button
+                  variant="primary"
+                  size="sm"
                   onClick={handleResetFilters}
-                  className="inline-flex items-center justify-center h-9 px-5 rounded-full text-xs sm:text-sm font-bold bg-[#22603B] text-white hover:bg-[#1C4E30] transition-all duration-150 shadow-xs cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#22603B] active:scale-[0.98]"
                 >
                   Reset Filter
-                </button>
+                </Button>
               </div>
             )}
           </div>
 
           {/* Right Column: Sidebar (Narrower Column ~36%) */}
           <aside className="lg:col-span-5 xl:col-span-4 space-y-6">
-            {/* 1. Sidebar Action Card */}
-            {sidebarAction && (
-              <CommunitySidebarActionCard
-                action={sidebarAction}
-                onOpenDetail={setActiveDetailAction}
-              />
-            )}
-
-            {/* 2. Leaderboard Card (Penggerak Teraktif Minggu Ini) */}
+            {/* 1. Leaderboard Card (Penggerak Teraktif Minggu Ini) */}
             <CommunityLeaderboardPreview />
 
-            {/* 3. Initiative Proposal Card (Punya Inisiatif Aksi di Lingkunganmu?) */}
+            {/* 2. Initiative Proposal Card (Punya Inisiatif Aksi di Lingkunganmu?) */}
             <CommunityProposalBanner
               onOpenProposeModal={() => {
                 if (!isAuthenticated) {
@@ -426,51 +405,6 @@ function KomunitasPage() {
         returnTo={{ pathname: location.pathname, search: location.search, hash: location.hash }}
         intent={{ type: 'propose-action' }}
       />
-
-      {/* Interactive Toast Notification (Natural fade + rise entrance, anchored to viewport via portal) */}
-      {toastMessage &&
-        createPortal(
-          <div
-            id="community-registration-success-toast"
-            role="status"
-            aria-live="polite"
-            data-action-id={typeof toastMessage === 'object' ? toastMessage.actionId : undefined}
-            data-action-title={typeof toastMessage === 'object' ? toastMessage.actionTitle : undefined}
-            className="fixed bottom-6 left-4 right-4 sm:left-auto sm:right-8 z-50 sm:max-w-md bg-[#22603B] text-white p-4 rounded-2xl shadow-xl border border-white/10 flex items-start gap-3 animate-toast-enter"
-          >
-            <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0 mt-0.5">
-              <CheckIcon className="w-4 h-4 text-white" />
-            </div>
-            <div className="flex-1 text-xs sm:text-sm leading-snug">
-              {typeof toastMessage === 'object' && toastMessage !== null ? (
-                <>
-                  {toastMessage.title && (
-                    <div className="font-bold text-white mb-0.5 text-sm">
-                      {toastMessage.title}
-                    </div>
-                  )}
-                  <div className="font-medium text-white/90">
-                    {toastMessage.message}
-                  </div>
-                </>
-              ) : (
-                <div className="font-medium">{toastMessage}</div>
-              )}
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current)
-                setToastMessage(null)
-              }}
-              className="text-white/70 hover:text-white transition-all duration-180 text-xs font-bold cursor-pointer p-1 -mr-1 -mt-0.5 rounded-full hover:bg-white/10 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-white active:scale-95"
-              aria-label="Tutup notifikasi"
-            >
-              ✕
-            </button>
-          </div>,
-          document.body
-        )}
     </main>
   )
 }
