@@ -1,6 +1,4 @@
 import {
-  AlertTriangleIcon,
-  ShieldAlertIcon,
   SparklesIcon,
   LeafIcon,
   ClipboardCheckIcon,
@@ -16,16 +14,13 @@ function IdentificationCard({ data }) {
     confidenceLevel,
     confidenceNote,
     characteristics,
-    attentionLevel,
-    attentionMessage,
     environmentalImpact,
     recommendations,
-    safetyNotice,
     simulatedDisclosure,
   } = data
 
   return (
-    <div className="rounded-2xl bg-white border border-border-warm shadow-xs p-5 sm:p-6 lg:p-7 flex flex-col gap-6">
+    <div className="rounded-2xl bg-white border border-border-warm shadow-xs p-5 sm:p-6 lg:p-7 flex flex-col gap-5 sm:gap-6">
       {/* 1. Main Identification Result */}
       <div>
         <span className="text-[11px] font-bold tracking-[0.08em] uppercase text-primary">
@@ -86,21 +81,8 @@ function IdentificationCard({ data }) {
         </div>
       </div>
 
-      {/* 3. Tingkat Perhatian */}
-      <div className="rounded-xl bg-[#FFF9E6] border border-[#FDE68A] p-3.5 sm:p-4 flex items-start gap-3">
-        <AlertTriangleIcon className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-        <div>
-          <h3 className="font-bold text-xs sm:text-sm text-[#92400E]">
-            Tingkat Perhatian: {attentionLevel}
-          </h3>
-          <p className="text-xs text-[#B45309] leading-relaxed mt-1">
-            {attentionMessage}
-          </p>
-        </div>
-      </div>
-
-      {/* 4. Dampak Lingkungan */}
-      <div className="flex flex-col gap-2.5 pt-1">
+      {/* 3. Dampak Lingkungan */}
+      <div className="flex flex-col gap-2.5 pt-1 border-t border-stone-100">
         <div className="flex items-center gap-2">
           <LeafIcon className="w-4 h-4 text-primary" strokeWidth={2.25} />
           <h3 className="text-sm font-bold text-stone-800">
@@ -117,8 +99,8 @@ function IdentificationCard({ data }) {
         </ul>
       </div>
 
-      {/* 5. Rekomendasi Penanganan */}
-      <div className="flex flex-col gap-3 pt-1">
+      {/* 4. Rekomendasi Penanganan */}
+      <div className="flex flex-col gap-3 pt-1 border-t border-stone-100">
         <div className="flex items-center gap-2">
           <ClipboardCheckIcon className="w-4 h-4 text-primary" strokeWidth={2.25} />
           <h3 className="text-sm font-bold text-stone-800">
@@ -146,14 +128,6 @@ function IdentificationCard({ data }) {
             </div>
           ))}
         </div>
-      </div>
-
-      {/* 6. Utamakan Keselamatan */}
-      <div className="rounded-xl bg-[#FFF1F2] border border-[#FECDD3] p-3 sm:p-3.5 flex items-start gap-2.5">
-        <ShieldAlertIcon className="w-4.5 h-4.5 text-[#E11D48] shrink-0 mt-0.5" strokeWidth={2} />
-        <p className="text-xs font-semibold text-[#9F1239] leading-relaxed">
-          {safetyNotice}
-        </p>
       </div>
 
       <div className="pt-3 border-t border-stone-100 flex items-start gap-2 text-stone-500 text-[11px] leading-relaxed">

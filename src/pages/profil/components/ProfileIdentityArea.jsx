@@ -46,7 +46,7 @@ function ProfileIdentityArea() {
         <div className="flex flex-row lg:flex-col items-center lg:items-start gap-3.5 lg:gap-4">
           {/* Avatar */}
           <div
-            className="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-full bg-neutral border-2 border-primary/20 text-primary flex items-center justify-center font-display text-2xl lg:text-3xl font-bold select-none shrink-0"
+            className="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-full bg-neutral border-2 border-primary/20 text-primary flex items-center justify-center font-display text-2xl lg:text-3xl font-bold select-none shrink-0 transition-transform duration-300 hover:scale-105"
             aria-label={`Inisial relawan ${name}`}
           >
             {displayInitials}

@@ -153,6 +153,25 @@ select {
   }
 }
 
+@keyframes motionGpsPulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.85;
+  }
+  70% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.animate-gps-pulse {
+  animation: motionGpsPulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
 .animate-page-enter {
   animation: motionPageEnter var(--motion-page) var(--motion-ease-natural) both;
 }
@@ -254,18 +273,49 @@ select {
    Profile Workspace Animations
    ========================================================================== */
 
-/* Profile page-enter animation */
+/* Profile page-enter animation (smooth rise & fade) */
 @keyframes profil-enter {
   from {
     opacity: 0;
+    transform: translate3d(0, 16px, 0);
   }
   to {
     opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 }
 
 .profil-enter {
-  animation: profil-enter 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: profil-enter 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Profile left-column identity panel entry (slide from left on desktop, rise on mobile) */
+@keyframes profil-enter-left {
+  from {
+    opacity: 0;
+    transform: translate3d(-20px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.profil-enter-left {
+  animation: profil-enter-left 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (max-width: 1023px) {
+  @keyframes profil-enter-left {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 16px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
 }
 
 .profil-enter-delay-1 { animation-delay: 60ms; }
@@ -547,25 +597,43 @@ select {
    ========================================================================== */
 
 @keyframes lapor-enter {
-  0% { opacity: 0; transform: translateY(12px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 .lapor-enter-header {
   opacity: 0;
-  animation: lapor-enter 520ms cubic-bezier(0.16, 1, 0.3, 1) 0ms forwards;
+  animation: lapor-enter 500ms cubic-bezier(0.16, 1, 0.3, 1) 0ms forwards;
   will-change: opacity, transform;
 }
 
 .lapor-enter-card {
   opacity: 0;
-  animation: lapor-enter 520ms cubic-bezier(0.16, 1, 0.3, 1) 50ms forwards;
+  animation: lapor-enter 500ms cubic-bezier(0.16, 1, 0.3, 1) 60ms forwards;
+  will-change: opacity, transform;
+}
+
+.lapor-enter-card-delay-1 {
+  opacity: 0;
+  animation: lapor-enter 500ms cubic-bezier(0.16, 1, 0.3, 1) 120ms forwards;
+  will-change: opacity, transform;
+}
+
+.lapor-enter-card-delay-2 {
+  opacity: 0;
+  animation: lapor-enter 500ms cubic-bezier(0.16, 1, 0.3, 1) 180ms forwards;
   will-change: opacity, transform;
 }
 
 .lapor-enter-actions {
   opacity: 0;
-  animation: lapor-enter 520ms cubic-bezier(0.16, 1, 0.3, 1) 100ms forwards;
+  animation: lapor-enter 500ms cubic-bezier(0.16, 1, 0.3, 1) 220ms forwards;
   will-change: opacity, transform;
 }
 
@@ -706,6 +774,7 @@ select {
   }
 
   .profil-enter,
+  .profil-enter-left,
   .profil-enter-delay-1,
   .profil-enter-delay-2,
   .profil-enter-delay-3,
@@ -767,6 +836,8 @@ select {
 
   .lapor-enter-header,
   .lapor-enter-card,
+  .lapor-enter-card-delay-1,
+  .lapor-enter-card-delay-2,
   .lapor-enter-actions,
   .lapor-preview-enter,
   .lapor-ambient-sun,
@@ -777,7 +848,8 @@ select {
   .lapor-ambient-sprout-left,
   .lapor-ambient-sprout-right,
   .lapor-ambient-leaf-a,
-  .lapor-ambient-leaf-b {
+  .lapor-ambient-leaf-b,
+  .animate-gps-pulse {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;

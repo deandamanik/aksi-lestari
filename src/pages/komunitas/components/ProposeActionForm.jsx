@@ -353,9 +353,19 @@ export default function ProposeActionForm({
         <button
           type="submit"
           disabled={isLoading}
-          className="inline-flex items-center justify-center gap-1.5 h-10 px-6 rounded-full bg-primary text-white hover:bg-primary/90 text-xs sm:text-sm font-body font-semibold transition-all duration-180 active:scale-[0.98] cursor-pointer shadow-xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary w-full sm:w-auto disabled:opacity-60 disabled:cursor-not-allowed"
+          className="inline-flex items-center justify-center gap-2 h-10 px-6 rounded-full bg-primary text-white hover:bg-primary/90 text-xs sm:text-sm font-body font-semibold transition-all duration-180 active:scale-[0.98] cursor-pointer shadow-xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary w-full sm:w-auto disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {isLoading ? 'Mengirim Pengajuan...' : 'Ajukan Kegiatan'}
+          {isLoading ? (
+            <>
+              <span
+                className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin shrink-0"
+                aria-hidden="true"
+              />
+              <span>Mengirim Pengajuan...</span>
+            </>
+          ) : (
+            'Ajukan Kegiatan'
+          )}
         </button>
       </div>
     </form>

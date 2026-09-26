@@ -18,6 +18,7 @@ import {
 import {
   renderWasteMarkers,
   renderBankMarkers,
+  renderUserLocationMarker,
   clearMarkers,
   updateMarkerSelectionStyles,
 } from './mapMarkers'
@@ -50,10 +51,12 @@ function WasteMap({
   heatmapVisible = true,
   reportsVisible = true,
   bankSampahVisible = true,
+  userLocation = null,
   flyToCoords = null,
   onFlyToComplete = null,
   selectedPoint = null,
   onSelectPoint = null,
+  onReset = null,
 }) {
   const mapContainerRef = useRef(null)
   const mapRef = useRef(null)
@@ -65,6 +68,7 @@ function WasteMap({
   const wasteMarkersDataRef = useRef([])
   const bankMarkersRef = useRef([])
   const bankMarkersDataRef = useRef([])
+  const userMarkerRef = useRef(null)
 
   const selectedPointRef = useRef(selectedPoint)
   const prevSelectedPointRef = useRef(null)
@@ -101,7 +105,8 @@ function WasteMap({
       () => resetToInitialView(mapRef.current, { duration: 1200 }),
       isProgrammaticMoveRef
     )
-  }, [])
+    onReset?.()
+  }, [onReset])
 
   // Initialize MapLibre instance once on mount
   useEffect(() => {
@@ -213,6 +218,10 @@ function WasteMap({
       cleanupRecovery?.()
       clearMarkers(wasteMarkersRef, wasteMarkersDataRef)
       clearMarkers(bankMarkersRef, bankMarkersDataRef)
+      if (userMarkerRef.current) {
+        userMarkerRef.current.remove()
+        userMarkerRef.current = null
+      }
       if (mapRef.current) {
         mapRef.current.remove()
         mapRef.current = null
@@ -281,6 +290,12 @@ function WasteMap({
       clearMarkers(bankMarkersRef, bankMarkersDataRef)
     }
   }, [isMapReady, bankSampah, bankSampahVisible, onSelectPoint])
+
+  // Reactive update: User GPS location marker
+  useEffect(() => {
+    if (!isMapReady || !mapRef.current) return
+    renderUserLocationMarker(mapRef.current, userLocation, userMarkerRef)
+  }, [isMapReady, userLocation])
 
   // Reactive selection highlight update in-place without rebuilding DOM markers
   useEffect(() => {

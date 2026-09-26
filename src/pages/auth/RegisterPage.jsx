@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import AuthCardWrapper from './components/AuthCardWrapper'
@@ -24,6 +24,16 @@ export default function RegisterPage() {
 
   const [errors, setErrors] = useState({})
   const [generalError, setGeneralError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const timerRef = useRef(null)
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+      }
+    }
+  }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -38,14 +48,19 @@ export default function RegisterPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    if (isLoading) return
     setGeneralError('')
 
-    try {
-      register(formData.name, formData.email, formData.password)
-      navigate('/', { replace: true })
-    } catch (err) {
-      setGeneralError(err.message || 'Gagal menyiapkan akses. Silakan coba lagi.')
-    }
+    setIsLoading(true)
+    timerRef.current = setTimeout(() => {
+      try {
+        register(formData.name, formData.email, formData.password)
+        navigate('/', { replace: true })
+      } catch (err) {
+        setIsLoading(false)
+        setGeneralError(err.message || 'Gagal menyiapkan akses. Silakan coba lagi.')
+      }
+    }, 1100)
   }
 
   return (
@@ -137,10 +152,29 @@ export default function RegisterPage() {
         {/* Submit Button */}
         <button
           type="submit"
-          className="mt-2 w-full py-3 sm:py-3.5 px-6 rounded-xl sm:rounded-2xl font-semibold text-sm sm:text-base text-white bg-primary hover:bg-primary/90 active:scale-[0.99] transition-all duration-200 shadow-md hover:shadow-lg shadow-primary/20 flex items-center justify-center gap-2 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          disabled={isLoading}
+          className={`mt-2 w-full py-3 sm:py-3.5 px-6 rounded-xl sm:rounded-2xl font-semibold text-sm sm:text-base text-white transition-all duration-200 shadow-md shadow-primary/20 flex items-center justify-center gap-2 select-none ${
+            isLoading
+              ? 'bg-[#C6CFC9] text-white/90 cursor-not-allowed shadow-none'
+              : 'bg-primary hover:bg-primary/90 active:scale-[0.99] hover:shadow-lg cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
+          }`}
+          aria-label="Buat Akun Baru"
+          aria-disabled={isLoading}
         >
-          <span>Buat Akun</span>
-          <ArrowRightIcon className="w-4 h-4" />
+          {isLoading ? (
+            <>
+              <span
+                className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin shrink-0"
+                aria-hidden="true"
+              />
+              <span>Menyiapkan Akun...</span>
+            </>
+          ) : (
+            <>
+              <span>Buat Akun</span>
+              <ArrowRightIcon className="w-4 h-4" />
+            </>
+          )}
         </button>
       </form>
 

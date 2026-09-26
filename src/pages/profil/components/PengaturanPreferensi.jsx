@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useToast } from '../../../hooks/useToast'
 
 function PreferenceToggleRow({ title, description, checked, onChange, id }) {
   return (
@@ -33,6 +34,7 @@ function PreferenceToggleRow({ title, description, checked, onChange, id }) {
 }
 
 function PengaturanPreferensi() {
+  const { showToast } = useToast()
   const [preferences, setPreferences] = useState({
     misi: true,
     komunitas: true,
@@ -41,6 +43,7 @@ function PengaturanPreferensi() {
 
   const handleToggle = (key, val) => {
     setPreferences((prev) => ({ ...prev, [key]: val }))
+    showToast('Preferensi notifikasi berhasil disimpan.')
   }
 
   return (

@@ -50,7 +50,14 @@ function AppRoutes() {
           />
           <Route path="/aksipedia/modul/:moduleId/quiz" element={<ModuleQuizPage />} />
           <Route path="/komunitas" element={<KomunitasPage />} />
-          <Route path="/komunitas/leaderboard" element={<CommunityLeaderboardPage />} />
+          <Route
+            path="/komunitas/leaderboard"
+            element={
+              <AuthGate intent={{ type: 'open-leaderboard' }}>
+                <CommunityLeaderboardPage />
+              </AuthGate>
+            }
+          />
 
           {/* Profil Workspace routes — Protected by AuthGate */}
           <Route element={<AuthGate />}>

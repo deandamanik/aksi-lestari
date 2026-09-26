@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useAuth } from '../../../hooks/useAuth'
 import AuthPromptModal from '../../../components/common/AuthPromptModal'
@@ -22,6 +22,16 @@ export default function ActionDetailModal({
   const { isAuthenticated } = useAuth()
   const location = useLocation()
   const [showAuthPrompt, setShowAuthPrompt] = useState(false)
+  const [isJoining, setIsJoining] = useState(false)
+  const joinTimerRef = useRef(null)
+
+  useEffect(() => {
+    return () => {
+      if (joinTimerRef.current) {
+        clearTimeout(joinTimerRef.current)
+      }
+    }
+  }, [])
 
   if (!isOpen || !action) return null
 
@@ -238,19 +248,41 @@ export default function ActionDetailModal({
           ) : (
             <button
               type="button"
+              disabled={isJoining}
               onClick={() => {
                 if (!isAuthenticated) {
                   setShowAuthPrompt(true)
                   return
                 }
-                onJoin(action)
+                if (isJoining) return
+                setIsJoining(true)
+                joinTimerRef.current = setTimeout(() => {
+                  onJoin(action)
+                  setIsJoining(false)
+                }, 850)
               }}
-              className="inline-flex items-center justify-center gap-1.5 h-10 px-6 rounded-full bg-primary text-white hover:bg-primary/90 text-xs sm:text-sm font-body font-semibold transition-all duration-180 active:scale-[0.98] cursor-pointer shadow-xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary w-full sm:w-auto"
+              className={`inline-flex items-center justify-center gap-1.5 h-10 px-6 rounded-full text-xs sm:text-sm font-body font-semibold transition-all duration-180 active:scale-[0.98] select-none w-full sm:w-auto ${
+                isJoining
+                  ? 'bg-[#C6CFC9] text-white/90 cursor-not-allowed shadow-none'
+                  : 'bg-primary text-white hover:bg-primary/90 cursor-pointer shadow-xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary'
+              }`}
             >
-              <span>Gabung Aksi Ini</span>
-              {action.xpReward ? (
-                <span className="font-normal opacity-85 font-body"> · +{action.xpReward} XP</span>
-              ) : null}
+              {isJoining ? (
+                <>
+                  <span
+                    className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin shrink-0"
+                    aria-hidden="true"
+                  />
+                  <span>Mendaftarkan...</span>
+                </>
+              ) : (
+                <>
+                  <span>Gabung Aksi Ini</span>
+                  {action.xpReward ? (
+                    <span className="font-normal opacity-85 font-body"> · +{action.xpReward} XP</span>
+                  ) : null}
+                </>
+              )}
             </button>
           )}
         </div>

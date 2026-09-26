@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import { CameraIcon, CheckIcon } from '../../../components/common/Icons'
 import Button from '../../../components/common/Button'
+import { useToast } from '../../../hooks/useToast'
 
 function PengaturanInformasiAkun({ profile, onSaveProfile }) {
+  const { showToast } = useToast()
   const [formData, setFormData] = useState({
     name: profile.name || 'Invention 2026',
     email: profile.email || 'deann@aksilestari.id',
@@ -63,6 +65,10 @@ function PengaturanInformasiAkun({ profile, onSaveProfile }) {
       setIsSaving(false)
       setSaveSuccess(true)
       onSaveProfile(formData)
+      showToast({
+        title: 'Profil Diperbarui',
+        message: 'Profil berhasil diperbarui!',
+      })
       successTimerRef.current = setTimeout(() => setSaveSuccess(false), 3500)
     }, 600)
   }

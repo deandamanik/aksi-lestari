@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   COMMUNITY_HEADER,
@@ -11,9 +12,20 @@ import {
   ArrowRightIcon,
 } from '../../../components/common/Icons'
 import { useInView } from '../../../hooks/useInView'
+import { useAuth } from '../../../hooks/useAuth'
+import AuthPromptModal from '../../../components/common/AuthPromptModal'
 
 function CommunityActionSection() {
   const [ref, inView] = useInView({ threshold: 0.15 })
+  const { isAuthenticated } = useAuth()
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false)
+
+  const handleLeaderboardClick = (e) => {
+    if (!isAuthenticated) {
+      e.preventDefault()
+      setShowAuthPrompt(true)
+    }
+  }
 
   const baseTransition = 'transition-all duration-[550ms] ease-out will-change-[opacity,transform]'
   const getEntranceClass = () => {
@@ -216,7 +228,8 @@ function CommunityActionSection() {
                 </span>
                 <Link
                   to={APPRECIATION_HEADER.viewBoardHref}
-                  className="font-bold text-primary hover:text-secondary transition-colors inline-flex items-center gap-1.5 group font-body"
+                  onClick={handleLeaderboardClick}
+                  className="font-bold text-primary hover:text-secondary transition-colors inline-flex items-center gap-1.5 group font-body cursor-pointer"
                 >
                   <span>{APPRECIATION_HEADER.viewBoardLabel}</span>
                   <ArrowRightIcon className="w-3.5 h-3.5 transition-transform duration-180 group-hover:translate-x-0.5 motion-reduce:transform-none" />
@@ -226,6 +239,15 @@ function CommunityActionSection() {
           </div>
         </div>
       </div>
+
+      <AuthPromptModal
+        isOpen={showAuthPrompt}
+        onClose={() => setShowAuthPrompt(false)}
+        title="Masuk untuk melanjutkan"
+        description="Masuk terlebih dahulu untuk melihat papan peringkat relawan dan posisi kontribusimu."
+        returnTo={APPRECIATION_HEADER.viewBoardHref}
+        intent={{ type: 'open-leaderboard' }}
+      />
     </section>
   )
 }

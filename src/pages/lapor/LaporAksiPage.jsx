@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLapor } from '../../context/LaporContext'
 import { ACTION_OPTIONS } from '../../data/lapor/actionOptionsData'
@@ -23,6 +23,16 @@ import { ArrowLeftIcon, ArrowRightIcon, ShieldAlertIcon } from '../../components
 function LaporAksiPage() {
   const navigate = useNavigate()
   const { reportData, updateReport } = useLapor()
+  const [isLoading, setIsLoading] = useState(false)
+  const timerRef = useRef(null)
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+      }
+    }
+  }, [])
 
   const selectedAction = reportData.aksi?.type
   const canContinue = Boolean(selectedAction)
@@ -40,21 +50,26 @@ function LaporAksiPage() {
   )
 
   const handleBack = useCallback(() => {
+    if (isLoading) return
     navigate('/lapor/kenali')
-  }, [navigate])
+  }, [isLoading, navigate])
 
   const handleContinue = useCallback(() => {
-    if (!canContinue) return
-    if (selectedAction === 'mandiri') {
-      navigate('/lapor/mandiri/konfirmasi')
-    } else {
-      navigate('/lapor/selesai')
-    }
-  }, [canContinue, selectedAction, navigate])
+    if (!canContinue || isLoading) return
+    setIsLoading(true)
+
+    timerRef.current = setTimeout(() => {
+      if (selectedAction === 'mandiri') {
+        navigate('/lapor/mandiri/konfirmasi')
+      } else {
+        navigate('/lapor/selesai')
+      }
+    }, 900)
+  }, [canContinue, isLoading, selectedAction, navigate])
 
   return (
     <main
-      className="min-h-[100svh] bg-neutral pt-24 sm:pt-28 pb-14 sm:pb-18"
+      className="min-h-[100svh] bg-neutral pt-24 sm:pt-28 pb-14 sm:pb-18 animate-page-enter"
       aria-label="Lapor Sampah — Langkah 3: Pilih Aksimu"
     >
       <div className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-6 sm:gap-7">
@@ -63,21 +78,23 @@ function LaporAksiPage() {
           step={3}
           title="Pilih Aksimu"
           subtitle="Setelah memahami temuan ini, pilih tindakan yang paling sesuai."
-          className="pt-2 pb-1"
+          className="pt-2 pb-1 lapor-enter-header"
         />
 
         {/* Compact Identified Waste Context */}
-        <IdentifiedWasteSummary
-          photo={reportData.temukan?.photo}
-          kenali={reportData.kenali}
-        />
+        <div className="lapor-enter-card">
+          <IdentifiedWasteSummary
+            photo={reportData.temukan?.photo}
+            kenali={reportData.kenali}
+          />
+        </div>
 
-        <p className="text-center text-xs sm:text-sm text-stone-600 max-w-lg mx-auto leading-relaxed -mt-1 sm:-mt-2">
+        <p className="text-center text-xs sm:text-sm text-stone-600 max-w-lg mx-auto leading-relaxed -mt-1 sm:-mt-2 lapor-enter-card">
           Pilih tindakan yang paling sesuai dengan kondisi di lokasi.
         </p>
 
         <div
-          className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 items-stretch"
+          className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 items-stretch lapor-enter-card-delay-1"
           role="radiogroup"
           aria-label="Pilihan tindakan penanganan sampah"
         >
@@ -91,7 +108,7 @@ function LaporAksiPage() {
           ))}
         </div>
 
-        <div className="flex items-start gap-2 text-xs sm:text-sm text-stone-500 text-left leading-relaxed">
+        <div className="flex items-start gap-2 text-xs sm:text-sm text-stone-500 text-left leading-relaxed lapor-enter-card-delay-2">
           <ShieldAlertIcon className="w-4 h-4 text-amber-600/80 shrink-0 mt-0.5" strokeWidth={2} aria-hidden="true" />
           <p className="text-stone-500">
             <span className="font-semibold text-stone-700">Utamakan keselamatan. </span>
@@ -100,12 +117,17 @@ function LaporAksiPage() {
         </div>
 
         {/* Bottom Navigation */}
-        <div className="mt-2 sm:mt-4 flex flex-col items-center">
+        <div className="mt-2 sm:mt-4 flex flex-col items-center lapor-enter-actions">
           <div className="w-full flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
             <button
               type="button"
               onClick={handleBack}
-              className="inline-flex items-center justify-center gap-2 h-11 px-6 sm:px-7 rounded-full font-semibold text-sm text-primary bg-white border border-primary/25 hover:bg-primary/[0.04] hover:border-primary/45 transition-colors shadow-xs active:scale-[0.98] cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 select-none w-full sm:w-auto"
+              disabled={isLoading}
+              className={`inline-flex items-center justify-center gap-2 h-11 px-6 sm:px-7 rounded-full font-semibold text-sm text-primary bg-white border border-primary/25 transition-colors select-none w-full sm:w-auto ${
+                isLoading
+                  ? 'opacity-40 cursor-not-allowed pointer-events-none'
+                  : 'hover:bg-primary/[0.04] hover:border-primary/45 shadow-xs active:scale-[0.98] cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
+              }`}
               aria-label="Kembali ke Langkah 2 (Kenali)"
             >
               <ArrowLeftIcon className="w-4 h-4 text-primary" strokeWidth={2.25} />
@@ -115,17 +137,29 @@ function LaporAksiPage() {
             <button
               type="button"
               onClick={handleContinue}
-              disabled={!canContinue}
+              disabled={!canContinue || isLoading}
               className={`inline-flex items-center justify-center gap-2 h-11 px-7 sm:px-8 rounded-full font-semibold text-sm transition-colors select-none w-full sm:w-auto ${
-                canContinue
+                canContinue && !isLoading
                   ? 'bg-primary hover:bg-primary/90 text-white cursor-pointer shadow-xs active:scale-[0.99] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
                   : 'bg-[#C6CFC9] text-white/90 cursor-not-allowed shadow-none'
               }`}
               aria-label="Lanjutkan ke Selesai"
-              aria-disabled={!canContinue}
+              aria-disabled={!canContinue || isLoading}
             >
-              <span>Lanjutkan ke Selesai</span>
-              <ArrowRightIcon className="w-4.5 h-4.5" strokeWidth={2.25} />
+              {isLoading ? (
+                <>
+                  <span
+                    className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin shrink-0"
+                    aria-hidden="true"
+                  />
+                  <span>Memproses Pilihan...</span>
+                </>
+              ) : (
+                <>
+                  <span>Lanjutkan ke Selesai</span>
+                  <ArrowRightIcon className="w-4.5 h-4.5" strokeWidth={2.25} />
+                </>
+              )}
             </button>
           </div>
 

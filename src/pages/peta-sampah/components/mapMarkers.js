@@ -248,3 +248,142 @@ export function updateMarkerSelectionStyles(
     }
   )
 }
+
+/**
+ * Creates DOM element for user's GPS location marker.
+ * A solid blue dot with an animated pulsing radar ring and an accessible hover tooltip.
+ */
+export function createUserLocationMarkerElement() {
+  const markerEl = document.createElement('div')
+  markerEl.className = 'user-location-marker group relative flex items-center justify-center'
+  markerEl.setAttribute('role', 'status')
+  markerEl.setAttribute('aria-label', 'Lokasi Anda Saat Ini')
+  markerEl.setAttribute('title', 'Lokasi Anda Saat Ini')
+  markerEl.setAttribute('tabindex', '0')
+
+  markerEl.innerHTML = `
+    <div style="position: relative; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+      <!-- Outer pulsing radar wave -->
+      <span class="animate-gps-pulse" style="
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 9999px;
+        background-color: rgba(37, 99, 235, 0.28);
+        pointer-events: none;
+      "></span>
+
+      <!-- Inner semi-transparent halo -->
+      <span style="
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        border-radius: 9999px;
+        background-color: rgba(37, 99, 235, 0.18);
+        pointer-events: none;
+      "></span>
+
+      <!-- Center solid blue GPS pin with crisp white border -->
+      <div style="
+        position: relative;
+        z-index: 10;
+        width: 16px;
+        height: 16px;
+        background-color: #2563EB;
+        border: 2.5px solid #FFFFFF;
+        border-radius: 9999px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(37, 99, 235, 0.25);
+        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      "></div>
+
+      <!-- Hover / Focus Tooltip -->
+      <div class="user-gps-tooltip" style="
+        position: absolute;
+        bottom: calc(100% + 4px);
+        left: 50%;
+        transform: translateX(-50%);
+        pointer-events: none;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.18s ease-out, transform 0.18s ease-out;
+        z-index: 20;
+      ">
+        <div style="
+          padding: 4px 9px;
+          background: rgba(28, 25, 23, 0.92);
+          backdrop-filter: blur(4px);
+          color: #FFFFFF;
+          font-family: inherit;
+          font-size: 11px;
+          font-weight: 500;
+          letter-spacing: -0.01em;
+          white-space: nowrap;
+          border-radius: 6px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+        ">
+          Lokasi Anda Saat Ini
+        </div>
+      </div>
+    </div>
+  `
+
+  const tooltip = markerEl.querySelector('.user-gps-tooltip')
+  const centerDot = markerEl.querySelector('div > div:nth-child(3)')
+
+  const showTooltip = () => {
+    if (tooltip) {
+      tooltip.style.opacity = '1'
+      tooltip.style.visibility = 'visible'
+      tooltip.style.transform = 'translateX(-50%) translateY(-2px)'
+    }
+    if (centerDot) {
+      centerDot.style.transform = 'scale(1.25)'
+    }
+  }
+
+  const hideTooltip = () => {
+    if (tooltip) {
+      tooltip.style.opacity = '0'
+      tooltip.style.visibility = 'hidden'
+      tooltip.style.transform = 'translateX(-50%) translateY(0)'
+    }
+    if (centerDot) {
+      centerDot.style.transform = 'scale(1)'
+    }
+  }
+
+  markerEl.addEventListener('mouseenter', showTooltip)
+  markerEl.addEventListener('mouseleave', hideTooltip)
+  markerEl.addEventListener('focus', showTooltip)
+  markerEl.addEventListener('blur', hideTooltip)
+
+  return markerEl
+}
+
+/**
+ * Renders or updates the user location marker on the MapLibre instance.
+ */
+export function renderUserLocationMarker(targetMap, coords, existingMarkerRef) {
+  if (!coords) {
+    if (existingMarkerRef?.current) {
+      existingMarkerRef.current.remove()
+      existingMarkerRef.current = null
+    }
+    return
+  }
+
+  if (existingMarkerRef?.current) {
+    existingMarkerRef.current.setLngLat(coords)
+  } else if (targetMap) {
+    const markerEl = createUserLocationMarkerElement()
+    const marker = new Marker({
+      element: markerEl,
+      anchor: 'center',
+    })
+      .setLngLat(coords)
+      .addTo(targetMap)
+
+    existingMarkerRef.current = marker
+  }
+}
+

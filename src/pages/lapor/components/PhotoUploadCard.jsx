@@ -5,9 +5,11 @@ import {
   CheckIcon,
   RefreshCwIcon,
   AlertCircleIcon,
+  CropIcon,
 } from '../../../components/common/Icons'
 import { formatFileSize } from '../../../utils/formatters'
 import { useObjectURL } from '../../../hooks/useObjectURL'
+import PhotoCropModal from './PhotoCropModal'
 
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024 // 10 MB
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp']
@@ -15,19 +17,19 @@ const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp']
 
 const SIZE_CONFIGS = {
   compact: {
-    previewHeight: 'h-48 sm:h-56',
+    previewAspect: 'w-full aspect-[4/3]',
     emptyPadding: 'p-6 sm:p-8',
     previewPadding: 'p-3.5 sm:p-4',
     cardRadius: 'rounded-2xl',
   },
   default: {
-    previewHeight: 'h-64 sm:h-76',
+    previewAspect: 'w-full aspect-[4/3]',
     emptyPadding: 'p-8 sm:p-10 lg:p-12',
     previewPadding: 'p-5 sm:p-6',
     cardRadius: 'rounded-3xl',
   },
   large: {
-    previewHeight: 'h-72 sm:h-88',
+    previewAspect: 'w-full aspect-[4/3]',
     emptyPadding: 'p-10 sm:p-12 lg:p-16',
     previewPadding: 'p-6 sm:p-8',
     cardRadius: 'rounded-3xl',
@@ -53,6 +55,7 @@ function PhotoUploadCard({
   size = 'default',
   borderStyle = 'dashed',
   readOnly = false,
+  allowCrop = true,
   className = '',
 }) {
   const activeFile = value instanceof File ? value : null
@@ -62,6 +65,25 @@ function PhotoUploadCard({
   const [isDragging, setIsDragging] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [failedFile, setFailedFile] = useState(null)
+  const [isCropModalOpen, setIsCropModalOpen] = useState(false)
+  const [originalFile, setOriginalFile] = useState(null)
+  const [lastCropState, setLastCropState] = useState(null)
+
+  // Use the stored full original file so repeated edits never crop an already-cropped file
+  const sourceFileForCrop = originalFile || activeFile
+
+  const handleApplyCrop = useCallback(
+    (croppedFile, cropState) => {
+      if (!originalFile && activeFile) {
+        setOriginalFile(activeFile)
+      }
+      setLastCropState(cropState)
+      if (onChange) {
+        onChange(croppedFile)
+      }
+    },
+    [activeFile, onChange, originalFile]
+  )
 
   const fileInputRef = useRef(null)
   const cameraInputRef = useRef(null)
@@ -90,6 +112,9 @@ function PhotoUploadCard({
         setErrorMessage('Ukuran foto maksimal 10 MB.')
         return
       }
+
+      setOriginalFile(newFile)
+      setLastCropState(null)
 
       if (onChange) {
         onChange(newFile)
@@ -265,40 +290,79 @@ function PhotoUploadCard({
             )}
           </div>
         ) : (
-          /* Preview State: Proportional Image, Divider, Status, Ganti Foto, Metadata */
+          /* Preview State: Standardized 4:3 Frame, Divider, Status, Sesuaikan Foto, Ganti Foto, Metadata */
           <div className="flex flex-col">
-            {/* Inner Image Container — constrained, proportional, uncropped */}
+            {/* Inner Image Container — Standardized 4:3 Aspect Ratio Frame */}
             <div
-              className={`w-full relative rounded-2xl overflow-hidden border border-stone-200/80 bg-stone-50/70 flex items-center justify-center p-2 shadow-xs ${sizeStyles.previewHeight}`}
+              onClick={allowCrop && activeFile && !readOnly ? () => setIsCropModalOpen(true) : undefined}
+              className={`w-full ${sizeStyles.previewAspect || 'aspect-[4/3]'} relative rounded-2xl overflow-hidden border border-stone-200/80 bg-stone-900 shadow-xs group select-none ${
+                allowCrop && activeFile && !readOnly ? 'cursor-pointer' : ''
+              }`}
             >
               <img
                 src={activeUrl}
-                alt="Pratinjau foto"
+                alt="Pratinjau foto rasio 4:3"
                 onError={() => setFailedFile(activeFile)}
-                className="max-h-full max-w-full w-auto h-auto object-contain rounded-xl select-none"
+                className="w-full h-full object-cover select-none transition-transform duration-300 group-hover:scale-[1.01]"
               />
+
+              {/* 4:3 Frame Camera Brackets */}
+              <div className="absolute top-2.5 left-2.5 w-3.5 h-3.5 border-t-2 border-l-2 border-white/60 pointer-events-none" />
+              <div className="absolute top-2.5 right-2.5 w-3.5 h-3.5 border-t-2 border-r-2 border-white/60 pointer-events-none" />
+              <div className="absolute bottom-2.5 left-2.5 w-3.5 h-3.5 border-b-2 border-l-2 border-white/60 pointer-events-none" />
+              <div className="absolute bottom-2.5 right-2.5 w-3.5 h-3.5 border-b-2 border-r-2 border-white/60 pointer-events-none" />
+
+              {/* Badge Rasio 4:3 */}
+              <div className="absolute top-3 left-3 bg-stone-900/80 backdrop-blur-xs text-white/90 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase pointer-events-none select-none border border-white/10">
+                Rasio 4:3
+              </div>
+
+              {/* Desktop Hover Overlay: appears ONLY on hover, disappears when cursor leaves */}
+              {allowCrop && activeFile && !readOnly && (
+                <div className="absolute inset-0 bg-stone-900/35 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hidden sm:flex items-center justify-center pointer-events-none">
+                  <span className="bg-stone-900/85 backdrop-blur-xs text-white text-xs font-semibold px-3.5 py-1.5 rounded-full shadow-lg border border-white/20 flex items-center gap-1.5">
+                    <CropIcon className="w-3.5 h-3.5 text-primary" strokeWidth={2.5} />
+                    <span>Klik untuk Sesuaikan Posisi Foto</span>
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Status & Metadata & Change Action Stack */}
             <div className="mt-4 pt-3.5 border-t border-stone-100 flex flex-col gap-1">
-              {/* Row 1: Left = Status Text, Right = Ganti Foto */}
+              {/* Row 1: Left = Status Text, Right = Ganti Foto (and Sesuaikan Foto on mobile) */}
               <div className="flex items-center justify-between gap-3">
                 <div className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-secondary select-none">
                   <CheckIcon className="w-4 h-4 text-secondary shrink-0" strokeWidth={2.5} />
                   <span>{statusText}</span>
                 </div>
 
-                {canChange && (
-                  <button
-                    type="button"
-                    onClick={handleTriggerUpload}
-                    className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-primary hover:text-primary/80 transition-colors underline underline-offset-4 decoration-primary/40 hover:decoration-primary cursor-pointer shrink-0 select-none"
-                    aria-label="Ganti foto"
-                  >
-                    <RefreshCwIcon className="w-3.5 h-3.5" strokeWidth={2} />
-                    <span>Ganti Foto</span>
-                  </button>
-                )}
+                <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+                  {/* Mobile Only: Sesuaikan Foto button next to Ganti Foto */}
+                  {allowCrop && activeFile && !readOnly && (
+                    <button
+                      type="button"
+                      onClick={() => setIsCropModalOpen(true)}
+                      className="sm:hidden inline-flex items-center gap-1.5 text-xs font-semibold text-stone-600 active:text-primary transition-colors cursor-pointer select-none"
+                      aria-label="Sesuaikan posisi foto"
+                    >
+                      <CropIcon className="w-3.5 h-3.5 text-primary" strokeWidth={2.25} />
+                      <span className="underline underline-offset-4 decoration-stone-300">Sesuaikan Foto</span>
+                    </button>
+                  )}
+
+                  {canChange && (
+                    <button
+                      type="button"
+                      onClick={handleTriggerUpload}
+                      className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-primary hover:text-primary/80 transition-colors underline underline-offset-4 decoration-primary/40 hover:decoration-primary cursor-pointer shrink-0 select-none"
+                      aria-label="Ganti foto"
+                    >
+                      <RefreshCwIcon className="w-3.5 h-3.5" strokeWidth={2} />
+                      <span>Ganti Foto</span>
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Row 2: Filename + Size directly below */}
@@ -320,6 +384,17 @@ function PhotoUploadCard({
             <AlertCircleIcon className="w-4.5 h-4.5 shrink-0 text-red-500" strokeWidth={2} />
             <span className="font-medium">{errorMessage}</span>
           </div>
+        )}
+
+        {/* Interactive 4:3 Crop & Frame Modal */}
+        {allowCrop && sourceFileForCrop && !readOnly && (
+          <PhotoCropModal
+            isOpen={isCropModalOpen}
+            onClose={() => setIsCropModalOpen(false)}
+            file={sourceFileForCrop}
+            initialCrop={lastCropState}
+            onApplyCrop={handleApplyCrop}
+          />
         )}
       </div>
     </div>

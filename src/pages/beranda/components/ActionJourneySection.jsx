@@ -1,5 +1,6 @@
 import { ACTION_JOURNEY_STEPS } from '../../../data/beranda/actionJourneySteps'
 import { useActionJourneyScroll } from '../../../hooks/useActionJourneyScroll'
+import { useInView } from '../../../hooks/useInView'
 
 function ActionJourneySection() {
   const {
@@ -9,23 +10,40 @@ function ActionJourneySection() {
     activeStepIndex,
   } = useActionJourneyScroll()
 
+  const [mobileIntroRef, mobileIntroInView] = useInView({ threshold: 0.15 })
+  const [desktopIntroRef, desktopIntroInView] = useInView({ threshold: 0.15 })
+
+  const baseTransition = 'transition-all duration-[550ms] ease-out will-change-[opacity,transform]'
+  const getMobileIntroClass = () =>
+    `${baseTransition} ${
+      mobileIntroInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+    }`
+  const getDesktopIntroClass = () =>
+    `${baseTransition} ${
+      desktopIntroInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+    }`
+
   return (
     <section
       id="langkah-partisipasi"
       className="relative w-full bg-[#FAF8F3] text-primary pt-10 sm:pt-20 lg:pt-0 pb-16 sm:pb-20 lg:pb-0 border-t border-border-warm/50 overflow-visible"
       aria-labelledby="action-journey-heading"
     >
-      <div className="block lg:hidden max-w-[1180px] mx-auto px-4 sm:px-6 pt-0 sm:pt-20 mb-10 text-center">
-        <span className="inline-block text-xs uppercase tracking-widest font-body font-bold text-secondary mb-2.5">
+      <div ref={mobileIntroRef} className="block lg:hidden max-w-[1180px] mx-auto px-4 sm:px-6 pt-0 sm:pt-20 mb-10 text-center">
+        <span className={`inline-block text-xs uppercase tracking-widest font-body font-bold text-secondary mb-2.5 ${getMobileIntroClass()}`}>
           LANGKAH PARTISIPASI
         </span>
         <h2
           id="action-journey-heading-mobile"
-          className="font-display text-primary text-3xl sm:text-4xl leading-[1.2] tracking-tight mb-3"
+          className={`font-display text-primary text-3xl sm:text-4xl leading-[1.2] tracking-tight mb-3 ${getMobileIntroClass()}`}
+          style={{ transitionDelay: '60ms' }}
         >
           Empat Langkah Nyata Bergerak
         </h2>
-        <p className="font-body text-primary/75 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
+        <p
+          className={`font-body text-primary/75 text-sm sm:text-base leading-relaxed max-w-xl mx-auto ${getMobileIntroClass()}`}
+          style={{ transitionDelay: '120ms' }}
+        >
           Alur terstruktur dari pengamatan mata hingga aksi berdampak yang diakui.
         </p>
       </div>
@@ -40,17 +58,21 @@ function ActionJourneySection() {
         <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-visible">
           <div className="w-full max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-6 flex flex-col -mt-4 xl:-mt-6">
             {/* Desktop Editorial Intro: Controlled vertical relationship above journey track */}
-            <div className="text-center max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto mb-8 xl:mb-10">
-              <span className="inline-block text-xs uppercase tracking-widest font-body font-bold text-secondary mb-2.5">
+            <div ref={desktopIntroRef} className="text-center max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto mb-8 xl:mb-10">
+              <span className={`inline-block text-xs uppercase tracking-widest font-body font-bold text-secondary mb-2.5 ${getDesktopIntroClass()}`}>
                 LANGKAH PARTISIPASI
               </span>
               <h2
                 id="action-journey-heading"
-                className="font-display text-primary text-3xl sm:text-4xl lg:text-[2.35rem] xl:text-[2.625rem] leading-[1.2] tracking-tight whitespace-normal lg:whitespace-nowrap mb-3 sm:mb-4"
+                className={`font-display text-primary text-3xl sm:text-4xl lg:text-[2.35rem] xl:text-[2.625rem] leading-[1.2] tracking-tight whitespace-normal lg:whitespace-nowrap mb-3 sm:mb-4 ${getDesktopIntroClass()}`}
+                style={{ transitionDelay: '60ms' }}
               >
                 Empat Langkah Nyata Bergerak
               </h2>
-              <p className="font-body text-primary/75 text-sm sm:text-base lg:text-lg leading-relaxed max-w-xl mx-auto">
+              <p
+                className={`font-body text-primary/75 text-sm sm:text-base lg:text-lg leading-relaxed max-w-xl mx-auto ${getDesktopIntroClass()}`}
+                style={{ transitionDelay: '120ms' }}
+              >
                 Alur terstruktur dari pengamatan mata hingga aksi berdampak yang diakui.
               </p>
             </div>

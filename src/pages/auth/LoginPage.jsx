@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { resolveReturnDestination } from '../../utils/authRedirect'
@@ -24,6 +24,16 @@ export default function LoginPage() {
 
   const [errors, setErrors] = useState({})
   const [generalError, setGeneralError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const timerRef = useRef(null)
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+      }
+    }
+  }, [])
 
   // Resolve return destination safely (priority: AuthGate returnTo -> intended route -> fallback '/')
   const destination = resolveReturnDestination(location.state)
@@ -42,14 +52,19 @@ export default function LoginPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    if (isLoading) return
     setGeneralError('')
 
-    try {
-      login(formData.email, formData.password)
-      navigate(destination, { replace: true })
-    } catch (err) {
-      setGeneralError(err.message || 'Terjadi kesalahan saat masuk. Silakan coba lagi.')
-    }
+    setIsLoading(true)
+    timerRef.current = setTimeout(() => {
+      try {
+        login(formData.email, formData.password)
+        navigate(destination, { replace: true })
+      } catch (err) {
+        setIsLoading(false)
+        setGeneralError(err.message || 'Terjadi kesalahan saat masuk. Silakan coba lagi.')
+      }
+    }, 1000)
   }
 
   return (
@@ -115,10 +130,29 @@ export default function LoginPage() {
         {/* Submit Button */}
         <button
           type="submit"
-          className="mt-2 w-full py-3 sm:py-3.5 px-6 rounded-xl sm:rounded-2xl font-semibold text-sm sm:text-base text-white bg-primary hover:bg-primary/90 active:scale-[0.99] transition-all duration-200 shadow-md hover:shadow-lg shadow-primary/20 flex items-center justify-center gap-2 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          disabled={isLoading}
+          className={`mt-2 w-full py-3 sm:py-3.5 px-6 rounded-xl sm:rounded-2xl font-semibold text-sm sm:text-base text-white transition-all duration-200 shadow-md shadow-primary/20 flex items-center justify-center gap-2 select-none ${
+            isLoading
+              ? 'bg-[#C6CFC9] text-white/90 cursor-not-allowed shadow-none'
+              : 'bg-primary hover:bg-primary/90 active:scale-[0.99] hover:shadow-lg cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
+          }`}
+          aria-label="Masuk ke Akun"
+          aria-disabled={isLoading}
         >
-          <span>Masuk</span>
-          <ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+          {isLoading ? (
+            <>
+              <span
+                className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin shrink-0"
+                aria-hidden="true"
+              />
+              <span>Memverifikasi Akun...</span>
+            </>
+          ) : (
+            <>
+              <span>Masuk</span>
+              <ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </>
+          )}
         </button>
       </form>
 

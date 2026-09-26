@@ -56,7 +56,7 @@ function ModuleQuizPage() {
   const progressPercent = Math.round(((currentIndex + 1) / questions.length) * 100)
 
   return (
-    <main className="min-h-screen bg-neutral text-primary pt-24 sm:pt-32 pb-16 sm:pb-24">
+    <main className="min-h-screen bg-neutral text-primary pt-24 sm:pt-32 pb-16 sm:pb-24 animate-page-enter">
       <div className="max-w-[700px] mx-auto px-3.5 sm:px-6">
         {/* Main Quiz Card */}
         <div className="bg-white rounded-2xl sm:rounded-3xl border border-border-warm p-4.5 xs:p-6 sm:p-10 shadow-xs lapor-enter-card">

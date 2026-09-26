@@ -3,7 +3,6 @@ import RiwayatHeader from './components/RiwayatHeader'
 import RiwayatSummary from './components/RiwayatSummary'
 import RiwayatFilterBar from './components/RiwayatFilterBar'
 import RiwayatActivityCard from './components/RiwayatActivityCard'
-import RiwayatTransparencyNote from './components/RiwayatTransparencyNote'
 import { ArrowRightIcon } from '../../components/common/Icons'
 import {
   CONTRIBUTION_HISTORY,
@@ -147,11 +146,6 @@ function ProfilRiwayatPage() {
           </div>
         )}
       </section>
-
-      {/* 5. Transparency Note */}
-      <div className="profil-enter profil-enter-delay-4">
-        <RiwayatTransparencyNote />
-      </div>
     </div>
   )
 }

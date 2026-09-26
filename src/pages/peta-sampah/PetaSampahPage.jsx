@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import WasteMap from './components/WasteMap'
 import MapControlPanel from './components/MapControlPanel'
 import MapDetailPanel from './components/MapDetailPanel'
@@ -25,6 +25,7 @@ function PetaSampahPage() {
   const [selectedPoint, setSelectedPoint] = useState(null)
 
   const [flyToCoords, setFlyToCoords] = useState(null)
+  const [userLocation, setUserLocation] = useState(null)
   const [isLocating, setIsLocating] = useState(false)
   const [locationError, setLocationError] = useState(null)
 
@@ -155,7 +156,9 @@ function PetaSampahPage() {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setIsLocating(false)
-        setFlyToCoords([position.coords.longitude, position.coords.latitude])
+        const coords = [position.coords.longitude, position.coords.latitude]
+        setUserLocation(coords)
+        setFlyToCoords(coords)
       },
       (error) => {
         setIsLocating(false)
@@ -169,6 +172,11 @@ function PetaSampahPage() {
     )
   }
 
+  const handleReset = useCallback(() => {
+    setUserLocation(null)
+    setSelectedPoint(null)
+  }, [])
+
   const hasNoResults = visibleWasteReports.length === 0 && visibleBankSampah.length === 0
 
   return (
@@ -180,10 +188,12 @@ function PetaSampahPage() {
         heatmapVisible={heatmapVisible}
         reportsVisible={reportsVisible}
         bankSampahVisible={bankSampahVisible}
+        userLocation={userLocation}
         flyToCoords={flyToCoords}
         onFlyToComplete={() => setFlyToCoords(null)}
         selectedPoint={activeSelectedPoint}
         onSelectPoint={setSelectedPoint}
+        onReset={handleReset}
       />
       <MapControlPanel
         searchQuery={searchQuery}

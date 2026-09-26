@@ -11,7 +11,7 @@ export default function AuthCardWrapper({
   children,
 }) {
   return (
-    <div className="relative min-h-screen w-full bg-neutral flex flex-col justify-center items-center p-4 sm:p-6 lg:p-10 overflow-x-hidden selection:bg-primary selection:text-white">
+    <div className="relative min-h-screen w-full bg-neutral flex flex-col justify-center items-center p-4 sm:p-6 lg:p-10 overflow-x-hidden selection:bg-primary selection:text-white animate-page-enter">
       {/* Ambient background glows */}
       <div
         className="fixed -top-40 -left-40 w-96 h-96 bg-amber-200/30 rounded-full blur-3xl pointer-events-none"
@@ -30,7 +30,7 @@ export default function AuthCardWrapper({
       <div
         className={`relative z-10 w-full ${
           hideHeroOnMobile ? 'max-w-md md:max-w-[960px]' : 'max-w-[960px]'
-        } bg-white rounded-3xl sm:rounded-[32px] shadow-[0_24px_70px_-15px_rgba(24,67,41,0.12)] border border-gray-100/90 overflow-hidden grid grid-cols-1 lg:grid-cols-2`}
+        } bg-white rounded-3xl sm:rounded-[32px] shadow-[0_24px_70px_-15px_rgba(24,67,41,0.12)] border border-gray-100/90 overflow-hidden grid grid-cols-1 lg:grid-cols-2 animate-dialog-enter`}
       >
         {/* Left Section: Visual Hero Panel with Rotating Dashed Circles & Floating Badges */}
         <div className={hideHeroOnMobile ? 'hidden md:block w-full h-full' : 'w-full h-full'}>

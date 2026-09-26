@@ -13,7 +13,7 @@ import ProfileWorkspaceNav from './components/ProfileWorkspaceNav'
 function ProfileWorkspaceLayout() {
   return (
     <main
-      className="relative min-h-[100svh] bg-neutral pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8"
+      className="relative min-h-[100svh] bg-neutral pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8 animate-page-enter"
       aria-label="Profile Workspace AksiLestari"
     >
       {/* Layer 1: Exact Beranda/Lapor first viewport hero composition */}
@@ -43,7 +43,7 @@ function ProfileWorkspaceLayout() {
       <div className="relative z-10 max-w-7xl mx-auto flex flex-col lg:flex-row items-start gap-6 sm:gap-8">
         {/* Left Column: Persistent Identity Panel (Sticky on Desktop) */}
         <aside className="w-full lg:w-[280px] xl:w-[300px] shrink-0 lg:sticky lg:top-28">
-          <div className="profil-enter">
+          <div className="profil-enter-left">
             <ProfileIdentityArea />
           </div>
         </aside>

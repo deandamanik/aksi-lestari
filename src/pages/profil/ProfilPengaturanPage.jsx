@@ -7,6 +7,7 @@ import PengaturanPrivasiData from './components/PengaturanPrivasiData'
 import PengaturanBantuan from './components/PengaturanBantuan'
 import PengaturanHapusModal from './components/PengaturanHapusModal'
 import { useAuth } from '../../hooks/useAuth'
+import { useToast } from '../../hooks/useToast'
 import { DEMO_USER } from '../../context/authContextDef'
 import { CheckIcon } from '../../components/common/Icons'
 
@@ -27,6 +28,7 @@ import { CheckIcon } from '../../components/common/Icons'
  */
 function ProfilPengaturanPage() {
   const { user, updateUserProfile } = useAuth()
+  const { showToast } = useToast()
   const profile = user || DEMO_USER
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [globalNotice, setGlobalNotice] = useState(null)
@@ -66,8 +68,10 @@ function ProfilPengaturanPage() {
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
 
-    setGlobalNotice('Berkas data profil berhasil diekspor dan diunduh ke perangkatmu.')
-    setTimeout(() => setGlobalNotice(null), 4000)
+    showToast({
+      title: 'Data Diekspor',
+      message: 'Berkas data profil berhasil diekspor dan diunduh ke perangkatmu.',
+    })
   }
 
   const handleConfirmDelete = () => {

@@ -1,4 +1,4 @@
-import { useState, useCallback, useLayoutEffect } from 'react'
+import { useState, useCallback, useLayoutEffect, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { useLapor } from '../../context/LaporContext'
@@ -31,6 +31,16 @@ function LaporPage() {
   const { isAuthenticated } = useAuth()
   const { reportData, updateReport, resetReport } = useLapor()
   const [showAuthPrompt, setShowAuthPrompt] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const timerRef = useRef(null)
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+      }
+    }
+  }, [])
 
   // Reset report draft when entering /lapor to start a fresh report
   useLayoutEffect(() => {
@@ -61,17 +71,20 @@ function LaporPage() {
 
   // Enter the actual 4-step reporting flow — Step 01 Temukan
   const handleContinue = useCallback(() => {
-    if (!photoFile) return
+    if (!photoFile || isLoading) return
     if (!isAuthenticated) {
       setShowAuthPrompt(true)
       return
     }
-    navigate('/lapor/temukan')
-  }, [photoFile, isAuthenticated, navigate])
+    setIsLoading(true)
+    timerRef.current = setTimeout(() => {
+      navigate('/lapor/temukan')
+    }, 900)
+  }, [photoFile, isLoading, isAuthenticated, navigate])
 
   return (
     <main
-      className="relative w-full overflow-hidden bg-neutral min-h-[100svh] lg:h-[100svh] lg:min-h-[600px] pt-20 sm:pt-24 lg:pt-22 pb-10 sm:pb-12 flex flex-col justify-center"
+      className="relative w-full bg-neutral min-h-[100svh] pt-28 sm:pt-32 lg:pt-34 pb-12 sm:pb-16 flex flex-col justify-start animate-page-enter"
       style={{
         backgroundImage: 'url(/images/pattern.webp)',
         backgroundSize: 'cover',
@@ -109,7 +122,7 @@ function LaporPage() {
       </div>
 
       {/* Central Content */}
-      <div className="relative z-10 max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8 flex-1 flex flex-col justify-center">
+      <div className="relative z-10 max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
         {/* Page Heading — NO stepper, NO step chip */}
         <div className="text-center mb-6 sm:mb-8 lapor-enter-header">
           <h1 className="font-display font-bold text-3xl sm:text-4xl lg:text-[42px] text-primary tracking-tight leading-tight">
@@ -121,7 +134,7 @@ function LaporPage() {
         </div>
 
         {/* Upload Card */}
-        <div className="w-full max-w-2xl mx-auto lapor-enter-card">
+        <div className="w-full max-w-xl mx-auto lapor-enter-card">
           <PhotoUploadCard
             value={photoFile}
             onChange={handleFileSelect}
@@ -143,18 +156,30 @@ function LaporPage() {
           <div className="mt-6 sm:mt-8 w-full max-w-2xl mx-auto flex flex-col items-center justify-center text-center">
             <button
               type="button"
-              disabled={!photoFile}
+              disabled={!photoFile || isLoading}
               onClick={handleContinue}
               className={`inline-flex items-center justify-center gap-2 h-11 sm:h-13 px-7 sm:px-10 rounded-full font-semibold sm:font-bold text-sm sm:text-base transition-colors select-none w-full sm:w-auto ${
-                photoFile
+                photoFile && !isLoading
                   ? 'bg-primary hover:bg-primary/90 text-white cursor-pointer shadow-xs sm:shadow-md hover:shadow-lg active:scale-[0.99] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
                   : 'bg-[#C6CFC9] text-white/95 cursor-not-allowed shadow-none'
               }`}
               aria-label="Lanjutkan ke Temuan"
-              aria-disabled={!photoFile}
+              aria-disabled={!photoFile || isLoading}
             >
-              <span>Lanjutkan ke Temuan</span>
-              <ArrowRightIcon className="w-4 h-4 sm:w-4.5 sm:h-4.5" strokeWidth={2.25} />
+              {isLoading ? (
+                <>
+                  <span
+                    className="w-4 h-4 sm:w-4.5 sm:h-4.5 border-2 border-white border-t-transparent rounded-full animate-spin shrink-0"
+                    aria-hidden="true"
+                  />
+                  <span>Memproses Foto...</span>
+                </>
+              ) : (
+                <>
+                  <span>Lanjutkan ke Temuan</span>
+                  <ArrowRightIcon className="w-4 h-4 sm:w-4.5 sm:h-4.5" strokeWidth={2.25} />
+                </>
+              )}
             </button>
 
             <p className="text-xs text-stone-500 mt-2.5 font-medium tracking-wide">

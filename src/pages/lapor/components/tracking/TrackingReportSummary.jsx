@@ -49,17 +49,25 @@ function TrackingReportSummary({ temukan, kenali, createdAt }) {
         )}
       </div>
 
-      {/* 1. Photo Evidence with Approved Natural Aspect Ratio */}
+      {/* 1. Photo Evidence with Standard 4:3 Aspect Ratio Frame */}
       <div className="flex flex-col gap-2">
         {activeUrl && !hasError ? (
-          <div className="w-full rounded-xl overflow-hidden bg-stone-50 border border-stone-100 flex items-center justify-center">
+          <div className="w-full aspect-[4/3] rounded-2xl overflow-hidden bg-stone-900 border border-stone-200/80 shadow-xs relative">
             <img
               src={activeUrl}
               alt="Foto bukti temuan sampah yang dilaporkan"
               onError={() => setFailedFile(photo?.file)}
-              className="w-full h-auto block object-contain transition-opacity duration-200"
-              style={{ maxHeight: '420px' }}
+              className="w-full h-full object-cover select-none"
             />
+            {/* 4:3 Frame Camera Brackets */}
+            <div className="absolute top-2.5 left-2.5 w-3.5 h-3.5 border-t-2 border-l-2 border-white/60 pointer-events-none" />
+            <div className="absolute top-2.5 right-2.5 w-3.5 h-3.5 border-t-2 border-r-2 border-white/60 pointer-events-none" />
+            <div className="absolute bottom-2.5 left-2.5 w-3.5 h-3.5 border-b-2 border-l-2 border-white/60 pointer-events-none" />
+            <div className="absolute bottom-2.5 right-2.5 w-3.5 h-3.5 border-b-2 border-r-2 border-white/60 pointer-events-none" />
+
+            <div className="absolute top-3 left-3 bg-stone-900/80 backdrop-blur-xs text-white/90 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase pointer-events-none select-none border border-white/10">
+              Rasio 4:3
+            </div>
           </div>
         ) : hasError ? (
           <div className="w-full rounded-xl bg-amber-50/60 border border-amber-200/80 p-5 text-center flex flex-col items-center justify-center gap-1.5">

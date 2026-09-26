@@ -5,6 +5,7 @@ import { formatRupiah } from '../../../utils/formatters'
 import EwalletRedeemForm from './redeem/EwalletRedeemForm'
 import VoucherCatalogGrid from './redeem/VoucherCatalogGrid'
 import RedeemSuccessReceipt from './redeem/RedeemSuccessReceipt'
+import { useToast } from '../../../hooks/useToast'
 
 /**
  * SaldoRedeemSection — Interactive Redeem Hub
@@ -44,6 +45,7 @@ function SectionHeader({ balance }) {
 }
 
 function SaldoRedeemSection({ balance, onRedeem }) {
+  const { showToast } = useToast()
   const { walletProviders, voucherCatalog } = SALDO_APRESIASI
 
   const [redeemMethod, setRedeemMethod] = useState('ewallet')
@@ -84,6 +86,10 @@ function SaldoRedeemSection({ balance, onRedeem }) {
       })
       setIsProcessing(false)
       processingRef.current = false
+      showToast({
+        title: 'Penukaran Berhasil',
+        message: 'Penukaran poin berhasil diproses!',
+      })
     }, MOCK_PROCESS_MS)
   }
 
@@ -108,6 +114,10 @@ function SaldoRedeemSection({ balance, onRedeem }) {
       })
       setIsProcessing(false)
       processingRef.current = false
+      showToast({
+        title: 'Penukaran Berhasil',
+        message: 'Penukaran poin berhasil diproses!',
+      })
     }, MOCK_PROCESS_MS)
   }
 

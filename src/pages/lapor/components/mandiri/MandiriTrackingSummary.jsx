@@ -108,22 +108,22 @@ function MandiriTrackingSummary({ temukan, kenali, mandiri }) {
               <span className="text-stone-400 font-normal text-[10px]">Awal</span>
             </div>
 
-            <div className="w-full h-36 sm:h-40 rounded-xl overflow-hidden bg-stone-50 border border-stone-100 flex items-center justify-center p-1.5">
+            <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-stone-900 border border-stone-200/80 shadow-2xs relative flex items-center justify-center">
               {activeBeforeUrl && !hasBeforeError ? (
                 <img
                   src={activeBeforeUrl}
                   alt="Foto kondisi sampah sebelum penanganan"
                   onError={() => setFailedBefore(beforePhoto?.file)}
-                  className="max-h-full max-w-full w-auto h-auto object-contain rounded-lg"
+                  className="w-full h-full object-cover select-none"
                 />
               ) : hasBeforeError ? (
                 <div className="p-2 text-center flex flex-col items-center gap-1">
                   <AlertCircleIcon className="w-5 h-5 text-amber-600" />
-                  <span className="text-[10px] text-stone-500">Gagal memuat</span>
+                  <span className="text-[10px] text-stone-300">Gagal memuat</span>
                 </div>
               ) : (
                 <div className="p-2 text-center flex flex-col items-center gap-1 text-stone-400">
-                  <CameraIcon className="w-5 h-5 text-stone-300" strokeWidth={1.5} />
+                  <CameraIcon className="w-5 h-5 text-stone-500" strokeWidth={1.5} />
                   <span className="text-[10px]">Tidak ada foto</span>
                 </div>
               )}
@@ -146,22 +146,22 @@ function MandiriTrackingSummary({ temukan, kenali, mandiri }) {
               </span>
             </div>
 
-            <div className="w-full h-36 sm:h-40 rounded-xl overflow-hidden bg-stone-50 border border-stone-100 flex items-center justify-center p-1.5">
+            <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-stone-900 border border-stone-200/80 shadow-2xs relative flex items-center justify-center">
               {activeAfterUrl && !hasAfterError ? (
                 <img
                   src={activeAfterUrl}
                   alt="Foto kondisi setelah sampah ditangani"
                   onError={() => setFailedAfter(afterPhoto?.file)}
-                  className="max-h-full max-w-full w-auto h-auto object-contain rounded-lg"
+                  className="w-full h-full object-cover select-none"
                 />
               ) : hasAfterError ? (
                 <div className="p-2 text-center flex flex-col items-center gap-1">
                   <AlertCircleIcon className="w-5 h-5 text-amber-600" />
-                  <span className="text-[10px] text-stone-500">Gagal memuat</span>
+                  <span className="text-[10px] text-stone-300">Gagal memuat</span>
                 </div>
               ) : (
                 <div className="p-2 text-center flex flex-col items-center gap-1 text-stone-400">
-                  <CameraIcon className="w-5 h-5 text-stone-300" strokeWidth={1.5} />
+                  <CameraIcon className="w-5 h-5 text-stone-500" strokeWidth={1.5} />
                   <span className="text-[10px]">Tidak ada foto</span>
                 </div>
               )}

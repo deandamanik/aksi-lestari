@@ -1,11 +1,10 @@
 import { useNavigate } from 'react-router-dom'
 import { buildLoginState } from '../../utils/authRedirect'
-import Button from './Button'
 import Modal from './Modal'
 
 /**
  * AuthPromptModal
- * Lightweight, calm action-gate feedback modal.
+ * Simple, clean, and unified all-white action-gate modal.
  * Explains to the guest user why login is required before continuing a protected action.
  *
  * @param {object} props
@@ -48,40 +47,40 @@ export default function AuthPromptModal({
       onClose={onClose}
       ariaLabelledBy="auth-prompt-title"
       ariaDescribedBy="auth-prompt-desc"
-      className="bg-white rounded-2xl border border-border-warm p-6 sm:p-7 max-w-md w-full shadow-lg flex flex-col gap-4 animate-in fade-in zoom-in-95 duration-150"
+      className="bg-white rounded-2xl sm:rounded-3xl border border-border-warm p-6 sm:p-7 max-w-md w-full shadow-xl flex flex-col gap-5 sm:gap-6 animate-dialog-enter relative"
     >
-      <div className="flex flex-col gap-1.5">
+      {/* Content Area */}
+      <div className="flex flex-col gap-2">
         <h3
           id="auth-prompt-title"
-          className="font-bold text-lg sm:text-xl text-stone-900 font-display tracking-tight"
+          className="font-display text-xl sm:text-2xl font-bold text-stone-900 tracking-tight leading-snug"
         >
           {title}
         </h3>
         <p
           id="auth-prompt-desc"
-          className="text-xs sm:text-sm text-stone-600 leading-relaxed font-body"
+          className="text-sm text-stone-600 leading-relaxed font-body"
         >
           {description}
         </p>
       </div>
 
-      <div className="mt-2 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5">
-        <Button
-          variant="secondary"
-          size="md"
+      {/* Actions: Unified all-white surface */}
+      <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 sm:gap-3 pt-1">
+        <button
+          type="button"
           onClick={onClose}
-          className="w-full sm:w-auto"
+          className="inline-flex items-center justify-center h-10 px-5 sm:px-6 rounded-full bg-white hover:bg-stone-50 border border-border-warm text-stone-700 hover:text-stone-900 text-sm font-body font-semibold transition-all duration-150 active:scale-[0.98] cursor-pointer shadow-2xs w-full sm:w-auto select-none"
         >
           Batalkan
-        </Button>
-        <Button
-          variant="primary"
-          size="md"
+        </button>
+        <button
+          type="button"
           onClick={handleLogin}
-          className="w-full sm:w-auto"
+          className="inline-flex items-center justify-center h-10 px-6 sm:px-7 rounded-full bg-primary hover:bg-primary/90 text-white text-sm font-body font-semibold transition-all duration-150 active:scale-[0.98] cursor-pointer shadow-xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 w-full sm:w-auto select-none"
         >
           Masuk
-        </Button>
+        </button>
       </div>
     </Modal>
   )

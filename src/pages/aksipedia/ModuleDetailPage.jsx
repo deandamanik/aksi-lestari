@@ -101,7 +101,7 @@ function ModuleDetailPage() {
   }
 
   return (
-    <main className="min-h-screen bg-neutral text-primary pt-28 sm:pt-32 pb-20 sm:pb-24">
+    <main className="min-h-screen bg-neutral text-primary pt-28 sm:pt-32 pb-20 sm:pb-24 animate-page-enter">
       {/* 1. Header Container: Clean Module Title & Metadata */}
       <div className="max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-8">
         <ModuleHeader module={module} />
@@ -115,7 +115,7 @@ function ModuleDetailPage() {
       />
 
       {/* 3. Main Editorial Body with comfortable spacing below sticky journey */}
-      <div className="max-w-[960px] mx-auto px-4 sm:px-6 lg:px-8 mt-8 sm:mt-10">
+      <div className="max-w-[960px] mx-auto px-4 sm:px-6 lg:px-8 mt-8 sm:mt-10 lapor-enter-card-delay-1">
         <ModuleEditorialBody sections={module.sections} />
 
         {/* 4. Bottom Actions (Consistent with Scan Result Pattern) */}
