@@ -14,7 +14,7 @@ function ScanUploadSection({
 }) {
   return (
     <section
-      className="relative w-full overflow-hidden bg-neutral min-h-[100svh] lg:h-[100svh] lg:min-h-[640px] pt-24 sm:pt-28 lg:pt-24 pb-12 sm:pb-16 flex flex-col justify-center"
+      className="relative w-full bg-neutral min-h-[100svh] pt-28 sm:pt-32 lg:pt-34 pb-12 sm:pb-16 flex flex-col justify-start animate-page-enter"
       style={{
         backgroundImage: 'url(/images/pattern.webp)',
         backgroundSize: 'cover',
