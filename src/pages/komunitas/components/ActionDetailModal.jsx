@@ -212,52 +212,47 @@ export default function ActionDetailModal({
           )}
         </div>
 
-        {/* Modal Footer / Action CTA (Fixed) */}
-        <div className="px-4 sm:px-8 py-3 sm:py-3.5 bg-neutral border-t border-border-warm/70 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 shrink-0">
+        {/* Modal Footer / Action CTA (Consistent rounded-full & font-body) */}
+        <div className="px-5 sm:px-8 py-3.5 sm:py-4 bg-neutral border-t border-border-warm/70 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 sm:gap-3 shrink-0">
           <button
             type="button"
             onClick={onClose}
-            className="text-xs sm:text-[13px] font-normal text-stone-500 hover:text-stone-800 transition-colors cursor-pointer py-1 px-1 focus:outline-hidden focus-visible:underline shrink-0"
+            className="inline-flex items-center justify-center h-10 px-5 rounded-full bg-white hover:bg-stone-50 border border-border-warm text-stone-700 hover:text-primary text-xs sm:text-sm font-body font-semibold transition-all duration-180 active:scale-[0.98] cursor-pointer shadow-2xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary w-full sm:w-auto"
           >
             Tutup
           </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              if (!isJoined && !isFull) {
+          {isJoined ? (
+            <div className="inline-flex items-center justify-center gap-2 h-10 px-5 rounded-full bg-[#DCFCE7] text-[#15803D] border border-[#86EFAC] text-xs sm:text-sm font-body font-semibold select-none w-full sm:w-auto">
+              <CheckIcon className="w-3.5 h-3.5 text-[#15803D] animate-check-scale shrink-0" />
+              <span>Kamu Sudah Terdaftar</span>
+            </div>
+          ) : isFull ? (
+            <button
+              type="button"
+              disabled
+              className="inline-flex items-center justify-center h-10 px-5 rounded-full bg-stone-200 text-stone-500 border border-stone-300 text-xs sm:text-sm font-body font-semibold cursor-not-allowed w-full sm:w-auto"
+            >
+              Kuota Penuh
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
                 if (!isAuthenticated) {
                   setShowAuthPrompt(true)
                   return
                 }
                 onJoin(action)
-              }
-            }}
-            disabled={isJoined || isFull}
-            className={`inline-flex items-center justify-center gap-1.5 h-9 sm:h-9.5 px-4 sm:px-5 rounded-xl text-xs sm:text-[13px] font-semibold font-body transition-all duration-180 max-[350px]:w-full ${
-              isJoined
-                ? 'bg-[#DCFCE7] text-[#15803D] border border-[#86EFAC] cursor-default'
-                : isFull
-                ? 'bg-stone-200 text-stone-500 border border-stone-300 cursor-not-allowed'
-                : 'bg-primary text-white hover:bg-primary/90 shadow-2xs active:scale-[0.98] cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary'
-            }`}
-          >
-            {isJoined ? (
-              <>
-                <CheckIcon className="w-3.5 h-3.5 text-[#15803D] animate-check-scale shrink-0" />
-                <span>Kamu Sudah Terdaftar</span>
-              </>
-            ) : isFull ? (
-              <span>Kuota Penuh</span>
-            ) : (
-              <span>
-                Gabung Aksi Ini
-                {action.xpReward ? (
-                  <span className="font-normal opacity-85"> · +{action.xpReward} XP</span>
-                ) : null}
-              </span>
-            )}
-          </button>
+              }}
+              className="inline-flex items-center justify-center gap-1.5 h-10 px-6 rounded-full bg-primary text-white hover:bg-primary/90 text-xs sm:text-sm font-body font-semibold transition-all duration-180 active:scale-[0.98] cursor-pointer shadow-xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary w-full sm:w-auto"
+            >
+              <span>Gabung Aksi Ini</span>
+              {action.xpReward ? (
+                <span className="font-normal opacity-85 font-body"> · +{action.xpReward} XP</span>
+              ) : null}
+            </button>
+          )}
         </div>
       </Modal>
 

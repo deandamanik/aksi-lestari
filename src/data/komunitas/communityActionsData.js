@@ -646,6 +646,6 @@ export const LEADERBOARD_PREVIEW = {
     rank: 12,
     badgeText: '#12',
     label: 'Kamu saat ini di peringkat #12',
-    xp: '620 XP',
+    xp: '420 XP',
   },
 }

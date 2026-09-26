@@ -17,9 +17,8 @@ export default function CommunitySidebarActionCard({
       <div>
         {/* Top Header: Status and SubCategory */}
         <div className="flex items-center justify-between gap-2 mb-2.5">
-          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-primary">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-            <span>{action.status || 'Terbuka'}</span>
+          <span className="text-xs font-medium text-primary">
+            {action.status || 'Terbuka'}
           </span>
           <span className="text-xs text-stone-400 font-normal">
             {action.subCategory || 'Edukasi Generasi'}

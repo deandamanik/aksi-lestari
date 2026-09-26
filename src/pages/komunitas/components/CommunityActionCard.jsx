@@ -55,16 +55,11 @@ export default function CommunityActionCard({
         {/* 1. Status + Category */}
         <div className="flex items-center justify-between gap-2 mb-2.5">
           <span
-            className={`inline-flex items-center gap-1.5 text-xs font-medium ${
+            className={`text-xs font-medium ${
               isWarning ? 'text-amber-700' : 'text-primary'
             }`}
           >
-            <span
-              className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                isWarning ? 'bg-amber-600' : 'bg-primary'
-              }`}
-            />
-            <span>{action.status || 'Terbuka'}</span>
+            {action.status || 'Terbuka'}
           </span>
 
           <span className="text-xs text-stone-500 font-normal">

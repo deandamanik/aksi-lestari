@@ -6,7 +6,6 @@ import CommunityHero from './components/CommunityHero'
 import CommunityFilterBar from './components/CommunityFilterBar'
 import CommunityFeaturedCard from './components/CommunityFeaturedCard'
 import CommunityActionCard from './components/CommunityActionCard'
-import CommunitySidebarActionCard from './components/CommunitySidebarActionCard'
 import CommunityLeaderboardPreview from './components/CommunityLeaderboardPreview'
 import CommunityProposalBanner from './components/CommunityProposalBanner'
 import ActionDetailModal from './components/ActionDetailModal'
@@ -18,6 +17,9 @@ import {
   INITIAL_LOCATION,
   COMMUNITY_LOCATIONS,
 } from '../../data/komunitas/communityActionsData'
+import {
+  KOMUNITAS_HERO_DESKTOP_OBJECTS,
+} from '../../data/komunitas/komunitasHeroObjects'
 import { CheckIcon, SparklesIcon, ArrowRightIcon } from '../../components/common/Icons'
 
 function KomunitasPage() {
@@ -27,7 +29,7 @@ function KomunitasPage() {
   // Page local state
   const [actionsList, setActionsList] = useState(COMMUNITY_ACTIONS)
   const [selectedLocation, setSelectedLocation] = useState(INITIAL_LOCATION)
-  const [selectedCategories, setSelectedCategories] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState('Semua')
   const [searchQuery, setSearchQuery] = useState('')
 
   // Local state for visible actions count (Load More pattern: 4 initial, +4 per click)
@@ -111,31 +113,15 @@ function KomunitasPage() {
     showToast(`Lokasi dialihkan ke ${loc}`)
   }
 
-  // Category handlers (reset visibleCount to initial 4 on every filter change)
-  const handleToggleCategory = (cat) => {
+  // Category tab handler (resets visibleCount to initial 4)
+  const handleSelectCategory = (cat) => {
     setVisibleCount(4)
-    setSelectedCategories((prev) => {
-      if (cat === 'Semua Aksi') return []
-      if (prev.includes(cat)) {
-        return prev.filter((c) => c !== cat)
-      }
-      return [...prev, cat]
-    })
-  }
-
-  const handleRemoveCategory = (cat) => {
-    setVisibleCount(4)
-    setSelectedCategories((prev) => prev.filter((c) => c !== cat))
-  }
-
-  const handleClearAllCategories = () => {
-    setVisibleCount(4)
-    setSelectedCategories([])
+    setSelectedCategory(cat)
   }
 
   // Reset all filters to default
   const handleResetFilters = () => {
-    setSelectedCategories([])
+    setSelectedCategory('Semua')
     setSearchQuery('')
     setSelectedLocation(INITIAL_LOCATION)
     setVisibleCount(4)
@@ -144,7 +130,7 @@ function KomunitasPage() {
 
   // Active filter state check
   const isFiltered =
-    selectedCategories.length > 0 ||
+    (selectedCategory && selectedCategory !== 'Semua' && selectedCategory !== 'Semua Aksi') ||
     searchQuery.trim() !== '' ||
     selectedLocation !== INITIAL_LOCATION
 
@@ -161,7 +147,8 @@ function KomunitasPage() {
     }).length
   }, [actionsList, selectedLocation])
 
-  // Combined Filtering Pipeline (Location -> Category -> Search -> Sort)
+
+  // Combined Filtering Pipeline (Location -> Category Tab -> Search Query)
   const filteredActions = useMemo(() => {
     let result = [...actionsList]
 
@@ -183,9 +170,9 @@ function KomunitasPage() {
       })
     }
 
-    // 2. Category Filter (multi-select)
-    if (selectedCategories.length > 0) {
-      result = result.filter((action) => selectedCategories.includes(action.category))
+    // 2. Category Tab Filter
+    if (selectedCategory && selectedCategory !== 'Semua' && selectedCategory !== 'Semua Aksi') {
+      result = result.filter((action) => action.category === selectedCategory)
     }
 
     // 3. Search Query Filter (case-insensitive across title, location, category, organizer, description)
@@ -204,28 +191,16 @@ function KomunitasPage() {
     }
 
     return result
-  }, [actionsList, selectedLocation, selectedCategories, searchQuery])
+  }, [actionsList, selectedLocation, selectedCategory, searchQuery])
 
   // Select featured action from filtered results
   const featuredAction = useMemo(() => {
     return (
       filteredActions.find((a) => a.isFeatured) ||
-      filteredActions.find((a) => !a.isSidebarAction) ||
       filteredActions[0] ||
       null
     )
   }, [filteredActions])
-
-  // Select sidebar action matching location when possible
-  const sidebarAction = useMemo(() => {
-    const locObj = COMMUNITY_LOCATIONS.find((l) => l.name === selectedLocation)
-    const locTag = locObj ? locObj.id : ''
-    return (
-      actionsList.find((a) => a.locationTag === locTag && a.isSidebarAction) ||
-      actionsList.find((a) => a.isSidebarAction) ||
-      null
-    )
-  }, [actionsList, selectedLocation])
 
   // Secondary actions are remaining items in the left column
   const secondaryActions = useMemo(() => {
@@ -245,12 +220,49 @@ function KomunitasPage() {
   }, [actionsList, activeDetailAction])
 
   return (
-    <main className="min-h-screen bg-neutral text-primary flex flex-col antialiased">
-      <div className="w-full flex-1 flex flex-col animate-page-enter">
+    <main className="relative min-h-screen bg-neutral text-primary flex flex-col antialiased">
+      {/* Exact Beranda/AksiPedia/Profil first-viewport pattern alignment */}
+      <div
+        className="absolute top-0 left-0 right-0 h-[100svh] min-h-[580px] pointer-events-none select-none z-0 overflow-hidden opacity-50 sm:opacity-100"
+        style={{
+          backgroundImage: 'url(/images/pattern.webp)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center',
+          backgroundRepeat: 'no-repeat',
+          maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 32%, rgba(0,0,0,0) 78%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 32%, rgba(0,0,0,0) 78%)',
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Decorative 3D Floating Objects — Desktop Only (hidden on mobile to prevent clutter) */}
+      <div className="absolute top-0 left-0 right-0 h-[100svh] min-h-[580px] pointer-events-none select-none overflow-hidden hidden md:block z-0" aria-hidden="true">
+        {KOMUNITAS_HERO_DESKTOP_OBJECTS.map((obj, i) => (
+          <div
+            key={`komunitas-dec-${i}`}
+            className={`absolute pointer-events-none select-none hero-enter-object ${obj.className}`}
+            style={{
+              animationDelay: `${obj.enterDelay}ms`,
+            }}
+          >
+            <img
+              src={obj.src}
+              alt=""
+              className={`w-full h-auto drop-shadow-sm pointer-events-none select-none ${obj.ambientClass}`}
+              style={{
+                animationDelay: `${obj.enterDelay + 750}ms`,
+              }}
+              draggable={false}
+            />
+          </div>
+        ))}
+      </div>
+
+      <div className="relative z-10 w-full flex-1 flex flex-col animate-page-enter">
         {/* Hero Section (Stagger 0ms) */}
         <div className="animate-content-rise stagger-community-hero">
-        <CommunityHero />
-      </div>
+          <CommunityHero />
+        </div>
 
       {/* 3. Main Content Container */}
       <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1">
@@ -259,16 +271,10 @@ function KomunitasPage() {
           <CommunityFilterBar
             selectedLocation={selectedLocation}
             onSelectLocation={handleSelectLocation}
-            selectedCategories={selectedCategories}
-            onToggleCategory={handleToggleCategory}
-            onRemoveCategory={handleRemoveCategory}
-            onClearAllCategories={handleClearAllCategories}
+            selectedCategory={selectedCategory}
+            onSelectCategory={handleSelectCategory}
             searchQuery={searchQuery}
             onSearchChange={handleSearchChange}
-            filteredCount={filteredActions.length}
-            totalCount={currentLocationActionsCount}
-            isFiltered={isFiltered}
-            onResetFilters={handleResetFilters}
           />
         </div>
 
@@ -296,7 +302,7 @@ function KomunitasPage() {
             {/* Actions Display with smooth category/filter change transition */}
             {filteredActions.length > 0 && featuredAction ? (
               <div
-                key={`${selectedCategories.join(',')}_${selectedLocation}`}
+                key={`${selectedCategory}_${selectedLocation}`}
                 className="space-y-5 sm:space-y-6 animate-content-rise"
               >
                 {/* Large Featured Action Card */}
@@ -319,9 +325,9 @@ function KomunitasPage() {
                   </div>
                 )}
 
-                {/* Load More / Collapse Button (Left-aligned list continuation) */}
+                {/* Load More / Collapse Button (Consistent rounded-full styling) */}
                 {filteredActions.length > 4 && (
-                  <div className="pt-1 sm:pt-1.5 flex justify-start">
+                  <div className="pt-2 sm:pt-3 flex justify-start">
                     <button
                       type="button"
                       onClick={() => {
@@ -331,7 +337,7 @@ function KomunitasPage() {
                           setVisibleCount(4)
                         }
                       }}
-                      className="inline-flex items-center gap-2 h-10 px-4.5 sm:px-5 rounded-xl bg-white border border-border-warm text-stone-700 hover:text-primary hover:border-primary/40 hover:bg-neutral text-xs sm:text-[13px] font-semibold font-body transition-all duration-180 shadow-2xs active:scale-[0.98] cursor-pointer group focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+                      className="inline-flex items-center justify-center gap-2 h-10 sm:h-11 px-5 sm:px-6 rounded-full bg-white border border-border-warm text-stone-700 hover:text-primary hover:border-primary/40 hover:bg-stone-50/80 text-xs sm:text-sm font-semibold font-body transition-all duration-180 shadow-2xs active:scale-[0.98] cursor-pointer group focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary select-none"
                     >
                       <span>
                         {visibleCount < filteredActions.length
@@ -374,18 +380,10 @@ function KomunitasPage() {
 
           {/* Right Column: Sidebar (Narrower Column ~36%) */}
           <aside className="lg:col-span-5 xl:col-span-4 space-y-6">
-            {/* 1. Sidebar Action Card */}
-            {sidebarAction && (
-              <CommunitySidebarActionCard
-                action={sidebarAction}
-                onOpenDetail={setActiveDetailAction}
-              />
-            )}
-
-            {/* 2. Leaderboard Card (Penggerak Teraktif Minggu Ini) */}
+            {/* 1. Leaderboard Card (Penggerak Teraktif Minggu Ini) */}
             <CommunityLeaderboardPreview />
 
-            {/* 3. Initiative Proposal Card (Punya Inisiatif Aksi di Lingkunganmu?) */}
+            {/* 2. Initiative Proposal Card (Punya Inisiatif Aksi di Lingkunganmu?) */}
             <CommunityProposalBanner
               onOpenProposeModal={() => {
                 if (!isAuthenticated) {

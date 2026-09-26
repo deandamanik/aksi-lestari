@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import Button from '../../../components/common/Button'
 
 const INITIAL_FORM = {
   title: '',
@@ -341,24 +340,23 @@ export default function ProposeActionForm({
         </div>
       </div>
 
-      {/* Modal Footer */}
-      <div className="p-5 sm:p-6 bg-neutral/70 border-t border-border-warm flex items-center justify-end gap-3 shrink-0">
-        <Button
-          variant="secondary"
-          size="md"
+      {/* Modal Footer (Consistent rounded-full, font-body, matching ActionDetailModal) */}
+      <div className="px-5 sm:px-8 py-3.5 sm:py-4 bg-neutral border-t border-border-warm/70 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 sm:gap-3 shrink-0">
+        <button
+          type="button"
           onClick={onCancel}
           disabled={isLoading}
+          className="inline-flex items-center justify-center h-10 px-5 rounded-full bg-white hover:bg-stone-50 border border-border-warm text-stone-700 hover:text-primary text-xs sm:text-sm font-body font-semibold transition-all duration-180 active:scale-[0.98] cursor-pointer shadow-2xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary w-full sm:w-auto disabled:opacity-60 disabled:cursor-not-allowed"
         >
           Batal
-        </Button>
-        <Button
+        </button>
+        <button
           type="submit"
-          variant="primary"
-          size="md"
-          isLoading={isLoading}
+          disabled={isLoading}
+          className="inline-flex items-center justify-center gap-1.5 h-10 px-6 rounded-full bg-primary text-white hover:bg-primary/90 text-xs sm:text-sm font-body font-semibold transition-all duration-180 active:scale-[0.98] cursor-pointer shadow-xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary w-full sm:w-auto disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {isLoading ? 'Mengirim Pengajuan...' : 'Ajukan Kegiatan'}
-        </Button>
+        </button>
       </div>
     </form>
   )

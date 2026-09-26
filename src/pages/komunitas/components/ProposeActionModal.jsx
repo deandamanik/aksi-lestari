@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Modal from '../../../components/common/Modal'
-import { XIcon, SparklesIcon } from '../../../components/common/Icons'
+import { XIcon } from '../../../components/common/Icons'
 import { COMMUNITY_CATEGORIES } from '../../../data/komunitas/communityActionsData'
 import ProposeActionForm from './ProposeActionForm'
 import ProposeActionSuccess from './ProposeActionSuccess'
@@ -63,22 +63,18 @@ export default function ProposeActionModal({ isOpen, onClose, onSubmitProposal }
       className="w-full max-w-2xl bg-white rounded-3xl border border-border-warm shadow-2xl overflow-hidden max-h-[calc(100vh-32px)] sm:max-h-[calc(100vh-48px)] flex flex-col animate-dialog-enter my-auto"
     >
       {/* Header */}
-      <div className="p-6 sm:p-7 border-b border-border-warm/60 relative shrink-0">
+      <div className="p-6 sm:p-7 sm:px-8 border-b border-border-warm/60 relative shrink-0">
         {submissionState !== 'loading' && (
           <button
             type="button"
             onClick={handleClose}
-            className="absolute top-6 right-6 p-2 rounded-full text-stone-400 hover:text-primary hover:bg-neutral transition-all duration-180 active:scale-95 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+            className="absolute top-5 sm:top-6 right-5 sm:right-6 w-9 h-9 rounded-full flex items-center justify-center text-stone-400 hover:text-primary hover:bg-stone-100 transition-colors cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
             aria-label="Tutup form pengajuan"
           >
-            <XIcon className="w-5 h-5" />
+            <XIcon className="w-4 h-4" />
           </button>
         )}
 
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold uppercase tracking-wider text-primary mb-2">
-          <SparklesIcon className="w-3.5 h-3.5 text-primary" />
-          <span>Inisiatif Warga</span>
-        </div>
 
         <h2
           id="propose-modal-title"

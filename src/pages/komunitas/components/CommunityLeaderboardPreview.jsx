@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { AwardIcon, ArrowRightIcon } from '../../../components/common/Icons'
+import { ArrowRightIcon } from '../../../components/common/Icons'
 import { LEADERBOARD_PREVIEW } from '../../../data/komunitas/communityActionsData'
 
 export default function CommunityLeaderboardPreview() {
@@ -7,89 +7,78 @@ export default function CommunityLeaderboardPreview() {
     LEADERBOARD_PREVIEW
 
   return (
-    <article className="bg-white rounded-2xl sm:rounded-3xl border border-border-warm p-5 sm:p-6 shadow-2xs hover:border-primary/30 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 motion-reduce:transform-none">
+    <article className="bg-white rounded-2xl sm:rounded-3xl border border-border-warm p-5 sm:p-6 shadow-xs hover:border-primary/30 transition-all duration-200">
       {/* Top Header */}
-      <div className="flex items-center justify-between gap-2 mb-1.5">
-        <span className="text-[11px] font-bold uppercase tracking-widest text-primary/80 font-body">
+      <div className="mb-2">
+        <span className="text-xs font-bold uppercase tracking-widest text-secondary font-body">
           {eyebrow}
         </span>
-        <AwardIcon className="w-4 h-4 text-stone-400" />
       </div>
 
       {/* Title */}
-      <h3 className="font-display text-primary text-base sm:text-lg font-bold leading-snug tracking-tight mb-1">
+      <h3 className="font-display text-primary text-lg sm:text-xl font-bold leading-snug tracking-tight mb-1.5">
         {title}
       </h3>
 
       {/* Subtitle */}
-      <p className="font-body text-stone-500 text-xs leading-relaxed mb-4">
+      <p className="font-body text-primary/70 text-xs sm:text-sm leading-relaxed mb-4">
         {description}
       </p>
 
-      {/* Contributors List */}
-      <div className="space-y-3.5">
+      {/* Minimalist List with Hairline Dividers */}
+      <div className="divide-y divide-border-warm/60">
         {leaders.map((leader) => (
-          <div key={leader.id} className="flex items-center justify-between gap-2.5">
-            <div className="flex items-center gap-2.5 min-w-0">
-              {/* Rank Circle */}
-              <div
-                className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-                  leader.rank === 1
-                    ? 'bg-stone-100 text-primary border border-border-warm'
-                    : 'bg-stone-50 text-stone-500 border border-border-warm/60'
+          <div
+            key={leader.id}
+            className="flex items-center justify-between gap-3 py-2.5 first:pt-1"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              {/* Typographic Rank Numeral */}
+              <span
+                className={`font-display font-bold text-base sm:text-lg w-5 text-center shrink-0 ${
+                  leader.rank === 1 ? 'text-primary' : 'text-stone-400'
                 }`}
               >
                 {leader.rank}
-              </div>
+              </span>
 
-              {/* Contributor Details */}
-              <div className="flex flex-col min-w-0">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="font-bold text-primary text-xs sm:text-sm leading-tight truncate">
-                    {leader.name}
-                  </span>
-                  {leader.badge && (
-                    <span className="text-[11px] text-stone-400 font-normal leading-tight">
-                      · {leader.badge}
-                    </span>
-                  )}
-                </div>
-                <span className="text-[11px] text-stone-400 font-medium leading-tight mt-0.5">
-                  {leader.stats}
-                </span>
-              </div>
+              {/* Contributor Name */}
+              <span className="font-bold text-primary text-xs sm:text-sm leading-tight truncate">
+                {leader.name}
+              </span>
             </div>
 
             {/* XP Value */}
-            <span className="text-xs sm:text-sm font-semibold text-stone-600 shrink-0">
+            <span className="font-semibold text-xs text-stone-600 shrink-0">
               {leader.xp}
             </span>
           </div>
         ))}
 
-        {/* Current User Standing Row */}
+        {/* Current User Standing Row — Simple row without box/badge */}
         {currentUser && (
-          <div className="bg-neutral border border-border-warm rounded-xl p-2.5 sm:p-3 flex items-center justify-between gap-2 mt-3.5">
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="text-xs font-bold text-primary shrink-0">
-                {currentUser.badgeText}
+          <div className="flex items-center justify-between gap-3 py-2.5 border-t border-dashed border-border-warm">
+            <div className="flex items-center gap-3 min-w-0">
+              <span className="font-display font-semibold text-xs sm:text-sm w-5 text-center shrink-0 text-stone-400">
+                12
               </span>
-              <span className="text-xs text-stone-600 font-medium truncate">
-                {currentUser.label}
+              <span className="font-medium text-xs sm:text-sm text-stone-700 truncate">
+                Kamu
               </span>
             </div>
-            <span className="text-xs font-semibold text-primary shrink-0">
+            <span className="font-medium text-xs text-stone-500 shrink-0">
               {currentUser.xp}
             </span>
           </div>
         )}
       </div>
 
+
       {/* Link to Full Leaderboard */}
-      <div className="pt-3.5 mt-3 border-t border-border-warm/60">
+      <div className="pt-3.5 mt-3.5 border-t border-border-warm/60">
         <Link
           to={allLink}
-          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-primary hover:text-primary/80 transition-colors duration-180 group focus:outline-hidden focus-visible:underline"
+          className="font-bold text-primary hover:text-secondary transition-colors inline-flex items-center gap-1.5 text-xs sm:text-sm group focus:outline-hidden focus-visible:underline"
         >
           <span>{allLinkLabel}</span>
           <ArrowRightIcon className="w-3.5 h-3.5 transition-transform duration-180 group-hover:translate-x-0.5 motion-reduce:transform-none" />
@@ -98,3 +87,5 @@ export default function CommunityLeaderboardPreview() {
     </article>
   )
 }
+
+

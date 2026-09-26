@@ -1,95 +1,43 @@
-import { useState } from 'react'
-import { ChevronDownIcon } from '../../../../components/common/Icons'
 import { XP_RULES_INFO } from '../../../../data/komunitas/leaderboardData'
 
 export default function LeaderboardXpInfo() {
-  const [isOpen, setIsOpen] = useState(false)
-
   return (
     <section
       aria-label="Informasi Perhitungan XP"
-      className="w-full bg-white rounded-2xl sm:rounded-3xl border border-border-warm shadow-2xs overflow-hidden"
+      className="bg-white rounded-2xl border border-border-warm p-5 shadow-2xs"
     >
-      {/* Accordion Trigger Header */}
-      <button
-        type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
-        aria-expanded={isOpen}
-        aria-controls="xp-info-content"
-        className="w-full p-5 sm:p-6 flex items-center justify-between gap-4 text-left cursor-pointer hover:bg-neutral/70 transition-colors duration-180 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
-      >
-        <div className="flex flex-col min-w-0">
-          <h3 className="font-display font-bold text-primary text-base sm:text-lg leading-snug">
-            Bagaimana XP dihitung?
-          </h3>
-          <p className="font-body text-stone-500 text-xs sm:text-sm mt-0.5">
-            Pelajari acuan poin kontribusi nyata untuk setiap aksi dan aktivitas lingkungan
-          </p>
-        </div>
+      <div className="mb-3.5">
+        <h3 className="font-display font-bold text-primary text-base">
+          Perolehan Poin XP
+        </h3>
+        <p className="font-body text-stone-500 text-xs mt-0.5">
+          Acuan perolehan poin dari setiap kontribusi lingkungan:
+        </p>
+      </div>
 
-        <div className="flex items-center gap-2 shrink-0">
-          <span className="text-xs font-semibold text-stone-600 hidden sm:inline">
-            {isOpen ? 'Tutup' : 'Lihat Rincian'}
-          </span>
-          <div
-            className={`w-7 h-7 rounded-full bg-stone-100 flex items-center justify-center text-stone-500 transition-transform duration-200 motion-reduce:transition-none ${
-              isOpen ? 'rotate-180 bg-primary/10 text-primary' : ''
-            }`}
-          >
-            <ChevronDownIcon className="w-4 h-4" />
-          </div>
-        </div>
-      </button>
-
-      {/* Accordion Expandable Content with Smooth CSS Grid Height Transition */}
-      <div
-        id="xp-info-content"
-        role="region"
-        aria-hidden={!isOpen}
-        className={`grid transition-all duration-200 motion-reduce:transition-none ${
-          isOpen
-            ? 'grid-rows-[1fr] opacity-100 ease-out'
-            : 'grid-rows-[0fr] opacity-0 ease-in pointer-events-none'
-        }`}
-      >
-        <div className="overflow-hidden">
-          <div className="px-5 sm:px-6 pb-6 pt-1 border-t border-border-warm/60">
-            {/* Editorial Contribution Rows */}
-            <div className="divide-y divide-border-warm/60">
-              {XP_RULES_INFO.map((rule, idx) => (
-                <div
-                  key={idx}
-                  className="py-3.5 sm:py-4 first:pt-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4"
-                >
-                  <div className="min-w-0 flex-1">
-                    <h4 className="font-bold text-primary text-xs sm:text-sm">
-                      {rule.title}
-                    </h4>
-                    <p className="font-body text-stone-600 text-xs leading-relaxed mt-0.5 sm:mt-1">
-                      {rule.desc}
-                    </p>
-                  </div>
-                  <div className="shrink-0 sm:text-right">
-                    <span className="font-display font-bold text-xs sm:text-sm text-primary">
-                      {rule.reward}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Lightweight Editorial Note */}
-            <div className="pt-4 sm:pt-5 mt-2 border-t border-border-warm/60">
-              <span className="text-xs font-bold text-primary block mb-1">
-                Catatan
+      <div className="divide-y divide-border-warm/60">
+        {XP_RULES_INFO.map((rule, idx) => (
+          <div key={idx} className="py-3 first:pt-0 last:pb-0">
+            <div className="flex items-center justify-between gap-2">
+              <h4 className="font-body font-bold text-primary text-xs sm:text-sm">
+                {rule.title}
+              </h4>
+              <span className="font-display font-bold text-xs sm:text-sm text-primary shrink-0 tabular-nums">
+                {rule.reward}
               </span>
-              <p className="font-body text-xs text-stone-600 leading-relaxed">
-                XP mencerminkan level partisipasi dan reputasi kolektif warga dalam gotong royong lingkungan. XP bukan uang dan tidak dapat ditukar menjadi uang tunai. Bentuk apresiasi moneter disalurkan terpisah secara transparan melalui Saldo Apresiasi (Rp) di menu Profil.
-              </p>
             </div>
+            <p className="text-xs text-stone-500 font-body leading-relaxed mt-1">
+              {rule.desc}
+            </p>
           </div>
-        </div>
+        ))}
+      </div>
+
+      <div className="pt-3.5 mt-3.5 border-t border-border-warm text-xs text-stone-500 font-body leading-relaxed">
+        <strong>Catatan:</strong> XP adalah poin reputasi keaktifan gotong royong warga, bukan saldo tunai.
       </div>
     </section>
   )
 }
+
+

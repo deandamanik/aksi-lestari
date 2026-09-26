@@ -1,4 +1,3 @@
-import Button from '../../../components/common/Button'
 import {
   CheckIcon,
   CalendarIcon,
@@ -72,13 +71,13 @@ export default function ProposeActionSuccess({ proposalData, onClose }) {
 
       {/* CTA Return Button */}
       <div className="pt-2">
-        <Button
-          variant="primary"
-          size="md"
+        <button
+          type="button"
           onClick={onClose}
+          className="inline-flex items-center justify-center h-10 px-6 rounded-full bg-primary text-white hover:bg-primary/90 text-xs sm:text-sm font-body font-semibold transition-all duration-180 active:scale-[0.98] cursor-pointer shadow-xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
         >
           Kembali ke Komunitas
-        </Button>
+        </button>
       </div>
     </div>
   )

@@ -626,6 +626,51 @@ select {
 .lapor-ambient-leaf-a { animation: lapor-float-leaf-a 4.8s ease-in-out infinite; will-change: transform; }
 .lapor-ambient-leaf-b { animation: lapor-float-leaf-b 5.0s ease-in-out infinite; will-change: transform; }
 
+/* ==========================================================================
+   Leaderboard Page Animations
+   ========================================================================== */
+
+@keyframes lb-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-lb-header {
+  opacity: 0;
+  animation: lb-rise 520ms cubic-bezier(0.16, 1, 0.3, 1) 40ms forwards;
+  will-change: opacity, transform;
+}
+
+.animate-lb-podium {
+  opacity: 0;
+  animation: lb-rise 520ms cubic-bezier(0.16, 1, 0.3, 1) 120ms forwards;
+  will-change: opacity, transform;
+}
+
+.animate-lb-table {
+  opacity: 0;
+  animation: lb-rise 520ms cubic-bezier(0.16, 1, 0.3, 1) 200ms forwards;
+  will-change: opacity, transform;
+}
+
+.animate-lb-aside {
+  opacity: 0;
+  animation: lb-rise 520ms cubic-bezier(0.16, 1, 0.3, 1) 160ms forwards;
+  will-change: opacity, transform;
+}
+
+.animate-lb-footer {
+  opacity: 0;
+  animation: lb-rise 520ms cubic-bezier(0.16, 1, 0.3, 1) 260ms forwards;
+  will-change: opacity, transform;
+}
+
 /* Global Reduced Motion Overrides */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -643,7 +688,12 @@ select {
   .animate-popover-enter,
   .animate-toast-enter,
   .animate-check-scale,
-  .animate-error-slide {
+  .animate-error-slide,
+  .animate-lb-header,
+  .animate-lb-podium,
+  .animate-lb-table,
+  .animate-lb-aside,
+  .animate-lb-footer {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
