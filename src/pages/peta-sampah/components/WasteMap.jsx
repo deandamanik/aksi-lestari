@@ -67,6 +67,7 @@ function WasteMap({
   const bankMarkersDataRef = useRef([])
 
   const selectedPointRef = useRef(selectedPoint)
+  const prevSelectedPointRef = useRef(null)
   const prevSearchRef = useRef('')
   const isProgrammaticMoveRef = useRef(false)
   const isRecoveringRef = useRef(false)
@@ -97,7 +98,7 @@ function WasteMap({
     if (!mapRef.current) return
     runProgrammaticMapMove(
       mapRef.current,
-      () => resetToInitialView(mapRef.current, { duration: 700 }),
+      () => resetToInitialView(mapRef.current, { duration: 1200 }),
       isProgrammaticMoveRef
     )
   }, [])
@@ -131,19 +132,10 @@ function WasteMap({
       maxBounds: INDONESIA_MAX_BOUNDS,
       renderWorldCopies: false,
       attributionControl: true,
+      fadeDuration: 0,
     })
 
     mapRef.current = map
-
-    // Subtle globe projection via native MapLibre support
-    map.once('style.load', () => {
-      if (!isMounted) return
-      try {
-        map.setProjection({ type: 'globe' })
-      } catch {
-        // Fallback gracefully if globe projection is not supported in current environment
-      }
-    })
 
     map.on('error', (e) => {
       if (e.error?.status === 401) {
@@ -151,9 +143,20 @@ function WasteMap({
       }
     })
 
-    map.on('load', () => {
-      if (!isMounted) return
+    let isStyleInitialized = false
+
+    // Initialize layers, 3D globe projection, and markers as soon as style loads
+    const handleInitLayersAndMarkers = () => {
+      if (isStyleInitialized || !isMounted) return
+      isStyleInitialized = true
       mapLoadedRef.current = true
+
+      // Activate native 3D globe projection
+      try {
+        map.setProjection({ type: 'globe' })
+      } catch {
+        // Graceful fallback if globe projection is unavailable in environment
+      }
 
       const {
         wasteReports: currentReports,
@@ -194,8 +197,16 @@ function WasteMap({
         )
       }
 
+      // Clicking empty map canvas unselects active marker and closes detail panel
+      map.on('click', () => {
+        onSelectPoint?.(null)
+      })
+
       setIsMapReady(true)
-    })
+    }
+
+    map.once('style.load', handleInitLayersAndMarkers)
+    map.once('load', handleInitLayersAndMarkers)
 
     return () => {
       isMounted = false
@@ -281,12 +292,37 @@ function WasteMap({
     updateMarkerSelectionStyles(bankMarkersDataRef, selectedType, 'bank', selectedId)
   }, [selectedPoint])
 
-  // Reactive camera focus: Selected marker
+  // Reactive camera focus: Selected marker & unselection reset
   useEffect(() => {
-    if (!isMapReady || !mapRef.current || !selectedPoint?.data) return
-    const { latitude, longitude } = selectedPoint.data
-    focusMarker(mapRef.current, latitude, longitude, isProgrammaticMoveRef)
-  }, [isMapReady, selectedPoint])
+    if (!isMapReady || !mapRef.current) return
+
+    const prev = prevSelectedPointRef.current
+    prevSelectedPointRef.current = selectedPoint
+
+    // Case 1: Point is selected -> Zoom in to point
+    if (selectedPoint?.data) {
+      const { latitude, longitude } = selectedPoint.data
+      focusMarker(mapRef.current, latitude, longitude, isProgrammaticMoveRef)
+      return
+    }
+
+    // Case 2: Point was previously selected and is now closed/unselected -> Reset/Zoom out
+    if (!selectedPoint && prev) {
+      const trimmed = (searchQuery || '').trim().toLowerCase()
+      if (trimmed) {
+        // Return smoothly to the active search view (e.g. city or filtered bounds)
+        const target = getSearchCameraTarget(wasteReports, bankSampah, trimmed)
+        applySearchCameraTarget(mapRef.current, target, isProgrammaticMoveRef)
+      } else {
+        // Return smoothly to the canonical national Indonesia view
+        runProgrammaticMapMove(
+          mapRef.current,
+          () => resetToInitialView(mapRef.current, { duration: 1200 }),
+          isProgrammaticMoveRef
+        )
+      }
+    }
+  }, [isMapReady, selectedPoint, searchQuery, wasteReports, bankSampah])
 
   // Reactive camera focus: Search query changes
   useEffect(() => {
@@ -295,21 +331,27 @@ function WasteMap({
     const prev = prevSearchRef.current
 
     if (trimmed === prev) return
-    prevSearchRef.current = trimmed
 
     if (!trimmed) {
+      prevSearchRef.current = ''
       if (prev) {
         runProgrammaticMapMove(
           mapRef.current,
-          () => resetToInitialView(mapRef.current, { duration: 700 }),
+          () => resetToInitialView(mapRef.current, { duration: 1200 }),
           isProgrammaticMoveRef
         )
       }
       return
     }
 
-    const target = getSearchCameraTarget(wasteReports, bankSampah)
-    applySearchCameraTarget(mapRef.current, target, isProgrammaticMoveRef)
+    // Debounce camera flight slightly so keystroke bursts feel smooth and intentional
+    const timer = setTimeout(() => {
+      prevSearchRef.current = trimmed
+      const target = getSearchCameraTarget(wasteReports, bankSampah, trimmed)
+      applySearchCameraTarget(mapRef.current, target, isProgrammaticMoveRef)
+    }, 250)
+
+    return () => clearTimeout(timer)
   }, [isMapReady, searchQuery, wasteReports, bankSampah])
 
   // Reactive camera focus: Geolocation flyTo
@@ -359,11 +401,21 @@ function WasteMap({
   const isDetailOpen = Boolean(selectedPoint)
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-full bg-[#EBF2F6]">
       <div
         ref={mapContainerRef}
-        className="w-full h-full absolute inset-0"
+        className="w-full h-full absolute inset-0 bg-[#EBF2F6]"
       />
+
+      {/* Soft Initial Loading Badge */}
+      {!isMapReady && (
+        <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 pointer-events-none transition-opacity duration-300">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-sm border border-border-warm shadow-xs text-xs font-body text-stone-600">
+            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <span>Memuat peta...</span>
+          </div>
+        </div>
+      )}
 
       {/* Manual Reset Map View Control ("Reset Peta") */}
       <div

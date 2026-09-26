@@ -62,7 +62,7 @@ export function isOutsideRecoveryBounds([lng, lat]) {
 /**
  * Smoothly resets or recovers the map camera back to the canonical initial Indonesia view.
  */
-export function resetToInitialView(map, { duration = 700 } = {}) {
+export function resetToInitialView(map, { duration = 1200 } = {}) {
   if (!map) return
   map.fitBounds(INITIAL_INDONESIA_VIEW.bounds, {
     padding: INITIAL_INDONESIA_VIEW.padding,

@@ -181,6 +181,38 @@ select {
   animation: motionErrorSlide var(--motion-fast) var(--motion-ease-natural) both;
 }
 
+@keyframes motionPanelEnterMobile {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes motionPanelEnterDesktop {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-panel-enter {
+  animation: motionPanelEnterMobile 420ms var(--motion-ease-natural) both;
+}
+
+@media (min-width: 768px) {
+  .animate-panel-enter {
+    animation: motionPanelEnterDesktop 480ms var(--motion-ease-natural) both;
+  }
+}
+
 /* Scroll reveal card: Settle gently into place (450ms) */
 .scroll-reveal-card {
   opacity: 0;
