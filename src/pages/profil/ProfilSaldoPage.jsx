@@ -70,7 +70,7 @@ function ProfilSaldoPage() {
         <span className="text-xs font-semibold text-primary select-none">
           Saldo Apresiasi
         </span>
-        <h1 className="font-display text-2xl sm:text-3xl text-stone-900 font-bold tracking-tight leading-tight">
+        <h1 className="font-display text-2xl sm:text-3xl text-stone-900 font-normal tracking-tight leading-tight">
           Saldo &amp; Redeem
         </h1>
         <p className="text-sm sm:text-base text-stone-500 leading-relaxed max-w-xl">

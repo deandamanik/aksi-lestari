@@ -73,7 +73,7 @@ function ModuleQuizPage() {
                   </span>
                 </div>
 
-                <h1 className="font-display font-bold text-primary text-xl sm:text-2xl md:text-3xl mb-3 sm:mb-4 leading-snug tracking-tight">
+                <h1 className="font-display font-normal text-primary text-xl sm:text-2xl md:text-3xl mb-3 sm:mb-4 leading-snug tracking-tight">
                   Kuis — {module.title}
                 </h1>
 

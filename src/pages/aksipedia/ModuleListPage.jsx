@@ -38,7 +38,7 @@ function ModuleListPage() {
           <span className="text-xs font-bold text-secondary uppercase tracking-widest block mb-2 select-none">
             MODUL
           </span>
-          <h1 className="font-display font-bold text-primary text-3xl sm:text-4xl lg:text-[2.75rem] tracking-tight mb-3">
+          <h1 className="font-display font-normal text-primary text-3xl sm:text-4xl lg:text-[2.75rem] tracking-tight mb-3">
             Belajar tentang Sampah, Satu Modul Sekaligus.
           </h1>
           <p className="font-body text-primary/75 text-sm sm:text-base max-w-2xl leading-relaxed">

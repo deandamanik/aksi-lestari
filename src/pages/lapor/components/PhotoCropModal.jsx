@@ -357,13 +357,13 @@ export default function PhotoCropModal({
             <div className="absolute bottom-2.5 right-2.5 w-4 h-4 border-b-2 border-r-2 border-primary pointer-events-none" />
 
             {/* Aspect Ratio Badge */}
-            <div className="absolute top-3 left-3 bg-stone-900/80 backdrop-blur-xs text-white/90 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase pointer-events-none select-none border border-white/10">
+            <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs text-stone-700 px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider uppercase pointer-events-none select-none border border-border-warm shadow-2xs">
               Rasio 4:3
             </div>
 
             {/* Drag Hint Overlay */}
             <div className="absolute bottom-2.5 inset-x-0 flex justify-center pointer-events-none">
-              <span className="bg-stone-900/75 backdrop-blur-xs text-white/90 text-[11px] font-medium px-3.5 py-1 rounded-full shadow-xs border border-white/10">
+              <span className="bg-white/95 backdrop-blur-xs text-stone-700 text-[11px] font-medium px-3.5 py-1 rounded-full shadow-xs border border-border-warm">
                 Geser foto untuk memposisikan
               </span>
             </div>

@@ -28,7 +28,7 @@ function LaporMandiriValidasiPage() {
       <div className="max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-6 sm:gap-7">
         {/* Centered Page Header — minimal & editorial */}
         <div className="text-center pt-2 pb-1 lapor-enter-header">
-          <h1 className="font-display font-bold text-2xl sm:text-4xl lg:text-[40px] text-primary tracking-tight leading-tight">
+          <h1 className="font-display font-normal text-2xl sm:text-4xl lg:text-[40px] text-primary tracking-tight leading-tight">
             Aksimu Sedang Divalidasi
           </h1>
 

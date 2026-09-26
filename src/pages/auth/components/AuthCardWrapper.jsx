@@ -7,7 +7,7 @@ import AuthHeroPanel from './AuthHeroPanel'
  */
 export default function AuthCardWrapper({
   type = 'register',
-  hideHeroOnMobile = type === 'login',
+  hideHeroOnMobile = true,
   children,
 }) {
   return (
@@ -43,9 +43,9 @@ export default function AuthCardWrapper({
         </div>
       </div>
 
-      {/* Bottom Footer Copyright / Tagline */}
-      <div className="mt-6 text-center text-xs text-gray-500 z-10 select-none">
-        &copy; {new Date().getFullYear()} AksiLestari — Platform Kolaboratif Pelestarian Lingkungan
+      {/* Bottom Footer Demo Hint */}
+      <div className="mt-6 text-center text-xs text-stone-500 z-10 select-none max-w-md mx-auto leading-relaxed px-4">
+        Cukup tekan tombol <span className="font-semibold text-primary">{type === 'register' ? 'Daftar' : 'Masuk'}</span> langsung untuk mencoba seluruh fitur platform tanpa perlu mengisi data.
       </div>
     </div>
   )

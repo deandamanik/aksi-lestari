@@ -76,7 +76,7 @@ function CommunityActionSection() {
                     key={agenda.id}
                     to="/komunitas"
                     state={{ intent: { type: 'join-action', actionId: agenda.id } }}
-                    className={`group relative bg-white rounded-2xl sm:rounded-3xl border border-border-warm p-5 sm:p-6 shadow-2xs hover:border-primary/30 hover:shadow-xs hover:-translate-y-0.5 block transition-all duration-200 ease-out focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary ${
+                    className={`group relative bg-white rounded-2xl border border-border-warm p-5 sm:p-6 shadow-2xs hover:border-primary/30 hover:shadow-xs hover:-translate-y-0.5 block transition-all duration-200 ease-out focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary ${
                       inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                     }`}
                     style={{ transitionDelay: `${150 + index * 40}ms` }}
@@ -101,7 +101,7 @@ function CommunityActionSection() {
                     </div>
 
                     {/* Title */}
-                    <h3 className="font-display text-primary text-base sm:text-lg lg:text-xl font-bold leading-snug tracking-tight mb-3 group-hover:text-secondary transition-colors duration-150">
+                    <h3 className="font-display text-primary text-base sm:text-lg lg:text-xl font-normal leading-snug tracking-tight mb-3 group-hover:text-secondary transition-colors duration-150">
                       {agenda.title}
                     </h3>
 

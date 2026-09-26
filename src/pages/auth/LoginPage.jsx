@@ -83,7 +83,7 @@ export default function LoginPage() {
 
       {/* Page Title & Subtitle */}
       <div className="mb-6 sm:mb-8">
-        <h1 className="font-display text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+        <h1 className="font-display text-2xl sm:text-3xl font-normal text-gray-900 tracking-tight">
           Selamat Datang Kembali
         </h1>
         <p className="mt-1.5 text-xs sm:text-sm text-gray-500 leading-relaxed">
@@ -131,7 +131,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={isLoading}
-          className={`mt-2 w-full py-3 sm:py-3.5 px-6 rounded-xl sm:rounded-2xl font-semibold text-sm sm:text-base text-white transition-all duration-200 shadow-md shadow-primary/20 flex items-center justify-center gap-2 select-none ${
+          className={`mt-2 w-full py-3 sm:py-3.5 px-6 rounded-full font-semibold text-sm sm:text-base text-white transition-all duration-200 shadow-md shadow-primary/20 flex items-center justify-center gap-2 select-none ${
             isLoading
               ? 'bg-[#C6CFC9] text-white/90 cursor-not-allowed shadow-none'
               : 'bg-primary hover:bg-primary/90 active:scale-[0.99] hover:shadow-lg cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
@@ -161,6 +161,7 @@ export default function LoginPage() {
         Belum punya akun?{' '}
         <Link
           to="/register"
+          state={location.state}
           className="font-bold text-primary hover:text-primary/80 hover:underline transition-colors ml-0.5"
         >
           Daftar sekarang

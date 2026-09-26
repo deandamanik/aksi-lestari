@@ -53,7 +53,7 @@ function ScanResultSection({ uploadedImage }) {
                     <span className="text-stone-300" aria-hidden="true">·</span>
                     <span className="text-stone-600 font-medium">Kode #{result.code}</span>
                   </div>
-                  <h1 className="font-display font-bold text-primary text-2xl sm:text-3xl lg:text-[2rem] leading-snug tracking-tight">
+                  <h1 className="font-display font-normal text-primary text-2xl sm:text-3xl lg:text-[2rem] leading-snug tracking-tight">
                     {result.title}
                   </h1>
                 </div>

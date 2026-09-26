@@ -295,7 +295,7 @@ function PhotoUploadCard({
             {/* Inner Image Container — Standardized 4:3 Aspect Ratio Frame */}
             <div
               onClick={allowCrop && activeFile && !readOnly ? () => setIsCropModalOpen(true) : undefined}
-              className={`w-full ${sizeStyles.previewAspect || 'aspect-[4/3]'} relative rounded-2xl overflow-hidden border border-stone-200/80 bg-stone-900 shadow-xs group select-none ${
+              className={`w-full ${sizeStyles.previewAspect || 'aspect-[4/3]'} relative rounded-2xl overflow-hidden border border-border-warm bg-neutral shadow-2xs group select-none ${
                 allowCrop && activeFile && !readOnly ? 'cursor-pointer' : ''
               }`}
             >
@@ -307,21 +307,21 @@ function PhotoUploadCard({
               />
 
               {/* 4:3 Frame Camera Brackets */}
-              <div className="absolute top-2.5 left-2.5 w-3.5 h-3.5 border-t-2 border-l-2 border-white/60 pointer-events-none" />
-              <div className="absolute top-2.5 right-2.5 w-3.5 h-3.5 border-t-2 border-r-2 border-white/60 pointer-events-none" />
-              <div className="absolute bottom-2.5 left-2.5 w-3.5 h-3.5 border-b-2 border-l-2 border-white/60 pointer-events-none" />
-              <div className="absolute bottom-2.5 right-2.5 w-3.5 h-3.5 border-b-2 border-r-2 border-white/60 pointer-events-none" />
+              <div className="absolute top-2.5 left-2.5 w-3.5 h-3.5 border-t-2 border-l-2 border-white/80 drop-shadow-xs pointer-events-none" />
+              <div className="absolute top-2.5 right-2.5 w-3.5 h-3.5 border-t-2 border-r-2 border-white/80 drop-shadow-xs pointer-events-none" />
+              <div className="absolute bottom-2.5 left-2.5 w-3.5 h-3.5 border-b-2 border-l-2 border-white/80 drop-shadow-xs pointer-events-none" />
+              <div className="absolute bottom-2.5 right-2.5 w-3.5 h-3.5 border-b-2 border-r-2 border-white/80 drop-shadow-xs pointer-events-none" />
 
-              {/* Badge Rasio 4:3 */}
-              <div className="absolute top-3 left-3 bg-stone-900/80 backdrop-blur-xs text-white/90 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase pointer-events-none select-none border border-white/10">
+              {/* Badge Rasio 4:3 — Clean Light Token Style */}
+              <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs text-stone-700 px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider uppercase pointer-events-none select-none border border-border-warm shadow-2xs">
                 Rasio 4:3
               </div>
 
-              {/* Desktop Hover Overlay: appears ONLY on hover, disappears when cursor leaves */}
+              {/* Desktop Hover Overlay: appears ONLY on hover with on-brand light glass styling */}
               {allowCrop && activeFile && !readOnly && (
-                <div className="absolute inset-0 bg-stone-900/35 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hidden sm:flex items-center justify-center pointer-events-none">
-                  <span className="bg-stone-900/85 backdrop-blur-xs text-white text-xs font-semibold px-3.5 py-1.5 rounded-full shadow-lg border border-white/20 flex items-center gap-1.5">
-                    <CropIcon className="w-3.5 h-3.5 text-primary" strokeWidth={2.5} />
+                <div className="absolute inset-0 bg-primary/10 backdrop-blur-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 hidden sm:flex items-center justify-center pointer-events-none">
+                  <span className="bg-white/95 backdrop-blur-xs text-primary text-xs font-semibold px-4 py-2 rounded-full shadow-md border border-border-warm flex items-center gap-2">
+                    <CropIcon className="w-3.5 h-3.5 text-primary" strokeWidth={2.2} />
                     <span>Klik untuk Sesuaikan Posisi Foto</span>
                   </span>
                 </div>
@@ -329,48 +329,68 @@ function PhotoUploadCard({
             </div>
 
             {/* Status & Metadata & Change Action Stack */}
-            <div className="mt-4 pt-3.5 border-t border-stone-100 flex flex-col gap-1">
-              {/* Row 1: Left = Status Text, Right = Ganti Foto (and Sesuaikan Foto on mobile) */}
+            <div className="mt-4 pt-3.5 border-t border-stone-100 flex flex-col gap-2">
+              {/* Row 1: Status & Info (Desktop: flex with Ganti Foto; Mobile: Status + File Size) */}
               <div className="flex items-center justify-between gap-3">
-                <div className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-secondary select-none">
+                <div className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-secondary select-none min-w-0">
                   <CheckIcon className="w-4 h-4 text-secondary shrink-0" strokeWidth={2.5} />
-                  <span>{statusText}</span>
+                  <span className="truncate">{statusText}</span>
                 </div>
 
-                <div className="flex items-center gap-3 sm:gap-4 shrink-0">
-                  {/* Mobile Only: Sesuaikan Foto button next to Ganti Foto */}
-                  {allowCrop && activeFile && !readOnly && (
-                    <button
-                      type="button"
-                      onClick={() => setIsCropModalOpen(true)}
-                      className="sm:hidden inline-flex items-center gap-1.5 text-xs font-semibold text-stone-600 active:text-primary transition-colors cursor-pointer select-none"
-                      aria-label="Sesuaikan posisi foto"
-                    >
-                      <CropIcon className="w-3.5 h-3.5 text-primary" strokeWidth={2.25} />
-                      <span className="underline underline-offset-4 decoration-stone-300">Sesuaikan Foto</span>
-                    </button>
-                  )}
+                {/* Desktop: Ganti Foto sits here */}
+                {canChange && (
+                  <button
+                    type="button"
+                    onClick={handleTriggerUpload}
+                    className="hidden sm:inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-primary hover:text-primary/80 transition-colors underline underline-offset-4 decoration-primary/40 hover:decoration-primary cursor-pointer shrink-0 select-none"
+                    aria-label="Ganti foto"
+                  >
+                    <RefreshCwIcon className="w-3.5 h-3.5" strokeWidth={2} />
+                    <span>Ganti Foto</span>
+                  </button>
+                )}
 
-                  {canChange && (
-                    <button
-                      type="button"
-                      onClick={handleTriggerUpload}
-                      className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-primary hover:text-primary/80 transition-colors underline underline-offset-4 decoration-primary/40 hover:decoration-primary cursor-pointer shrink-0 select-none"
-                      aria-label="Ganti foto"
-                    >
-                      <RefreshCwIcon className="w-3.5 h-3.5" strokeWidth={2} />
-                      <span>Ganti Foto</span>
-                    </button>
-                  )}
-                </div>
+                {/* Mobile: File Size text on right */}
+                {activeFileSize && (
+                  <span className="sm:hidden text-[11px] text-stone-400 font-medium shrink-0">
+                    {formatFileSize(activeFileSize)}
+                  </span>
+                )}
               </div>
 
-              {/* Row 2: Filename + Size directly below */}
+              {/* Filename details */}
               {activeFileName && (
-                <p className="text-xs text-stone-500 font-medium truncate max-w-sm sm:max-w-md">
-                  {activeFileName} {activeFileSize ? `· ${formatFileSize(activeFileSize)}` : ''}
+                <p className="text-[11px] sm:text-xs text-stone-500 font-medium truncate max-w-sm sm:max-w-md -mt-0.5">
+                  {activeFileName} <span className="hidden sm:inline">{activeFileSize ? `· ${formatFileSize(activeFileSize)}` : ''}</span>
                 </p>
               )}
+
+              {/* Mobile-Only Action Row: Spacious, easy-to-tap dual actions */}
+              <div className="sm:hidden flex items-center justify-between gap-3 pt-2 mt-0.5 border-t border-stone-100">
+                {allowCrop && activeFile && !readOnly ? (
+                  <button
+                    type="button"
+                    onClick={() => setIsCropModalOpen(true)}
+                    className="inline-flex items-center gap-1.5 py-1.5 text-xs font-semibold text-stone-600 hover:text-primary transition-colors underline underline-offset-4 decoration-stone-300 hover:decoration-primary cursor-pointer select-none active:scale-[0.98]"
+                    aria-label="Sesuaikan posisi foto"
+                  >
+                    <CropIcon className="w-3.5 h-3.5 text-primary" strokeWidth={2.2} />
+                    <span>Sesuaikan Foto</span>
+                  </button>
+                ) : <div />}
+
+                {canChange && (
+                  <button
+                    type="button"
+                    onClick={handleTriggerUpload}
+                    className="inline-flex items-center gap-1.5 py-1.5 text-xs font-semibold text-primary hover:text-primary/80 transition-colors underline underline-offset-4 decoration-primary/40 cursor-pointer shrink-0 select-none active:scale-[0.98]"
+                    aria-label="Ganti foto"
+                  >
+                    <RefreshCwIcon className="w-3.5 h-3.5" strokeWidth={2} />
+                    <span>Ganti Foto</span>
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         )}

@@ -20,7 +20,7 @@ export default function CommunityActionCard({
     <article
       ref={cardRef}
       style={index > 0 ? { transitionDelay: `${Math.min(index * 40, 120)}ms` } : undefined}
-      className={`scroll-reveal-card group bg-white rounded-2xl sm:rounded-3xl border border-border-warm overflow-hidden shadow-2xs hover:shadow-xs hover:border-primary/30 flex flex-col motion-reduce:opacity-100 motion-reduce:transform-none transition-all duration-200 ${
+      className={`scroll-reveal-card group bg-white rounded-2xl border border-border-warm overflow-hidden shadow-2xs hover:shadow-xs hover:border-primary/30 flex flex-col motion-reduce:opacity-100 motion-reduce:transform-none transition-all duration-200 ${
         inView ? 'is-revealed' : ''
       }`}
     >
@@ -70,7 +70,7 @@ export default function CommunityActionCard({
         {/* 2. Title */}
         <h3
           onClick={() => onOpenDetail(action)}
-          className="font-display text-primary text-lg sm:text-xl font-bold leading-snug tracking-tight mb-2 hover:text-primary transition-colors duration-180 cursor-pointer"
+          className="font-display text-primary text-lg sm:text-xl font-normal leading-snug tracking-tight mb-2 hover:text-primary transition-colors duration-180 cursor-pointer"
         >
           {action.title}
         </h3>

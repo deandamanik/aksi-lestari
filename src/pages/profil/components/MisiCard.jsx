@@ -42,7 +42,7 @@ function MisiCard({ mission, index, isFeatured = false }) {
       } ${
         isCompleted
           ? 'border-border-warm/80 bg-neutral/40'
-          : 'border-border-warm hover:border-stone-300 hover:bg-neutral/40'
+          : 'border-border-warm hover:border-stone-300'
       }`}
       style={{ animationDelay: `${index * 80}ms` }}
       aria-label={`Misi: ${title}`}
@@ -64,7 +64,7 @@ function MisiCard({ mission, index, isFeatured = false }) {
 
       {/* Title */}
       <h3
-        className={`font-display text-lg sm:text-xl font-bold tracking-tight leading-snug ${
+        className={`font-display text-lg sm:text-xl font-normal tracking-tight leading-snug ${
           isCompleted ? 'text-stone-400' : 'text-stone-900'
         }`}
       >

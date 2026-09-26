@@ -7,7 +7,7 @@
 function PengaturanHeader() {
   return (
     <header className="flex flex-col gap-1.5">
-      <h1 className="font-display text-2xl sm:text-3xl text-stone-900 font-bold tracking-tight leading-tight">
+      <h1 className="font-display text-2xl sm:text-3xl text-stone-900 font-normal tracking-tight leading-tight">
         Pengaturan Akun
       </h1>
       <p className="text-sm sm:text-base text-stone-500 leading-relaxed max-w-2xl">

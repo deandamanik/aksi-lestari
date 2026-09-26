@@ -55,7 +55,7 @@ function ScanUploadSection({
       <div className="relative z-10 max-w-3xl w-full mx-auto px-4 sm:px-6">
         {/* Section Header */}
         <div className="text-center mb-8 sm:mb-10 lapor-enter-header">
-          <h1 className="font-display font-bold text-primary text-2xl sm:text-3xl lg:text-4xl tracking-tight mb-3">
+          <h1 className="font-display font-normal text-primary text-2xl sm:text-3xl lg:text-4xl tracking-tight mb-3">
             Kenali Sampah yang Kamu Temukan
           </h1>
           <p className="font-body text-primary/75 text-sm sm:text-base max-w-lg mx-auto leading-relaxed">

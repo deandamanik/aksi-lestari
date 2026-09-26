@@ -1,5 +1,5 @@
 import { Outlet, useLocation, Navigate } from 'react-router-dom'
-import { LaporProvider, useLapor } from '../context/LaporContext'
+import { useLapor } from '../context/LaporContext'
 
 /**
  * LaporFlowGuard
@@ -34,15 +34,11 @@ function LaporFlowGuard() {
  * LaporLayout
  *
  * Layout wrapper for all /lapor/* routes.
- * Scopes LaporProvider and LaporFlowGuard to the Lapor route tree.
+ * Scopes LaporFlowGuard to the Lapor route tree.
  * Rendered inside MainLayout's Outlet so Navbar and Footer remain persistent.
  */
 function LaporLayout() {
-  return (
-    <LaporProvider>
-      <LaporFlowGuard />
-    </LaporProvider>
-  )
+  return <LaporFlowGuard />
 }
 
 export default LaporLayout

@@ -26,7 +26,7 @@ export default function CommunityLeaderboardPage() {
           <header className="pb-6 sm:pb-8 border-b border-border-warm/60 animate-lb-header">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div>
-                <h1 className="font-display text-primary text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">
+                <h1 className="font-display text-primary text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight">
                   Papan Peringkat Relawan
                 </h1>
                 <p className="font-body text-stone-600 text-xs sm:text-sm max-w-2xl mt-2 leading-relaxed">

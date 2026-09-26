@@ -45,7 +45,7 @@ export default function AuthInputField({
           disabled={disabled}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : undefined}
-          className={`w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-sm sm:text-base text-gray-900 bg-gray-50/80 border transition-all duration-200 outline-none placeholder:text-gray-400 ${
+          className={`w-full px-4 py-2.5 sm:py-3 rounded-xl text-sm sm:text-base text-gray-900 bg-gray-50/80 border transition-all duration-200 outline-none placeholder:text-gray-400 ${
             error
               ? 'border-red-500 focus:border-red-600 focus:ring-4 focus:ring-red-500/10'
               : 'border-gray-200 hover:border-gray-300 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10'

@@ -125,7 +125,7 @@ function LaporPage() {
       <div className="relative z-10 max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
         {/* Page Heading — NO stepper, NO step chip */}
         <div className="text-center mb-6 sm:mb-8 lapor-enter-header">
-          <h1 className="font-display font-bold text-3xl sm:text-4xl lg:text-[42px] text-primary tracking-tight leading-tight">
+          <h1 className="font-display font-normal text-3xl sm:text-4xl lg:text-[42px] text-primary tracking-tight leading-tight">
             Temukan Sampah di Sekitarmu
           </h1>
           <p className="font-body text-stone-600 text-sm sm:text-base lg:text-lg mt-2 max-w-lg mx-auto leading-relaxed">

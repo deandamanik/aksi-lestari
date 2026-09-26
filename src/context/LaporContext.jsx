@@ -154,8 +154,7 @@ export function useLapor() {
   const ctx = useContext(LaporContext)
   if (!ctx) {
     throw new Error(
-      '[LaporContext] useLapor() must be used inside a <LaporProvider>. ' +
-        'Make sure the component is rendered within the Lapor route tree (LaporLayout).'
+      '[LaporContext] useLapor() must be used inside a <LaporProvider>.'
     )
   }
   return ctx

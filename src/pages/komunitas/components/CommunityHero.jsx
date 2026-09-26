@@ -4,7 +4,7 @@ export default function CommunityHero() {
       <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl flex flex-col items-start">
           {/* Headline in Quando serif font */}
-          <h1 className="font-display font-bold text-primary text-3xl sm:text-4xl md:text-[2.75rem] lg:text-[3.125rem] tracking-tight leading-[1.18] mb-2.5 sm:mb-3.5">
+          <h1 className="font-display font-normal text-primary text-3xl sm:text-4xl md:text-[2.75rem] lg:text-[3.125rem] tracking-tight leading-[1.18] mb-2.5 sm:mb-3.5">
             Bergerak Bersama
           </h1>
 

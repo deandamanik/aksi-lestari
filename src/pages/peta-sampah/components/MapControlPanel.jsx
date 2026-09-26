@@ -63,7 +63,7 @@ function MapControlPanel({
               </span>
             </div>
 
-            <h1 className="font-display font-semibold text-primary text-[19px] sm:text-[20px] lg:text-[21px] leading-[1.15] tracking-tight">
+            <h1 className="font-display font-normal text-primary text-[19px] sm:text-[20px] lg:text-[21px] leading-[1.15] tracking-tight">
               Peta Titik &amp; Pantau
             </h1>
             <p className="font-body text-xs sm:text-[13px] text-stone-500 mt-0.5 sm:mt-1 leading-snug">

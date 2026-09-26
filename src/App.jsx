@@ -2,6 +2,7 @@ import { BrowserRouter } from 'react-router-dom'
 import AppRoutes from './routes/AppRoutes'
 import { AuthProvider } from './context/AuthContext'
 import { ToastProvider } from './context/ToastContext'
+import { LaporProvider } from './context/LaporContext'
 import { useLenisScroll } from './hooks/useLenisScroll'
 
 function GlobalScrollProvider({ children }) {
@@ -14,9 +15,11 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <ToastProvider>
-          <GlobalScrollProvider>
-            <AppRoutes />
-          </GlobalScrollProvider>
+          <LaporProvider>
+            <GlobalScrollProvider>
+              <AppRoutes />
+            </GlobalScrollProvider>
+          </LaporProvider>
         </ToastProvider>
       </AuthProvider>
     </BrowserRouter>

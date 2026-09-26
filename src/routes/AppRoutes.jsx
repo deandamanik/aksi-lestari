@@ -70,8 +70,7 @@ function AppRoutes() {
             </Route>
           </Route>
 
-          {/* Lapor flow — LaporLayout scopes LaporContext to these routes only.
-              Context resets automatically when the user navigates away. */}
+          {/* Lapor flow — LaporLayout houses LaporFlowGuard session guard for mid-flow routes */}
           <Route element={<LaporLayout />}>
             {/* Photo Entry — pre-flow, NO stepper */}
             <Route path="/lapor" element={<LaporPage />} />
@@ -108,6 +107,9 @@ function AppRoutes() {
         {/* Auth routes — Standalone full-screen with dedicated interactive card */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+
+        {/* Wildcard / 404 Fallback — Safely redirect unhandled routes to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   )

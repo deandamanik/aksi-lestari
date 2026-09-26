@@ -13,7 +13,7 @@ function ModuleGridCard({ module }) {
   } = module
 
   return (
-    <div className="bg-white rounded-2xl border border-border-warm p-6 flex flex-col justify-between hover:border-primary/40 transition-colors">
+    <div className="bg-white rounded-2xl border border-border-warm p-6 flex flex-col justify-between shadow-2xs hover:border-primary/30 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-300">
       <div>
         {/* Top Metadata Row */}
         <div className="flex items-center justify-between gap-3 mb-3 select-none">
@@ -34,7 +34,7 @@ function ModuleGridCard({ module }) {
         </div>
 
         {/* Title */}
-        <h3 className="font-display font-bold text-primary text-lg sm:text-xl leading-snug mb-2.5">
+        <h3 className="font-display font-normal text-primary text-lg sm:text-xl leading-snug mb-2.5">
           {title}
         </h3>
 
