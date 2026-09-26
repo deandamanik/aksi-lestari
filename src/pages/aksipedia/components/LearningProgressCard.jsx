@@ -1,15 +1,21 @@
 import ProtectedModuleLink from './ProtectedModuleLink'
 import { ArrowRightIcon } from '../../../components/common/Icons'
 import { LEARNING_PROGRESS_DATA } from '../../../data/aksipedia/aksipediaHubData'
+import { useInView } from '../../../hooks/useInView'
 
 function LearningProgressCard() {
   const { title, detail, percentage, continueLabel } = LEARNING_PROGRESS_DATA
+  const [cardRef, inView] = useInView({ threshold: 0.15 })
 
   return (
-    <section className="w-full pb-20 sm:pb-24 lg:pb-28">
+    <section ref={cardRef} className="w-full pb-20 sm:pb-24 lg:pb-28">
       <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Editorial Horizontal Progress Strip (No dashboard card box) */}
-        <div className="border-t border-border-warm pt-6 sm:pt-8">
+        <div
+          className={`border-t border-border-warm pt-6 sm:pt-8 transition-all duration-700 ease-out will-change-[opacity,transform] ${
+            inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+          }`}
+        >
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 lg:gap-8">
             {/* Left: Reading Milestone Status */}
             <div className="flex flex-col">

@@ -5,12 +5,13 @@ import Footer from '../components/layout/Footer'
 function MainLayout() {
   const location = useLocation()
   const isPetaRoute = location.pathname.startsWith('/peta-sampah')
+  const isQuizRoute = location.pathname.includes('/quiz')
 
   return (
     <div>
       <Navbar />
       <Outlet />
-      {!isPetaRoute && <Footer />}
+      {!isPetaRoute && !isQuizRoute && <Footer />}
     </div>
   )
 }

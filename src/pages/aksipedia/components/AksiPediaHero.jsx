@@ -1,10 +1,14 @@
 import { CameraIcon } from '../../../components/common/Icons'
 import { HUB_HERO_CONTENT } from '../../../data/aksipedia/aksipediaHubData'
+import {
+  AKSIPEDIA_HERO_DESKTOP_OBJECTS,
+  AKSIPEDIA_HERO_MOBILE_OBJECTS,
+} from '../../../data/aksipedia/aksipediaHeroObjects'
 
 function AksiPediaHero({ onStartScan }) {
   return (
     <section
-      className="relative w-full overflow-hidden bg-neutral min-h-[100svh] sm:min-h-[600px] lg:h-[100svh] lg:min-h-[640px] flex flex-col justify-center pt-24 sm:pt-28 lg:pt-20 pb-12 sm:pb-16 lg:pb-14"
+      className="relative w-full overflow-hidden bg-neutral h-[100svh] min-h-[580px] lg:min-h-[640px] flex flex-col justify-center"
       aria-label="Hero AksiPedia"
     >
       {/* Background Pattern — Matches Beranda viewport coverage with soft bottom transition into cream content */}
@@ -21,25 +25,67 @@ function AksiPediaHero({ onStartScan }) {
         aria-hidden="true"
       />
 
+      {/* Decorative 3D Floating Objects — Desktop (matches Beranda & Lapor aesthetic) */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block z-0" aria-hidden="true">
+        {AKSIPEDIA_HERO_DESKTOP_OBJECTS.map((obj, i) => (
+          <div
+            key={`desktop-dec-${i}`}
+            className={`absolute pointer-events-none select-none hero-enter-object ${obj.className}`}
+            style={{
+              animationDelay: `${obj.enterDelay}ms`,
+            }}
+          >
+            <img
+              src={obj.src}
+              alt={obj.alt}
+              className={`w-full h-auto drop-shadow-sm pointer-events-none select-none ${obj.ambientClass}`}
+              style={{
+                animationDelay: `${obj.enterDelay + 750}ms`,
+              }}
+              draggable={false}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Decorative 3D Floating Objects — Mobile (matches Beranda composition) */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden block md:hidden z-0" aria-hidden="true">
+        {AKSIPEDIA_HERO_MOBILE_OBJECTS.map((obj, i) => (
+          <div
+            key={`mobile-dec-${i}`}
+            className={`absolute pointer-events-none select-none hero-enter-object ${obj.className}`}
+            style={{ animationDelay: `${obj.enterDelay}ms` }}
+          >
+            <img
+              src={obj.src}
+              alt={obj.alt}
+              className={`w-full h-auto drop-shadow-sm pointer-events-none select-none ${obj.ambientClass}`}
+              style={{ animationDelay: `${obj.ambientDelay}ms` }}
+              draggable={false}
+            />
+          </div>
+        ))}
+      </div>
+
       {/* Main Content */}
       <div className="relative z-10 w-full max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-          {/* Left: Editorial Header & Actions */}
-          <div className="lg:col-span-7 flex flex-col items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center -translate-y-2 md:-translate-y-4 lg:translate-y-0">
+          {/* Editorial Header & Actions (Centered on mobile like Beranda, 7-col on desktop) */}
+          <div className="w-full flex flex-col items-center text-center lg:col-span-7 lg:items-start lg:text-left">
             {/* Main Typographic Headline — Matches Beranda Quando treatment & line-height */}
-            <h1 className="font-display font-medium md:font-normal text-primary text-3xl sm:text-4xl md:text-[2.75rem] lg:text-[3.25rem] xl:text-[3.75rem] leading-[1.18] md:leading-[1.14] tracking-tight mb-4 sm:mb-5">
+            <h1 className="hero-reveal-headline font-display font-medium md:font-normal text-primary text-3xl sm:text-4xl md:text-[3.125rem] lg:text-[3.25rem] xl:text-[3.75rem] leading-[1.18] md:leading-[1.14] tracking-tight mb-3 md:mb-4 lg:mb-5">
               {HUB_HERO_CONTENT.titleLine1}
               <br />
               <span>{HUB_HERO_CONTENT.titleLine2}</span>
             </h1>
 
             {/* Supporting Paragraph — Matches Beranda text weight & optical tone */}
-            <p className="font-body font-medium md:font-normal text-primary/80 md:text-primary/70 text-sm sm:text-base lg:text-[1.0625rem] leading-relaxed max-w-xl mb-6 sm:mb-8">
+            <p className="hero-reveal-paragraph font-body font-medium md:font-normal text-primary/80 md:text-primary/70 text-sm sm:text-base lg:text-[1.0625rem] leading-relaxed max-w-[20rem] sm:max-w-md md:max-w-[36rem] lg:max-w-xl mb-4 sm:mb-5 md:mb-6 lg:mb-8 mx-auto lg:mx-0">
               {HUB_HERO_CONTENT.description}
             </p>
 
             {/* CTA Buttons — Exactly matches Beranda Hero style, roundedness, and sizing */}
-            <div className="flex flex-col sm:flex-row items-center gap-2.5 sm:gap-4 w-full sm:w-auto">
+            <div className="hero-reveal-cta flex flex-col sm:flex-row items-center gap-2.5 sm:gap-4 w-full sm:w-auto justify-center lg:justify-start">
               {/* Primary: Scan Sampah */}
               <button
                 type="button"
@@ -60,9 +106,9 @@ function AksiPediaHero({ onStartScan }) {
             </div>
           </div>
 
-          {/* Right: Integrated Educational Visual */}
-          <div className="lg:col-span-5 flex items-center justify-center lg:justify-end">
-            <div className="relative w-full max-w-[340px] sm:max-w-[380px] lg:max-w-[420px] aspect-square flex items-center justify-center">
+          {/* Right: Integrated Educational Visual (Desktop only — hidden on mobile for clean Beranda-style composition) */}
+          <div className="hidden lg:flex lg:col-span-5 items-center justify-end hero-reveal-visual">
+            <div className="relative w-full max-w-[420px] aspect-square flex items-center justify-center">
               <img
                 src="/images/aksipedia/icon-eco-search.webp"
                 alt="Ilustrasi edukasi identifikasi sampah daur ulang AksiPedia"

@@ -22,6 +22,7 @@
   --color-error-text: #7A0000;
   --color-error-bg: #FFE8E8;
 
+  --font-sans: "Quicksand Variable", "Quicksand", sans-serif;
   --font-body: "Quicksand Variable", "Quicksand", sans-serif;
   --font-display: "Quando", serif;
 }
@@ -414,6 +415,12 @@ select {
   will-change: transform, opacity;
 }
 
+.hero-reveal-visual {
+  opacity: 0;
+  animation: hero-content-reveal 700ms cubic-bezier(0.16, 1, 0.3, 1) 180ms forwards;
+  will-change: transform, opacity;
+}
+
 /* --- 3D Objects Entrance (Gentle Fade & Settle) --- */
 @keyframes hero-object-reveal {
   0% {
@@ -659,6 +666,7 @@ select {
   .hero-reveal-headline,
   .hero-reveal-paragraph,
   .hero-reveal-cta,
+  .hero-reveal-visual,
   .hero-enter-object,
   .hero-ambient-sun,
   .hero-ambient-recycle-left,

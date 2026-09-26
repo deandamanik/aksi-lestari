@@ -1,10 +1,10 @@
-import {
-  ArrowLeftIcon,
-} from '../../../components/common/Icons'
 import { DEFAULT_SCAN_RESULT } from '../../../data/aksipedia/wasteScanResultData'
+import { useInView } from '../../../hooks/useInView'
 
-function ScanResultSection({ uploadedImage, onResetScan }) {
+function ScanResultSection({ uploadedImage }) {
   const result = DEFAULT_SCAN_RESULT
+  const [charRef, charInView] = useInView({ threshold: 0.08 })
+  const baseTransition = 'transition-all duration-700 ease-out will-change-[opacity,transform]'
 
   const contextualItems = [
     result.commonUsage && {
@@ -21,7 +21,7 @@ function ScanResultSection({ uploadedImage, onResetScan }) {
     <section className="w-full pt-24 sm:pt-28 lg:pt-32 pb-12 sm:pb-16" aria-label="Hasil Identifikasi Sampah">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* 1. Primary Identity Card — Main Result Entry Point */}
-        <div className="bg-white rounded-3xl border border-border-warm p-6 sm:p-8 lg:p-9 shadow-xs">
+        <div className="bg-white rounded-3xl border border-border-warm p-6 sm:p-8 lg:p-9 shadow-xs lapor-enter-card">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-9 items-start">
             {/* Left: Scanned Photo with Meta */}
             <div className="lg:col-span-6 flex flex-col gap-3">
@@ -37,17 +37,6 @@ function ScanResultSection({ uploadedImage, onResetScan }) {
               <div className="text-xs text-stone-500 pt-0.5 select-none">
                 <span>Waktu: {result.timeString}</span>
               </div>
-
-              {/* Kembali & Scan Sampah Lain — Secondary Action clearly in Photo Area */}
-              <button
-                type="button"
-                onClick={onResetScan}
-                className="w-full inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl font-semibold text-xs sm:text-sm text-primary bg-white border border-primary/25 hover:bg-primary/[0.04] hover:border-primary/45 transition-colors shadow-2xs active:scale-[0.98] cursor-pointer select-none"
-                aria-label="Kembali & Scan Sampah Lain"
-              >
-                <ArrowLeftIcon className="w-3.5 h-3.5 text-primary" strokeWidth={2.25} />
-                <span>Kembali & Scan Sampah Lain</span>
-              </button>
             </div>
 
             {/* Right: Identity, Title, & Subtle Explanation */}
@@ -107,7 +96,12 @@ function ScanResultSection({ uploadedImage, onResetScan }) {
         </div>
 
         {/* 2. Material & Characteristics — ONE Unified Structured Information Block */}
-        <div className="mt-12 sm:mt-14">
+        <div
+          ref={charRef}
+          className={`mt-12 sm:mt-14 ${baseTransition} ${
+            charInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+          }`}
+        >
           <div className="mb-5">
             <h2 className="font-display font-bold text-primary text-xl sm:text-2xl tracking-tight mb-1.5">
               Karakteristik & Spesifikasi

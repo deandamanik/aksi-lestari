@@ -1,9 +1,6 @@
-import { CheckCircle2Icon } from '../../../components/common/Icons'
-
 function ModuleLearningJourney({
   sections,
   activeSectionId,
-  scrollProgress = 0,
   onSelectSection,
 }) {
   const activeIndex = Math.max(
@@ -13,49 +10,14 @@ function ModuleLearningJourney({
 
   const activeSection = sections[activeIndex] || sections[0]
 
-  // The 5 nodes are centered in 5 equal columns (each 20% wide).
-  // Node 1 center is at 10%, Node 5 center is at 90%.
-  // The progress line travels across this 80% span (from 10% to 90%).
-  const clampedProgress = Math.min(100, Math.max(0, scrollProgress))
-  const progressLineEndPercent = 10 + (clampedProgress / 100) * 80
-
   return (
     <nav
-      className="sticky top-16 sm:top-20 z-30 bg-neutral/98 backdrop-blur-md py-3 sm:py-4 border-y border-border-warm/70 select-none shadow-2xs"
-      aria-label="Alur perjalanan materi modul"
+      className="sticky top-16 sm:top-20 z-30 bg-neutral/95 backdrop-blur-sm py-2.5 sm:py-3 border-y border-border-warm/70 select-none shadow-2xs lapor-enter-card"
+      aria-label="Navigasi bagian materi modul"
     >
-      <div className="max-w-[660px] mx-auto px-4 sm:px-6">
-        {/* Balanced 5-Column Grid Layout */}
-        <div className="relative w-full">
-          {/* Connecting SVG Path Line (Runs from 10% to 90%) */}
-          <svg
-            className="absolute top-3.5 sm:top-4 left-0 w-full h-2 overflow-visible pointer-events-none"
-            aria-hidden="true"
-          >
-            {/* Background Muted Line */}
-            <line
-              x1="10%"
-              y1="50%"
-              x2="90%"
-              y2="50%"
-              stroke="#E8E5DC"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            {/* Real-time Dynamic Progress Green Line */}
-            <line
-              x1="10%"
-              y1="50%"
-              x2={`${progressLineEndPercent}%`}
-              y2="50%"
-              stroke="#22603B"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              className="transition-all duration-75 ease-out"
-            />
-          </svg>
-
-          {/* 5 Centered Columns */}
+      <div className="max-w-[720px] mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Compact 5-step container matching reading width */}
+        <div className="max-w-[480px] sm:max-w-[520px] mx-auto">
           <div className="grid grid-cols-5 w-full">
             {sections.map((sec, idx) => {
               const isCompleted = idx < activeIndex
@@ -67,38 +29,53 @@ function ModuleLearningJourney({
                 ? sec.navLabel.replace(/^\d+\s*/, '')
                 : sec.title.replace(/^\d+\s*/, '')
 
-              let nodeClass =
-                'w-7 h-7 rounded-full bg-white/95 text-stone-400 border border-stone-300 hover:border-primary/50 hover:text-stone-700'
-              if (isActive) {
-                nodeClass =
-                  'w-8 h-8 rounded-full bg-primary text-white border-2 border-primary ring-4 ring-primary/15 scale-110 shadow-xs'
-              } else if (isCompleted) {
-                nodeClass =
-                  'w-7 h-7 rounded-full bg-white text-primary border-2 border-primary/85 hover:border-primary'
-              }
-
               return (
                 <div
                   key={sec.id}
-                  className="relative z-10 flex flex-col items-center justify-center text-center px-1"
+                  className="relative flex flex-col items-center text-center"
                 >
+                  {/* Connector segment to previous node (stops at circle boundary) */}
+                  {idx > 0 && (
+                    <div
+                      className={`absolute top-3.5 h-[1.5px] -translate-y-1/2 pointer-events-none transition-colors duration-150 ${
+                        idx <= activeIndex ? 'bg-primary/50' : 'bg-border-warm'
+                      }`}
+                      style={{ left: 0, right: 'calc(50% + 14px)' }}
+                      aria-hidden="true"
+                    />
+                  )}
+
+                  {/* Connector segment to next node (starts at circle boundary) */}
+                  {idx < sections.length - 1 && (
+                    <div
+                      className={`absolute top-3.5 h-[1.5px] -translate-y-1/2 pointer-events-none transition-colors duration-150 ${
+                        idx < activeIndex ? 'bg-primary/50' : 'bg-border-warm'
+                      }`}
+                      style={{ left: 'calc(50% + 14px)', right: 0 }}
+                      aria-hidden="true"
+                    />
+                  )}
+
+                  {/* Node Button */}
                   <button
                     type="button"
                     onClick={() => onSelectSection(sec.id)}
                     aria-label={`Bagian ${stepNum}: ${shortTitle}`}
                     aria-current={isActive ? 'step' : undefined}
-                    className={`flex items-center justify-center text-xs font-display font-bold transition-all duration-200 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary ${nodeClass}`}
+                    className={`relative z-10 w-7 h-7 rounded-full flex items-center justify-center text-xs font-display transition-colors duration-150 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary ${
+                      isActive
+                        ? 'bg-primary text-white font-bold shadow-2xs'
+                        : isCompleted
+                        ? 'bg-[#EAF1EC] text-primary border border-primary/35 font-semibold'
+                        : 'bg-white text-stone-400 border border-stone-200 hover:border-primary/50 hover:text-stone-700 font-medium'
+                    }`}
                   >
-                    {isCompleted ? (
-                      <CheckCircle2Icon className="w-4 h-4 text-primary" strokeWidth={2.5} />
-                    ) : (
-                      <span>{stepNum}</span>
-                    )}
+                    <span>{stepNum}</span>
                   </button>
 
-                  {/* Desktop Section Title - Centered in column */}
+                  {/* Desktop Section Title */}
                   <span
-                    className={`hidden sm:block text-center mt-2 leading-tight transition-colors duration-200 max-w-[125px] mx-auto whitespace-normal break-normal ${
+                    className={`hidden sm:block text-center mt-2 leading-snug transition-colors duration-150 px-0.5 ${
                       isActive
                         ? 'font-display font-bold text-xs text-primary'
                         : isCompleted
@@ -114,9 +91,9 @@ function ModuleLearningJourney({
           </div>
         </div>
 
-        {/* Mobile Active Section Subtitle */}
+        {/* Mobile Active Section Indicator */}
         {activeSection && (
-          <div className="sm:hidden flex items-center justify-center gap-1.5 mt-2.5 pt-1.5 border-t border-border-warm/40 text-xs text-primary font-bold animate-in fade-in duration-200">
+          <div className="sm:hidden flex items-center justify-center gap-1.5 mt-2 pt-1.5 border-t border-border-warm/40 text-xs text-primary font-bold">
             <span className="w-1.5 h-1.5 rounded-full bg-secondary shrink-0" />
             <span className="truncate max-w-[280px]">
               {activeSection.navLabel || activeSection.title}

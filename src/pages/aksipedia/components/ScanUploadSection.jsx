@@ -1,5 +1,9 @@
 import PhotoUploadCard from '../../lapor/components/PhotoUploadCard'
 import { SearchIcon, InfoIcon, ArrowLeftIcon } from '../../../components/common/Icons'
+import {
+  LAPOR_DESKTOP_OBJECTS,
+  LAPOR_MOBILE_OBJECTS,
+} from '../../../data/lapor/laporDecorativeObjects'
 
 function ScanUploadSection({
   selectedFile,
@@ -9,10 +13,48 @@ function ScanUploadSection({
   onBackToHub,
 }) {
   return (
-    <section className="w-full pt-28 sm:pt-32 lg:pt-36 pb-16 sm:pb-20 lg:pb-24">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6">
+    <section
+      className="relative w-full overflow-hidden bg-neutral min-h-[100svh] lg:h-[100svh] lg:min-h-[640px] pt-24 sm:pt-28 lg:pt-24 pb-12 sm:pb-16 flex flex-col justify-center"
+      style={{
+        backgroundImage: 'url(/images/pattern.webp)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center',
+        backgroundRepeat: 'no-repeat',
+      }}
+      aria-label="Scan Sampah - Kenali Sampah yang Kamu Temukan"
+    >
+      {/* Decorative 3D Assets — Desktop */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block" aria-hidden="true">
+        {LAPOR_DESKTOP_OBJECTS.map((obj, index) => (
+          <img
+            key={`desktop-dec-${index}`}
+            src={obj.src}
+            alt={obj.alt}
+            className={`absolute ${obj.className} ${obj.ambientClass}`}
+            loading="lazy"
+            decoding="async"
+          />
+        ))}
+      </div>
+
+      {/* Decorative 3D Assets — Mobile */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden md:hidden" aria-hidden="true">
+        {LAPOR_MOBILE_OBJECTS.map((obj, index) => (
+          <img
+            key={`mobile-dec-${index}`}
+            src={obj.src}
+            alt={obj.alt}
+            className={`absolute ${obj.className} ${obj.ambientClass}`}
+            loading="lazy"
+            decoding="async"
+          />
+        ))}
+      </div>
+
+      {/* Central Content */}
+      <div className="relative z-10 max-w-3xl w-full mx-auto px-4 sm:px-6">
         {/* Section Header */}
-        <div className="text-center mb-8 sm:mb-10">
+        <div className="text-center mb-8 sm:mb-10 lapor-enter-header">
           <h1 className="font-display font-bold text-primary text-2xl sm:text-3xl lg:text-4xl tracking-tight mb-3">
             Kenali Sampah yang Kamu Temukan
           </h1>
@@ -22,15 +64,17 @@ function ScanUploadSection({
         </div>
 
         {/* Upload Card — Reused from Lapor */}
-        <PhotoUploadCard
-          value={selectedFile}
-          onChange={setSelectedFile}
-          statusText="Foto Siap Diidentifikasi"
-          size="default"
-        />
+        <div className="lapor-enter-card">
+          <PhotoUploadCard
+            value={selectedFile}
+            onChange={setSelectedFile}
+            statusText="Foto Siap Diidentifikasi"
+            size="default"
+          />
+        </div>
 
         {/* Helper text below upload card */}
-        <div className="flex items-start sm:items-center justify-center gap-2 mt-4 sm:mt-5 text-xs text-stone-500 text-center px-4 leading-normal">
+        <div className="flex items-start sm:items-center justify-center gap-2 mt-4 sm:mt-5 text-xs text-stone-500 text-center px-4 leading-normal lapor-enter-actions">
           <InfoIcon className="w-4 h-4 text-stone-400 shrink-0 mt-0.5 sm:mt-0" />
           <span>
             Foto lebih mudah diidentifikasi jika objek sampah terlihat utuh, terang, dan tidak tertutup benda lain.
@@ -38,7 +82,7 @@ function ScanUploadSection({
         </div>
 
         {/* Action Area — Matches Lapor Step Bottom Navigation */}
-        <div className="mt-8">
+        <div className="mt-8 lapor-enter-actions">
           <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
             {/* Back Button to Hub (Secondary / Outline Action) */}
             <button
@@ -80,13 +124,6 @@ function ScanUploadSection({
               )}
             </button>
           </div>
-
-          {/* Subtext under disabled button */}
-          {!selectedFile && !isIdentifying && (
-            <p className="mt-2.5 text-center sm:text-right text-xs text-stone-400 font-medium select-none">
-              Unggah atau ambil foto terlebih dahulu untuk melanjutkan.
-            </p>
-          )}
         </div>
       </div>
     </section>

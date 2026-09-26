@@ -1,3 +1,4 @@
+import { useInView } from '../../../hooks/useInView'
 import {
   MapPinIcon,
   ArrowRightIcon,
@@ -7,12 +8,18 @@ import { WASTE_BANKS_DATA } from '../../../data/aksipedia/wasteBanksData'
 
 function WasteBankSection() {
   const { title, subtitle, items, disclaimer } = WASTE_BANKS_DATA
+  const [sectionRef, inView] = useInView({ threshold: 0.08 })
+  const baseTransition = 'transition-all duration-700 ease-out will-change-[opacity,transform]'
 
   return (
-    <section className="w-full pb-8 sm:pb-10" aria-label="Destinasi Penyaluran Bank Sampah">
+    <section ref={sectionRef} className="w-full pb-8 sm:pb-10" aria-label="Destinasi Penyaluran Bank Sampah">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header — No Eyebrow */}
-        <div className="mb-5">
+        <div
+          className={`mb-5 ${baseTransition} ${
+            inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+          }`}
+        >
           <h2 className="font-display font-bold text-primary text-xl sm:text-2xl tracking-tight mb-1.5">
             {title}
           </h2>
@@ -22,7 +29,12 @@ function WasteBankSection() {
         </div>
 
         {/* ONE Cohesive Location List Container */}
-        <div className="rounded-2xl border border-border-warm bg-white divide-y divide-border-warm/70 shadow-2xs overflow-hidden mb-3">
+        <div
+          className={`rounded-2xl border border-border-warm bg-white divide-y divide-border-warm/70 shadow-2xs overflow-hidden mb-3 ${baseTransition} ${
+            inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+          }`}
+          style={{ transitionDelay: '100ms' }}
+        >
           {items.map((bank) => (
             <div
               key={bank.id}

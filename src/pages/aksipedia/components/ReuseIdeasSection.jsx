@@ -1,3 +1,4 @@
+import { useInView } from '../../../hooks/useInView'
 import {
   ClockIcon,
   SproutIcon,
@@ -20,11 +21,18 @@ function getReuseIcon(iconType) {
 }
 
 function ReuseIdeasSection() {
+  const [sectionRef, inView] = useInView({ threshold: 0.08 })
+  const baseTransition = 'transition-all duration-700 ease-out will-change-[opacity,transform]'
+
   return (
-    <section className="w-full pb-14 sm:pb-16 lg:pb-20" aria-label="Ide Pemanfaatan Mandiri">
+    <section ref={sectionRef} className="w-full pb-14 sm:pb-16 lg:pb-20" aria-label="Ide Pemanfaatan Mandiri">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header with quiet note — No Eyebrow */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+        <div
+          className={`flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 ${baseTransition} ${
+            inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+          }`}
+        >
           <div>
             <h2 className="font-display font-bold text-primary text-2xl sm:text-3xl tracking-tight mb-1.5">
               Ide Pemanfaatan
@@ -41,10 +49,13 @@ function ReuseIdeasSection() {
 
         {/* 3 Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
-          {REUSE_IDEAS.map((item) => (
+          {REUSE_IDEAS.map((item, idx) => (
             <div
               key={item.id}
-              className="bg-white rounded-2xl border border-border-warm p-6 sm:p-7 flex flex-col justify-between shadow-xs hover:border-primary/40 transition-colors"
+              className={`bg-white rounded-2xl border border-border-warm p-6 sm:p-7 flex flex-col justify-between shadow-xs hover:border-primary/40 transition-colors ${baseTransition} ${
+                inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+              }`}
+              style={{ transitionDelay: `${90 + idx * 80}ms` }}
             >
               <div>
                 {/* Clean Natural Icon */}

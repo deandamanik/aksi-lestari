@@ -1,3 +1,4 @@
+import { useInView } from '../../../hooks/useInView'
 import {
   TrashIcon,
   DropletsIcon,
@@ -22,11 +23,18 @@ function getStepIcon(iconType) {
 }
 
 function HandlingStepsSection() {
+  const [sectionRef, inView] = useInView({ threshold: 0.08 })
+  const baseTransition = 'transition-all duration-700 ease-out will-change-[opacity,transform]'
+
   return (
-    <section className="w-full pb-14 sm:pb-16 lg:pb-20" aria-label="Cara Menanganinya">
+    <section ref={sectionRef} className="w-full pb-14 sm:pb-16 lg:pb-20" aria-label="Cara Menanganinya">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Heading — No Eyebrow */}
-        <div className="mb-6">
+        <div
+          className={`mb-6 ${baseTransition} ${
+            inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+          }`}
+        >
           <h2 className="font-display font-bold text-primary text-2xl sm:text-3xl tracking-tight mb-1.5">
             Cara Menanganinya
           </h2>
@@ -37,10 +45,13 @@ function HandlingStepsSection() {
 
         {/* Continuous Handling Process (ONE unified sequence, not 4 separate cards) */}
         <div className="border-y border-border-warm divide-y divide-border-warm/70">
-          {HANDLING_STEPS.map((item) => (
+          {HANDLING_STEPS.map((item, idx) => (
             <div
               key={item.step}
-              className="py-5 sm:py-6 flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6"
+              className={`py-5 sm:py-6 flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6 ${baseTransition} ${
+                inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+              }`}
+              style={{ transitionDelay: `${80 + idx * 70}ms` }}
             >
               {/* Number */}
               <span className="font-display font-bold text-2xl sm:text-3xl text-secondary select-none shrink-0 w-10">

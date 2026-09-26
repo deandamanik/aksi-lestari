@@ -76,7 +76,7 @@ function AksiPediaPage() {
   return (
     <main className="min-h-screen bg-neutral text-primary">
       {viewMode === 'hub' && (
-        <div className="animate-in fade-in duration-300">
+        <div className="animate-page-enter">
           <AksiPediaHero onStartScan={handleStartScan} />
           <div id="modul" className="scroll-mt-16">
             <div id="modul-belajar-section" className="sr-only" aria-hidden="true" />
@@ -87,7 +87,7 @@ function AksiPediaPage() {
       )}
 
       {viewMode === 'scan' && (
-        <div className="animate-in fade-in duration-300">
+        <div className="animate-page-enter">
           <ScanUploadSection
             selectedFile={selectedFile}
             setSelectedFile={setSelectedFile}
@@ -99,15 +99,12 @@ function AksiPediaPage() {
       )}
 
       {viewMode === 'result' && (
-        <div className="animate-in fade-in duration-300">
-          <ScanResultSection
-            uploadedImage={objectUrl}
-            onResetScan={handleResetScan}
-          />
+        <div className="animate-page-enter">
+          <ScanResultSection uploadedImage={objectUrl} />
           <HandlingStepsSection />
           <ReuseIdeasSection />
           <WasteBankSection />
-          <LearnMoreBanner />
+          <LearnMoreBanner onResetScan={handleResetScan} />
         </div>
       )}
 

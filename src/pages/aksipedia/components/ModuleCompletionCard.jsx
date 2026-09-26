@@ -1,62 +1,41 @@
 import { Link } from 'react-router-dom'
-import { SparklesIcon } from '../../../components/common/Icons'
+import { ArrowLeftIcon, ArrowRightIcon } from '../../../components/common/Icons'
+import { useInView } from '../../../hooks/useInView'
 
-function ModuleCompletionCard({ completion, moduleId }) {
-  const {
-    badge,
-    headline,
-    description,
-    ctaText,
-    secondaryText,
-    footnote,
-  } = completion
+function ModuleCompletionCard({ moduleId }) {
+  const [ref, inView] = useInView({ threshold: 0.1 })
+  const baseTransition = 'transition-all duration-700 ease-out will-change-[opacity,transform]'
 
   return (
-    <div className="max-w-[720px] mx-auto mt-16 sm:mt-20">
-      <div className="bg-white rounded-2xl border border-border-warm p-8 sm:p-10 text-center flex flex-col items-center">
-        {/* Soft Success Icon */}
-        <div className="w-12 h-12 rounded-full bg-emerald-50 border border-emerald-200/80 flex items-center justify-center mb-4 select-none">
-          <SparklesIcon className="w-6 h-6 text-emerald-600" />
-        </div>
+    <section
+      ref={ref}
+      className={`mt-14 sm:mt-16 pt-6 sm:pt-8 border-t border-border-warm/70 ${baseTransition} ${
+        inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+      }`}
+      aria-label="Aksi Selanjutnya"
+    >
+      <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+        {/* Secondary Action: Kembali */}
+        <Link
+          to="/aksipedia#modul"
+          className="inline-flex items-center justify-center gap-2 h-11 px-6 sm:px-7 rounded-full font-semibold text-sm text-primary bg-white border border-primary/25 hover:bg-primary/[0.04] hover:border-primary/45 transition-colors shadow-xs active:scale-[0.98] cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 select-none w-full sm:w-auto"
+          aria-label="Kembali ke Modul"
+        >
+          <ArrowLeftIcon className="w-4 h-4 text-primary shrink-0" strokeWidth={2.25} />
+          <span>Kembali</span>
+        </Link>
 
-        {/* Small Eyebrow */}
-        <span className="text-xs font-bold text-secondary uppercase tracking-wider block mb-2 select-none">
-          {badge}
-        </span>
-
-        {/* Main Title */}
-        <h2 className="font-display font-bold text-primary text-2xl sm:text-3xl tracking-tight mb-3">
-          {headline}
-        </h2>
-
-        {/* Description */}
-        <p className="font-body text-primary/75 text-sm sm:text-base max-w-md mx-auto leading-relaxed mb-8">
-          {description}
-        </p>
-
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto justify-center mb-6">
-          <Link
-            to={`/aksipedia/modul/${moduleId}/quiz`}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-all shadow-xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
-          >
-            <span>{ctaText}</span>
-          </Link>
-
-          <Link
-            to="/aksipedia/modul"
-            className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3.5 rounded-full text-primary hover:bg-stone-50 text-sm font-semibold transition-all border border-stone-300"
-          >
-            <span>{secondaryText}</span>
-          </Link>
-        </div>
-
-        {/* Footnote */}
-        <p className="text-xs text-stone-400 select-none">
-          {footnote}
-        </p>
+        {/* Primary Action: Mulai Kuis */}
+        <Link
+          to={`/aksipedia/modul/${moduleId}/quiz`}
+          className="inline-flex items-center justify-center gap-2 h-11 px-7 sm:px-8 rounded-full font-semibold text-sm bg-primary hover:bg-primary/90 text-white shadow-xs active:scale-[0.98] transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 select-none cursor-pointer w-full sm:w-auto"
+          aria-label="Mulai Kuis"
+        >
+          <span>Mulai Kuis</span>
+          <ArrowRightIcon className="w-4 h-4 text-white shrink-0" strokeWidth={2.25} />
+        </Link>
       </div>
-    </div>
+    </section>
   )
 }
 

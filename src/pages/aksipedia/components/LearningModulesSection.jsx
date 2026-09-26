@@ -8,9 +8,13 @@ import {
 } from '../../../components/common/Icons'
 import { ALL_LEARNING_MODULES } from '../../../data/aksipedia/modulesData'
 import { LEARNING_MODULES_DATA } from '../../../data/aksipedia/aksipediaHubData'
+import { useInView } from '../../../hooks/useInView'
 
 function LearningModulesSection() {
   const [searchQuery, setSearchQuery] = useState('')
+  const [sectionRef, inView] = useInView({ threshold: 0.08 })
+
+  const baseTransition = 'transition-all duration-700 ease-out will-change-[opacity,transform]'
 
   const filteredModules = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
@@ -28,10 +32,14 @@ function LearningModulesSection() {
   const secondaryModules = filteredModules.slice(1)
 
   return (
-    <section className="w-full pt-12 sm:pt-16 pb-8 sm:pb-12">
+    <section ref={sectionRef} className="w-full pt-12 sm:pt-16 pb-8 sm:pb-12">
       <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Editorial Section Header & Restrained Search */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 pb-6 border-b border-border-warm mb-6 sm:mb-8">
+        <div
+          className={`flex flex-col md:flex-row md:items-end justify-between gap-5 pb-6 border-b border-border-warm mb-6 sm:mb-8 ${baseTransition} ${
+            inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+          }`}
+        >
           <div>
             <h2 className="font-display font-medium text-primary text-2xl sm:text-3xl lg:text-[2.25rem] tracking-tight mb-2">
               {LEARNING_MODULES_DATA.heading}
@@ -81,7 +89,12 @@ function LearningModulesSection() {
           <div className="flex flex-col gap-5 sm:gap-6">
             {/* 1. Featured / Primary Module Card */}
             {featuredModule && (
-              <article className="rounded-2xl bg-white border border-border-warm shadow-2xs hover:shadow-xs p-6 sm:p-7 lg:p-8 transition-all duration-200 hover:border-primary/40 group flex flex-col justify-between">
+              <article
+                style={{ transitionDelay: inView ? '90ms' : '0ms' }}
+                className={`rounded-2xl bg-white border border-border-warm shadow-2xs hover:shadow-xs p-6 sm:p-7 lg:p-8 hover:border-primary/40 group flex flex-col justify-between ${baseTransition} ${
+                  inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+                }`}
+              >
                 <div>
                   {/* Top metadata strip */}
                   <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-stone-500 font-semibold mb-4 select-none">
@@ -148,8 +161,11 @@ function LearningModulesSection() {
                   return (
                     <article
                       key={item.id}
-                      className={`rounded-2xl bg-white border border-border-warm shadow-2xs hover:shadow-xs p-5 sm:p-6 transition-all duration-200 hover:border-primary/40 group flex flex-col justify-between ${
+                      style={{ transitionDelay: inView ? `${150 + idx * 70}ms` : '0ms' }}
+                      className={`rounded-2xl bg-white border border-border-warm shadow-2xs hover:shadow-xs p-5 sm:p-6 hover:border-primary/40 group flex flex-col justify-between ${
                         isLastOdd ? 'md:col-span-2' : ''
+                      } ${baseTransition} ${
+                        inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
                       }`}
                     >
                       <div>

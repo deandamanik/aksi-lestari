@@ -1,72 +1,55 @@
 import { Link } from 'react-router-dom'
-import { CheckCircle2Icon, SparklesIcon, RefreshCwIcon } from '../../../components/common/Icons'
+import {
+  CheckCircle2Icon,
+  RefreshCwIcon,
+  ArrowRightIcon,
+} from '../../../components/common/Icons'
 
-function QuizResultCard({ correctCount, totalQuestions, onRestartQuiz, moduleId }) {
+function QuizResultCard({ correctCount, totalQuestions, onRestartQuiz }) {
   const scorePercent = Math.round((correctCount / totalQuestions) * 100)
   const isPassed = scorePercent >= 80
 
   return (
-    <div className="text-center flex flex-col items-center py-4">
-      {/* Icon */}
-      <div className="w-14 h-14 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mb-5 select-none">
-        <CheckCircle2Icon className="w-7 h-7 text-emerald-600" />
-      </div>
+    <div className="text-center flex flex-col items-center py-2 sm:py-4 animate-content-rise">
+      {/* Clean Icon (No AI-template circular background badge) */}
+      <CheckCircle2Icon className="w-8 h-8 sm:w-9 sm:h-9 text-secondary mb-3 sm:mb-3.5 select-none" strokeWidth={2} />
 
       {/* Eyebrow */}
-      <span className="text-xs font-bold text-secondary uppercase tracking-wider block mb-2 select-none">
+      <span className="text-[11px] sm:text-xs font-bold text-secondary uppercase tracking-wider block mb-1.5 sm:mb-2 select-none">
         EVALUASI SELESAI
       </span>
 
       {/* Main Score Headline */}
-      <h2 className="font-display font-bold text-primary text-2xl sm:text-3xl lg:text-4xl mb-3">
+      <h2 className="font-display font-bold text-primary text-xl xs:text-2xl sm:text-3xl lg:text-4xl mb-2 sm:mb-3 leading-snug">
         {correctCount} dari {totalQuestions} Jawaban Benar
       </h2>
 
       {/* Subtitle */}
-      <p className="font-body text-primary/75 text-sm sm:text-base max-w-md mx-auto leading-relaxed mb-6">
+      <p className="font-body text-primary/75 text-xs sm:text-sm md:text-base max-w-md mx-auto leading-relaxed mb-6 sm:mb-8 px-2">
         {isPassed
           ? 'Selamat! Pemahamanmu mengenai pemilahan dan karakteristik sampah sudah sangat baik untuk diterapkan langsung di kehidupan sehari-hari.'
           : 'Bagus! Kamu sudah menyelesaikan seluruh soal evaluasi. Kamu dapat meninjau kembali materi untuk memperkuat pemahamanmu.'}
       </p>
 
-      {/* Score & XP summary */}
-      <div className="flex items-center justify-center gap-6 py-4 px-6 rounded-xl bg-neutral border border-border-warm/80 mb-8 select-none text-xs sm:text-sm">
-        <div>
-          <span className="text-stone-500 block mb-0.5">Skor Akhir</span>
-          <strong className="font-display font-bold text-primary text-lg sm:text-xl">
-            {scorePercent}%
-          </strong>
-        </div>
-        <div className="w-px h-8 bg-border-warm" />
-        <div className="flex items-center gap-1.5 text-primary font-bold">
-          <SparklesIcon className="w-4 h-4 text-accent" />
-          <span>+20 XP Kontribusi</span>
-        </div>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto justify-center">
+      {/* Action Buttons: Ulangi Evaluasi & Modul Berikutnya */}
+      <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto">
         <button
           type="button"
           onClick={onRestartQuiz}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-stone-300 hover:bg-stone-50 text-xs sm:text-sm font-semibold transition-all cursor-pointer text-stone-700"
+          className="inline-flex items-center justify-center gap-2 h-11 px-6 sm:px-7 rounded-full font-body font-semibold text-sm text-primary bg-white border border-primary/25 hover:bg-primary/[0.04] hover:border-primary/45 transition-colors shadow-xs active:scale-[0.98] cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 select-none w-full sm:w-auto"
+          aria-label="Ulangi Evaluasi"
         >
-          <RefreshCwIcon className="w-4 h-4" />
+          <RefreshCwIcon className="w-4 h-4 text-primary shrink-0" strokeWidth={2.25} />
           <span>Ulangi Evaluasi</span>
         </button>
 
         <Link
-          to={`/aksipedia/modul/${moduleId}`}
-          className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-full border border-primary text-primary hover:bg-primary/5 text-xs sm:text-sm font-semibold transition-all"
-        >
-          <span>Baca Ulang Materi</span>
-        </Link>
-
-        <Link
-          to="/aksipedia/modul"
-          className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-full bg-primary text-white hover:bg-primary/90 text-xs sm:text-sm font-semibold transition-all"
+          to="/aksipedia#modul"
+          className="inline-flex items-center justify-center gap-2 h-11 px-7 sm:px-8 rounded-full font-body font-semibold text-sm bg-primary hover:bg-primary/90 text-white shadow-xs active:scale-[0.98] transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 select-none cursor-pointer w-full sm:w-auto"
+          aria-label="Modul Berikutnya"
         >
           <span>Modul Berikutnya</span>
+          <ArrowRightIcon className="w-4 h-4 text-white shrink-0" strokeWidth={2.25} />
         </Link>
       </div>
     </div>

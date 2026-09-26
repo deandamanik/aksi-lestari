@@ -34,7 +34,7 @@ function ModuleListPage() {
         </div>
 
         {/* Editorial Page Header */}
-        <div className="mb-8 sm:mb-10">
+        <div className="mb-8 sm:mb-10 lapor-enter-header">
           <span className="text-xs font-bold text-secondary uppercase tracking-widest block mb-2 select-none">
             MODUL
           </span>
@@ -47,7 +47,9 @@ function ModuleListPage() {
         </div>
 
         {/* 1. Continue Learning Card */}
-        <ModuleContinueCard />
+        <div className="lapor-enter-card">
+          <ModuleContinueCard />
+        </div>
 
         {/* 2. Category Filter Tabs */}
         <ModuleFilterTabs
