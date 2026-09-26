@@ -30,8 +30,8 @@ export function useActionJourneyScroll() {
     let smoothRafId = null
     let lastFrameTime = 0
 
-    // Smoothing state
-    const SMOOTHING_TIME = 110 // ms time constant
+    // Smoothing state: responsive tracking harmonized with Lenis momentum scroll
+    const SMOOTHING_TIME = 45 // ms time constant
     let targetProgress = 0
     let visualProgress = 0
     let isSmoothing = false

@@ -172,7 +172,7 @@ function PetaSampahPage() {
   const hasNoResults = visibleWasteReports.length === 0 && visibleBankSampah.length === 0
 
   return (
-    <main className="relative w-full h-[100dvh] overflow-hidden animate-page-enter">
+    <main data-lenis-prevent className="relative w-full h-[100dvh] overflow-hidden animate-page-enter">
       <WasteMap
         wasteReports={visibleWasteReports}
         bankSampah={visibleBankSampah}

@@ -21,8 +21,8 @@ export function useProblemStoryScroll() {
     let smoothRafId = null
     let lastFrameTime = 0
 
-    // Smoothing state
-    const SMOOTHING_TIME = 110 // ms time constant
+    // Smoothing state: responsive tracking harmonized with Lenis momentum scroll
+    const SMOOTHING_TIME = 45 // ms time constant
     let targetStagePos = 0
     let visualStagePos = 0
     let isSmoothing = false

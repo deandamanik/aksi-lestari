@@ -17,6 +17,7 @@ export default function ScrollToTop() {
       left: 0,
       behavior: 'instant',
     })
+    window.__lenis?.scrollTo(0, { immediate: true })
   }, [pathname])
 
   return null

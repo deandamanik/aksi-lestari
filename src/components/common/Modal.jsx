@@ -187,6 +187,7 @@ export default function Modal({
 
   return createPortal(
     <div
+      data-lenis-prevent
       className="fixed inset-0 z-50 flex items-center justify-center p-3.5 sm:p-6 overflow-y-auto"
       onClick={handleBackdropClick}
     >

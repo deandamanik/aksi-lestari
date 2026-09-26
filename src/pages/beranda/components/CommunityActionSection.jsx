@@ -5,7 +5,11 @@ import {
   APPRECIATION_HEADER,
   APPRECIATION_LEADERBOARD,
 } from '../../../data/beranda/communityActionData'
-import { ClockIcon, MapPinIcon, ZapIcon } from '../../../components/common/Icons'
+import {
+  ClockIcon,
+  MapPinIcon,
+  ArrowRightIcon,
+} from '../../../components/common/Icons'
 import { useInView } from '../../../hooks/useInView'
 
 function CommunityActionSection() {
@@ -26,93 +30,110 @@ function CommunityActionSection() {
       aria-labelledby="community-action-heading"
     >
       <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 relative">
-        {/* Main 2-Column Grid matching Figma Composition */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 xl:gap-16 items-start">
+        {/* Main 2-Column Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 xl:gap-16 items-stretch">
           {/* ============================================================ */}
           {/* LEFT COLUMN: Aksi Komunitas */}
           {/* ============================================================ */}
-          <div className="lg:col-span-7 flex flex-col">
-            <span
-              className={`block text-xs font-bold uppercase tracking-widest text-secondary font-body mb-2.5 ${getEntranceClass(0)}`}
-            >
-              {COMMUNITY_HEADER.eyebrow}
-            </span>
+          <div className="lg:col-span-7 flex flex-col justify-between">
+            <div>
+              <span
+                className={`block text-xs font-bold uppercase tracking-widest text-secondary font-body mb-2.5 ${getEntranceClass()}`}
+              >
+                {COMMUNITY_HEADER.eyebrow}
+              </span>
 
-            <h2
-              id="community-action-heading"
-              className={`font-display text-primary text-2xl sm:text-3xl lg:text-[2.3rem] xl:text-[2.35rem] leading-[1.2] tracking-tight mb-2.5 ${getEntranceClass(0)}`}
-              style={{ transitionDelay: '50ms' }}
-            >
-              {COMMUNITY_HEADER.title}
-            </h2>
+              <h2
+                id="community-action-heading"
+                className={`font-display text-primary text-2xl sm:text-3xl lg:text-[2.3rem] xl:text-[2.35rem] leading-[1.2] tracking-tight mb-2.5 ${getEntranceClass()}`}
+                style={{ transitionDelay: '50ms' }}
+              >
+                {COMMUNITY_HEADER.title}
+              </h2>
 
-            <p
-              className={`font-body text-primary/70 text-sm sm:text-base leading-relaxed mb-6 sm:mb-8 ${getEntranceClass(0)}`}
-              style={{ transitionDelay: '100ms' }}
-            >
-              {COMMUNITY_HEADER.description}
-            </p>
+              <p
+                className={`font-body text-primary/70 text-sm sm:text-base leading-relaxed mb-6 sm:mb-8 ${getEntranceClass()}`}
+                style={{ transitionDelay: '100ms' }}
+              >
+                {COMMUNITY_HEADER.description}
+              </p>
 
-            <div className="flex flex-col gap-4 sm:gap-5 mb-6 sm:mb-8">
-              {COMMUNITY_AGENDAS.map((agenda, index) => (
-                <Link
-                  key={agenda.id}
-                  to="/komunitas"
-                  state={{ intent: { type: 'join-action', actionId: agenda.id } }}
-                  className={`group relative bg-white rounded-2xl border border-border-warm p-5 sm:p-6 shadow-2xs hover:border-primary/40 hover:shadow-xs block transition-all duration-300 ease-out focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary ${
-                    inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                  }`}
-                  style={{ transitionDelay: `${150 + index * 40}ms` }}
-                  aria-label={`Buka detail aksi: ${agenda.title}`}
-                >
-                  <div className="flex items-start justify-between gap-4 mb-3 sm:mb-3.5">
-                    <div>
-                      {/* Event Date / Tag Line */}
-                      <span className="block text-xs sm:text-sm font-bold text-secondary tracking-wide mb-2 sm:mb-2.5">
-                        {agenda.tag}
-                      </span>
-                      {/* Agenda Title */}
-                      <h3 className="font-display text-primary text-base sm:text-lg font-bold tracking-tight group-hover:text-primary/90 transition-colors">
-                        {agenda.title}
-                      </h3>
-                    </div>
+              <div className="flex flex-col gap-4 sm:gap-5 mb-6 sm:mb-8">
+                {COMMUNITY_AGENDAS.map((agenda, index) => (
+                  <Link
+                    key={agenda.id}
+                    to="/komunitas"
+                    state={{ intent: { type: 'join-action', actionId: agenda.id } }}
+                    className={`group relative bg-white rounded-2xl sm:rounded-3xl border border-border-warm p-5 sm:p-6 shadow-2xs hover:border-primary/30 hover:shadow-xs hover:-translate-y-0.5 block transition-all duration-200 ease-out focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary ${
+                      inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                    }`}
+                    style={{ transitionDelay: `${150 + index * 40}ms` }}
+                    aria-label={`Buka detail aksi: ${agenda.title}`}
+                  >
+                    {/* Top Row: Status + Category & Date */}
+                    <div className="flex items-center justify-between gap-3 mb-2.5">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-xs font-semibold text-primary shrink-0">
+                          {agenda.statusLabel}
+                        </span>
+                        {agenda.category && (
+                          <span className="text-xs text-stone-500 font-normal truncate">
+                            · {agenda.category}
+                          </span>
+                        )}
+                      </div>
 
-                    <div className="flex flex-col items-end text-right leading-tight shrink-0">
-                      <span className="font-bold text-primary text-sm sm:text-base">
-                        {agenda.volunteersCount} {agenda.volunteersLabel}
-                      </span>
-                      <span className="text-xs text-primary/60 font-medium mt-0.5">
-                        {agenda.statusLabel}
+                      <span className="text-xs font-medium text-stone-500 font-body shrink-0">
+                        {agenda.date || agenda.tag}
                       </span>
                     </div>
-                  </div>
 
-                  <div className="flex items-center flex-wrap gap-4 sm:gap-6 text-xs sm:text-sm text-primary/75 font-medium">
-                    <div className="inline-flex items-center gap-1.5">
-                      <ClockIcon className="w-4 h-4 text-primary/60 shrink-0" />
-                      <span>{agenda.time}</span>
+                    {/* Title */}
+                    <h3 className="font-display text-primary text-base sm:text-lg lg:text-xl font-bold leading-snug tracking-tight mb-3 group-hover:text-secondary transition-colors duration-150">
+                      {agenda.title}
+                    </h3>
+
+                    {/* Metadata: Time and Location */}
+                    <div className="flex items-center flex-wrap gap-4 sm:gap-6 text-xs sm:text-sm text-stone-600 font-body">
+                      <div className="inline-flex items-center gap-1.5">
+                        <ClockIcon className="w-4 h-4 text-primary shrink-0" />
+                        <span>{agenda.time}</span>
+                      </div>
+                      <div className="inline-flex items-center gap-1.5">
+                        <MapPinIcon className="w-4 h-4 text-primary shrink-0" />
+                        <span className="truncate">{agenda.location}</span>
+                      </div>
                     </div>
-                    <div className="inline-flex items-center gap-1.5">
-                      <MapPinIcon className="w-4 h-4 text-primary/60 shrink-0" />
-                      <span>{agenda.location}</span>
+
+                    {/* Footer: Volunteers Count + CTA Arrow */}
+                    <div className="pt-3.5 mt-3.5 border-t border-border-warm/60 flex items-center justify-between gap-3 text-xs sm:text-sm">
+                      <span className="text-stone-600 font-body">
+                        <strong className="text-primary font-bold">
+                          {agenda.volunteersCount} {agenda.volunteersLabel}
+                        </strong>{' '}
+                        terdaftar
+                      </span>
+
+                      <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-primary group-hover:text-secondary transition-colors duration-150">
+                        <span>Lihat Aksi</span>
+                        <ArrowRightIcon className="w-3.5 h-3.5 transition-transform duration-180 group-hover:translate-x-0.5 motion-reduce:transform-none" />
+                      </span>
                     </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                ))}
+              </div>
             </div>
 
             <div
-              className={`${getEntranceClass(0)}`}
+              className={`${getEntranceClass()}`}
               style={{ transitionDelay: '250ms' }}
             >
               <Link
                 to={COMMUNITY_HEADER.allActionsHref}
-                className="inline-flex items-center gap-2 text-sm sm:text-base font-bold text-primary hover:text-secondary transition-colors group w-fit"
+                className="inline-flex items-center gap-2 text-sm sm:text-base font-bold text-primary hover:text-secondary transition-colors group w-fit font-body"
               >
                 <span>{COMMUNITY_HEADER.allActionsLabel}</span>
-                <span className="transition-transform duration-200 group-hover:translate-x-1">
-                  →
-                </span>
+                <ArrowRightIcon className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
               </Link>
             </div>
           </div>
@@ -120,13 +141,13 @@ function CommunityActionSection() {
           {/* ============================================================ */}
           {/* RIGHT COLUMN: Papan Apresiasi */}
           {/* ============================================================ */}
-          <div className="lg:col-span-5 relative">
+          <div className="lg:col-span-5 flex flex-col">
             <div
-              className={`relative bg-white rounded-3xl border border-border-warm p-6 sm:p-8 shadow-xs ${getEntranceClass(0)}`}
+              className={`relative bg-white rounded-3xl border border-border-warm p-6 sm:p-8 shadow-xs flex flex-col justify-between h-full ${getEntranceClass()}`}
               style={{ transitionDelay: '150ms' }}
             >
               {/* Header inside Card */}
-              <div className="mb-6">
+              <div>
                 <span className="inline-block text-xs font-bold uppercase tracking-widest text-secondary font-body mb-2">
                   {APPRECIATION_HEADER.eyebrow}
                 </span>
@@ -138,69 +159,67 @@ function CommunityActionSection() {
                 </p>
               </div>
 
-              <div className="flex flex-col gap-3 mb-6">
+              {/* Clean Divider List (Top 4 leaders perfectly distributed) */}
+              <div className="divide-y divide-border-warm/60 my-5 sm:my-6 flex-1 flex flex-col justify-around">
                 {APPRECIATION_LEADERBOARD.map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-border-warm bg-white hover:border-primary/20 transition-all duration-200"
+                    className="py-3 sm:py-3.5 first:pt-1 last:pb-1 flex items-center justify-between gap-3 group"
                   >
                     <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
+                      {/* Rank */}
                       <span
-                        className={`font-display font-bold text-base sm:text-lg w-6 sm:w-7 shrink-0 ${
-                          item.isTop ? 'text-primary' : 'text-primary/70'
+                        className={`font-display font-bold text-base sm:text-lg w-6 text-center shrink-0 ${
+                          item.isTop ? 'text-primary' : 'text-stone-400'
                         }`}
                       >
-                        {item.rank}
+                        #{item.rawRank || item.rank}
                       </span>
+
+                      {/* Avatar */}
                       <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm shrink-0 shadow-2xs ${
+                        className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm shrink-0 border ${
                           item.isTop
-                            ? 'bg-primary text-white'
-                            : 'bg-[#EAE8E1] text-primary/80'
+                            ? 'bg-primary/10 text-primary border-primary/25'
+                            : 'bg-neutral text-stone-700 border-border-warm'
                         }`}
                       >
                         {item.initials}
                       </div>
+
+                      {/* Contributor Details */}
                       <div className="flex flex-col min-w-0">
-                        <span className="font-bold text-primary text-sm sm:text-base leading-tight truncate">
+                        <span className="font-bold text-primary text-sm sm:text-base leading-tight truncate font-body">
                           {item.name}
                         </span>
-                        <span className="text-xs text-primary/60 font-medium mt-0.5">
+                        <span className="text-xs text-stone-500 font-medium font-body truncate mt-0.5">
                           {item.level}
+                          {item.stats ? ` · ${item.stats.split('·')[0].trim()}` : ''}
                         </span>
                       </div>
                     </div>
 
-                    <div
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold shrink-0 ${
-                        item.isTop
-                          ? 'bg-primary text-white shadow-2xs'
-                          : 'bg-[#F3F1EC] text-primary'
-                      }`}
-                    >
-                      <ZapIcon
-                        className={`w-3.5 h-3.5 ${
-                          item.isTop ? 'text-white' : 'text-primary'
-                        }`}
-                      />
-                      <span>{item.xp}</span>
+                    {/* Typographic XP */}
+                    <div className="shrink-0 text-right">
+                      <span className="font-display font-bold text-sm sm:text-base text-primary">
+                        {item.xp}
+                      </span>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-border-warm/50 text-xs sm:text-sm">
-                <span className="text-primary/50 font-medium text-xs">
+              {/* Card Footer */}
+              <div className="flex items-center justify-between pt-4 border-t border-border-warm/60 text-xs sm:text-sm">
+                <span className="text-stone-400 font-medium text-xs font-body">
                   {APPRECIATION_HEADER.updatedNotice}
                 </span>
                 <Link
                   to={APPRECIATION_HEADER.viewBoardHref}
-                  className="font-semibold text-primary hover:text-secondary transition-colors inline-flex items-center gap-1 group"
+                  className="font-bold text-primary hover:text-secondary transition-colors inline-flex items-center gap-1.5 group font-body"
                 >
                   <span>{APPRECIATION_HEADER.viewBoardLabel}</span>
-                  <span className="transition-transform duration-200 group-hover:translate-x-0.5">
-                    →
-                  </span>
+                  <ArrowRightIcon className="w-3.5 h-3.5 transition-transform duration-180 group-hover:translate-x-0.5 motion-reduce:transform-none" />
                 </Link>
               </div>
             </div>
