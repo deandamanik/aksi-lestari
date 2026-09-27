@@ -94,7 +94,7 @@ function Navbar() {
           aria-label="Navigasi Utama"
         >
           {/* Left: Logo */}
-          <div className="flex items-center justify-start shrink-0 min-w-[180px]">
+          <div className="flex items-center justify-start shrink-0 lg:min-w-[180px]">
             <Link
               to="/"
               className="flex items-center gap-2.5 sm:gap-3 select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
@@ -114,7 +114,7 @@ function Navbar() {
           {/* Center: Desktop Navigation with Shared Sliding Active Pill & Animated Underlines */}
           <div
             ref={navContainerRef}
-            className="relative hidden md:flex items-center justify-center gap-1 sm:gap-1.5"
+            className="relative hidden lg:flex items-center justify-center gap-1 sm:gap-1.5"
           >
             {/* Shared sliding active green background indicator */}
             <div
@@ -145,7 +145,7 @@ function Navbar() {
                   ref={(el) => {
                     if (el) itemRefs.current[item.path] = el
                   }}
-                  className={`group relative z-10 inline-flex items-center justify-center h-9 px-3.5 sm:px-4 rounded-full text-sm transition-colors duration-200 select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary ${
+                  className={`group relative z-10 inline-flex items-center justify-center h-9 px-3.5 sm:px-4 rounded-full text-sm transition-colors duration-200 select-none whitespace-nowrap focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary ${
                     isActive
                       ? 'text-white font-bold'
                       : 'text-primary hover:text-primary font-semibold'
@@ -168,8 +168,8 @@ function Navbar() {
           </div>
 
           {/* Right: Desktop Auth Buttons & Mobile Toggle */}
-          <div className="flex items-center justify-end shrink-0 min-w-[180px] gap-2.5">
-            <div className="hidden md:flex items-center gap-2.5">
+          <div className="flex items-center justify-end shrink-0 lg:min-w-[180px] gap-2.5">
+            <div className="hidden lg:flex items-center gap-2.5">
               {isAuthenticated ? (
                 <Link
                   to="/profil"
@@ -205,7 +205,7 @@ function Navbar() {
             <button
               type="button"
               onClick={() => setMobileMenuOpen((prev) => !prev)}
-              className="md:hidden p-2 rounded-lg text-primary hover:bg-black/[0.04] transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+              className="lg:hidden p-2 rounded-lg text-primary hover:bg-black/[0.04] transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
               aria-label={mobileMenuOpen ? 'Tutup menu' : 'Buka menu'}
               aria-expanded={mobileMenuOpen}
             >
@@ -237,7 +237,7 @@ function Navbar() {
 
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden mt-2 p-4 bg-white/95 backdrop-blur-md rounded-2xl border border-border-warm/60 shadow-[0_8px_30px_rgba(0,0,0,0.08)] flex flex-col gap-1 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="lg:hidden mt-2 p-4 bg-white/95 backdrop-blur-md rounded-2xl border border-border-warm/60 shadow-[0_8px_30px_rgba(0,0,0,0.08)] flex flex-col gap-1 animate-in fade-in slide-in-from-top-2 duration-200">
             {NAV_ITEMS.map((item) => (
               <NavLink
                 key={item.path}
