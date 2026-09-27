@@ -128,7 +128,7 @@ function ImpactClosingSection() {
       </div>
 
       {/* LAYER 2: Warm Cream Closing CTA Area */}
-      <div className="w-full bg-[#FAF8F3] text-primary pt-14 sm:pt-16 lg:pt-20 pb-16 sm:pb-20 lg:pb-24 border-t border-border-warm/30">
+      <div className="w-full bg-neutral text-primary pt-14 sm:pt-16 lg:pt-20 pb-16 sm:pb-20 lg:pb-24 border-t border-border-warm/30">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           {/* Dominant Headline */}
           <h2
